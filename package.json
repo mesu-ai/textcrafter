@@ -1,0 +1,32 @@
+{
+  "name": "textcrafter",
+  "version": "1.0.0-beta.0",
+  "description": "TextCrafter: A modern, customizable rich text editor for React. Supports rich formatting, media embedding and real-time collaboration. Ideal for content creators.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "textcrafter",
+    "texteditor",
+    "rich texteditor",
+    "rich text-editor",
+    "WYSIWYG",
+    "editor",
+    "react editor",
+    "next editor",
+    "content editor",
+    "media embedding",
+    "blog editor",
+    "customizable editor"
+  ],
+  "author": "mesu",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "typescript": "^5.6.3"
+  }
+}
