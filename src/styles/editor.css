@@ -1,0 +1,13 @@
+.editor-canvas {
+  min-height: 300px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  overflow-y: auto; /* Allows scrolling */
+}
+
+.toolbar {
+  margin-bottom: 10px;
+  background: #f0f0f0;
+  padding: 5px;
+  border: 1px solid #ddd;
+}
