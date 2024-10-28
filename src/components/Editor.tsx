@@ -1,27 +1,9 @@
 import React, { DragEvent, FC, useRef } from 'react';
 import Toolbar from './Toolbar';
+import '../styles/editor.css';
 
 const Editor: FC = () => {
   const editorRef = useRef<HTMLDivElement>(null);
-
-//   const applyCommand = (command: string, value?: string) => {
-//     if (command === 'createLink') {
-//       const url = prompt('Enter the URL:', 'https://') || undefined; // Convert null to undefined
-//       if (url) {
-//         document.execCommand('createLink', false, url);
-//       }
-//     } else if (command === 'insertImage') {
-//       const imageUrl = prompt('Enter the image URL:', 'https://') || undefined; // Convert null to undefined
-//       if (imageUrl) {
-//         document.execCommand('insertImage', false, imageUrl);
-//       }
-//     } else if (command === 'insertHTML' && value) {
-//       document.execCommand('insertHTML', false, value);
-//     } else {
-//       document.execCommand(command, false, value || '');
-//     }
-//     editorRef.current?.focus(); // Keep focus on the editor
-//   };
 
 const applyCommand = (command: string, value?: string) => {
     if (command === 'createLink' && value) {

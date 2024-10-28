@@ -5,9 +5,111 @@
   overflow-y: auto; /* Allows scrolling */
 }
 
+/* General Toolbar Styling */
 .toolbar {
-  margin-bottom: 10px;
-  background: #f0f0f0;
-  padding: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px;
+  background-color: #f3f3f3;
   border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding-right: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.toolbar-group:last-child {
+  border-right: none;
+}
+
+/* Buttons and Select Inputs in Toolbar */
+.toolbar button, .toolbar select, .toolbar input[type="color"] {
+  padding: 6px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #ffffff;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.toolbar button:hover, .toolbar select:hover, .toolbar input[type="color"]:hover {
+  background-color: #e0e0e0;
+  border-color: #bbb;
+}
+
+.toolbar select {
+  padding-right: 20px;
+  -webkit-appearance: none; /* Hide default dropdown arrow */
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* Editor Area */
+.editor-canvas {
+  min-height: 300px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow-y: auto;
+  font-family: Arial, sans-serif;
+}
+
+/* Custom Table Styling */
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+}
+
+.custom-table td, .custom-table th {
+  padding: 8px;
+  text-align: center;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.custom-table td:hover {
+  background-color: #f5f5f5;
+}
+
+.table-cell {
+  min-width: 80px;
+}
+
+/* Table Cell Colors */
+.custom-table th {
+  background-color: #f1f1f1;
+  font-weight: bold;
+}
+
+.table-cell-selected {
+  background-color: #d0e8ff !important;
+}
+
+/* Collapsed Cell Visibility */
+.collapsed-cell {
+  display: none;
+}
+
+/* Utility Classes */
+.hidden {
+  display: none;
+}
+
+.visible {
+  display: block;
+}
+
+/* Optional Horizontal Scrollbar for Overflow */
+.toolbar-group {
+  overflow-x: auto;
+  white-space: nowrap;
 }
