@@ -4,58 +4,38 @@ import Toolbar from './Toolbar';
 const Editor: FC = () => {
   const editorRef = useRef<HTMLDivElement>(null);
 
-  const applyCommand = (command: string, value?: string) => {
-    if (command === 'createLink') {
-      const url = prompt('Enter the URL:', 'https://') || undefined; // Convert null to undefined
-      if (url) {
-        document.execCommand('createLink', false, url);
-      }
-    } else if (command === 'insertImage') {
-      const imageUrl = prompt('Enter the image URL:', 'https://') || undefined; // Convert null to undefined
-      if (imageUrl) {
-        document.execCommand('insertImage', false, imageUrl);
-      }
+//   const applyCommand = (command: string, value?: string) => {
+//     if (command === 'createLink') {
+//       const url = prompt('Enter the URL:', 'https://') || undefined; // Convert null to undefined
+//       if (url) {
+//         document.execCommand('createLink', false, url);
+//       }
+//     } else if (command === 'insertImage') {
+//       const imageUrl = prompt('Enter the image URL:', 'https://') || undefined; // Convert null to undefined
+//       if (imageUrl) {
+//         document.execCommand('insertImage', false, imageUrl);
+//       }
+//     } else if (command === 'insertHTML' && value) {
+//       document.execCommand('insertHTML', false, value);
+//     } else {
+//       document.execCommand(command, false, value || '');
+//     }
+//     editorRef.current?.focus(); // Keep focus on the editor
+//   };
+
+const applyCommand = (command: string, value?: string) => {
+    if (command === 'createLink' && value) {
+        document.execCommand('createLink', false, value);
+    } else if (command === 'insertImage' && value) {
+        document.execCommand('insertImage', false, value);
     } else if (command === 'insertHTML' && value) {
-      document.execCommand('insertHTML', false, value);
+        document.execCommand('insertHTML', false, value);
     } else {
-      document.execCommand(command, false, value || '');
+        document.execCommand(command, false, value || '');
     }
     editorRef.current?.focus(); // Keep focus on the editor
-  };
+};
 
-  //   const applyCommand = (command: string, value?: string) => {
-  //     if (command === 'createLink' && value) {
-  //         document.execCommand('createLink', false, value);
-  //     } else if (command === 'insertImage' && value) {
-  //         document.execCommand('insertImage', false, value);
-  //     } else if (command === 'insertHTML' && value) {
-  //         document.execCommand('insertHTML', false, value);
-  //     } else {
-  //         document.execCommand(command, false, value || '');
-  //     }
-  //     editorRef.current?.focus(); // Keep focus on the editor
-  // };
-
-  //   const applyCommand = (command: string, value?: string) => {
-  //     if (command === 'createLink') {
-  //         const url = prompt("Enter the URL:", "https://");
-  //         if (url) {  // Only apply if url is not null
-  //             document.execCommand('createLink', false, url);
-  //         }
-  //     } else if (command === 'insertImage') {
-  //         const imageUrl = prompt("Enter the image URL:", "https://");
-  //         if (imageUrl) {  // Only apply if imageUrl is not null
-  //             document.execCommand('insertImage', false, imageUrl);
-  //         }
-  //     } else if (command === 'insertHTML') {
-  //         if (value) {
-  //             document.execCommand('insertHTML', false, value);
-  //         }
-  //     } else {
-  //         document.execCommand(command, false, value || '');
-  //     }
-  //     editorRef.current?.focus(); // Keep focus on the editor
-  // };
 
   const handleDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();

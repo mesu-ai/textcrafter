@@ -1,3 +1,6 @@
 import React from 'react';
-declare const Toolbar: () => React.JSX.Element;
+interface ToolbarProps {
+    onCommand: (command: string, value?: string) => void;
+}
+declare const Toolbar: React.FC<ToolbarProps>;
 export default Toolbar;
