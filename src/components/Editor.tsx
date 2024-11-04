@@ -34,19 +34,15 @@ const applyCommand = (command: string, value?: string) => {
   };
 
   return (
-    <div className='editor-canvas'>
+    <div id="editor-container" className="editor-canvas">
       <Toolbar onCommand={applyCommand} />
-      <div
+      <div 
+        id="content-area"
         ref={editorRef}
         contentEditable
-       
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
-        style={{
-          minHeight: '300px',
-          // border: '1px solid #ddd',
-          padding: '10px',
-        }}
+        style={{ minHeight: '300px', outline: 'none', padding: '10px' }}
       >
         {/* Content here */}
       </div>

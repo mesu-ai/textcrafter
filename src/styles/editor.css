@@ -10,7 +10,7 @@
 }
 
 .editor-canvas:focus{
-  outline: none;
+  /* outline: none; */
 }
 
 /* General Toolbar Styling */
