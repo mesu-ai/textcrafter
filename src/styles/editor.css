@@ -1,8 +1,16 @@
+
+/* Editor Area */
 .editor-canvas {
-  min-height: 300px;
-  border: 1px solid #ddd;
+  min-height: 350px;
   padding: 10px;
-  overflow-y: auto; /* Allows scrolling */
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow-y: auto;
+  font-family: Arial, sans-serif;
+}
+
+.editor-canvas:focus{
+  outline: none;
 }
 
 /* General Toolbar Styling */
@@ -51,15 +59,7 @@
   appearance: none;
 }
 
-/* Editor Area */
-.editor-canvas {
-  min-height: 300px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  overflow-y: auto;
-  font-family: Arial, sans-serif;
-}
+
 
 /* Custom Table Styling */
 .custom-table {
