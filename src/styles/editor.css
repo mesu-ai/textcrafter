@@ -1,20 +1,21 @@
-
 /* Editor Area */
-.editor-canvas {
-  min-height: 350px;
+#editor-container.editor-canvas {
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
   overflow-y: auto;
   font-family: Arial, sans-serif;
+  text-align: start;
 }
 
-.editor-canvas:focus{
-  /* outline: none; */
+#editor-container .content-area {
+  min-height: 300px;
+  padding-top: 10px;
+  outline: none;
 }
 
 /* General Toolbar Styling */
-.toolbar {
+#toolbar.toolbar {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -24,7 +25,7 @@
   border-radius: 5px;
 }
 
-.toolbar-group {
+#toolbar .toolbar-group {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -32,13 +33,16 @@
   border-right: 1px solid #ddd;
 }
 
-.toolbar-group:last-child {
+#toolbar .toolbar-group:last-child {
   border-right: none;
 }
 
 /* Buttons and Select Inputs in Toolbar */
-.toolbar button, .toolbar select, .toolbar input[type="color"] {
+#toolbar button,
+#toolbar select,
+.toolbar input[type="color"] {
   padding: 6px 10px;
+  max-height:27.73px ;
   font-size: 14px;
   cursor: pointer;
   border: 1px solid #ccc;
@@ -47,28 +51,106 @@
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-.toolbar button:hover, .toolbar select:hover, .toolbar input[type="color"]:hover {
+#toolbar .button-icon {
+  width: 14px;
+  height: 14px;
+  fill: #1a1a1a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+#toolbar button:hover,
+#toolbar select:hover,
+#toolbar input[type="color"]:hover {
   background-color: #e0e0e0;
   border-color: #bbb;
 }
 
-.toolbar select {
-  padding-right: 20px;
-  -webkit-appearance: none; /* Hide default dropdown arrow */
+#toolbar select {
+  /* padding-right: 20px; */
+  -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
 }
+
+#toolbar #table {
+  position: relative;
+}
+
+#toolbar .table-selector-show {
+  display: none;
+  position: absolute;
+  top: 32px;
+  border: 1px solid #ddd;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  background-color: white;
+}
+
+#toolbar #table:hover .table-selector-show {
+  display: flex;
+}
+
+#toolbar #table:hover .table-option-button {
+  margin-top: 10px;
+  padding: 10px;
+  min-width: 130px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+}
+
+
+
+.table-selector {
+  display: inline-block;
+  padding: 10px;
+  /* border: 1px solid #ddd; */
+  background-color: #fff;
+  position: relative;
+}
+
+.table-selector-row {
+  display: flex;
+}
+
+.table-selector-cell {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.table-selector-cell.highlighted {
+  background-color: #d0e8ff;
+}
+
+.table-selector-label {
+  margin-top: 5px;
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+}
+
 
 
 
 /* Custom Table Styling */
 .custom-table {
   width: 100%;
+  display: flex;
+  justify-content: center;
+  border: none;
   border-collapse: collapse;
   margin: 10px 0;
 }
 
-.custom-table td, .custom-table th {
+.custom-table td,
+.custom-table th {
   padding: 8px;
   text-align: center;
   border: 1px solid #ddd;
@@ -99,17 +181,9 @@
   display: none;
 }
 
-/* Utility Classes */
-.hidden {
-  display: none;
-}
-
-.visible {
-  display: block;
-}
-
 /* Optional Horizontal Scrollbar for Overflow */
 .toolbar-group {
-  overflow-x: auto;
-  white-space: nowrap;
+  /* overflow-x: auto; */
+  /* white-space: nowrap;
+ overflow-wrap: break-word; */
 }
