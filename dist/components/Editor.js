@@ -1,27 +1,12 @@
 import React, { useRef } from 'react';
 import Toolbar from './Toolbar';
+import '../styles/editor.css';
 const Editor = () => {
     const editorRef = useRef(null);
-    //   const applyCommand = (command: string, value?: string) => {
-    //     if (command === 'createLink') {
-    //       const url = prompt('Enter the URL:', 'https://') || undefined; // Convert null to undefined
-    //       if (url) {
-    //         document.execCommand('createLink', false, url);
-    //       }
-    //     } else if (command === 'insertImage') {
-    //       const imageUrl = prompt('Enter the image URL:', 'https://') || undefined; // Convert null to undefined
-    //       if (imageUrl) {
-    //         document.execCommand('insertImage', false, imageUrl);
-    //       }
-    //     } else if (command === 'insertHTML' && value) {
-    //       document.execCommand('insertHTML', false, value);
-    //     } else {
-    //       document.execCommand(command, false, value || '');
-    //     }
-    //     editorRef.current?.focus(); // Keep focus on the editor
-    //   };
     const applyCommand = (command, value) => {
-        var _a;
+        const editor = editorRef.current;
+        if (!editor)
+            return;
         if (command === 'createLink' && value) {
             document.execCommand('createLink', false, value);
         }
@@ -29,12 +14,12 @@ const Editor = () => {
             document.execCommand('insertImage', false, value);
         }
         else if (command === 'insertHTML' && value) {
-            document.execCommand('insertHTML', false, value);
+            editor.innerHTML += value;
         }
         else {
             document.execCommand(command, false, value || '');
         }
-        (_a = editorRef.current) === null || _a === void 0 ? void 0 : _a.focus(); // Keep focus on the editor
+        editor.focus(); // Keep focus on the editor
     };
     const handleDrop = (e) => {
         e.preventDefault();
@@ -50,12 +35,8 @@ const Editor = () => {
             reader.readAsDataURL(file);
         });
     };
-    return (React.createElement("div", null,
+    return (React.createElement("div", { id: "editor-container", className: 'editor-canvas' },
         React.createElement(Toolbar, { onCommand: applyCommand }),
-        React.createElement("div", { ref: editorRef, contentEditable: true, className: 'editor-canvas', onDrop: handleDrop, onDragOver: (e) => e.preventDefault(), style: {
-                minHeight: '300px',
-                border: '1px solid #ddd',
-                padding: '10px',
-            } })));
+        React.createElement("div", { className: "content-area", ref: editorRef, contentEditable: true, onDrop: handleDrop, onDragOver: (e) => e.preventDefault() })));
 };
 export default Editor;

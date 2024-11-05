@@ -1,6 +1,7 @@
-import React from 'react';
+import { FC } from 'react';
+import '../styles/editor.css';
 interface ToolbarProps {
     onCommand: (command: string, value?: string) => void;
 }
-declare const Toolbar: React.FC<ToolbarProps>;
+declare const Toolbar: FC<ToolbarProps>;
 export default Toolbar;
