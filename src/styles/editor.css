@@ -18,7 +18,7 @@
 #toolbar.toolbar {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
   padding: 10px;
   background-color: #f3f3f3;
   border: 1px solid #ddd;
@@ -28,8 +28,8 @@
 #toolbar .toolbar-group {
   display: flex;
   align-items: center;
-  gap: 5px;
-  padding-right: 10px;
+  gap: 4px;
+  padding-right: 8px;
   border-right: 1px solid #ddd;
 }
 
@@ -41,8 +41,9 @@
 #toolbar button,
 #toolbar select,
 .toolbar input[type="color"] {
-  padding: 6px 10px;
+  padding: 6px 8px;
   max-height:27.73px ;
+  min-width: 30px;
   font-size: 14px;
   cursor: pointer;
   border: 1px solid #ccc;
@@ -75,23 +76,31 @@
   appearance: none;
 }
 
-#toolbar #table {
+#toolbar #table, #toolbar #symbol {
   position: relative;
 }
 
-#toolbar .table-selector-show {
+#toolbar .table-selector-container, #toolbar .symbol-selector-container {
   display: none;
   position: absolute;
-  top: 32px;
+  top: 28px;
+  right: 0;
+  
+}
+
+#toolbar #table:hover .table-selector-container, #toolbar #symbol:hover .symbol-selector-container {
+  display: block;
+}
+
+#toolbar #table:hover .table-selector-show, #toolbar #symbol:hover .symbol-selector-show {
+  margin-top: 5px;
+  display: flex;
   border: 1px solid #ddd;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   background-color: white;
-}
 
-#toolbar #table:hover .table-selector-show {
-  display: flex;
 }
 
 #toolbar #table:hover .table-option-button {
@@ -104,7 +113,15 @@
 
 }
 
+#toolbar #symbol:hover .symbol-option-button {
+  margin-top: 10px;
+  padding: 10px;
+  min-width: 130px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
 
+}
 
 .table-selector {
   display: inline-block;
