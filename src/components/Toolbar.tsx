@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import '../styles/editor.css';
 import AlignLeftIcon from '../assets/icons/AlignLeftIcon';
 import AlignCenterIcon from '../assets/icons/AlignCenterIcon';
@@ -13,6 +13,7 @@ import UndoIcon from '../assets/icons/UndoIcon';
 import RedoIcon from '../assets/icons/RedoIcon';
 import TableIcon from '../assets/icons/TableIcon';
 import ClearFormatIcon from '../assets/icons/ClearFormatIcon';
+import { addColumn, addRow, removeColumn, removeRow } from '../utils/commands';
 
 interface ToolbarProps {
   onCommand: (command: string, value?: string) => void;
@@ -55,6 +56,7 @@ const TableSelector: FC<TableSelectorProps> = ({ onTableCreate }) => {
 }
 
 const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
+  const [activeFormats, setActiveFormats] = useState<{[key:string]:boolean }>({});
 
   const createTableHTML = (rows: number, cols: number) => {
     console.log({ rows, cols });
@@ -75,50 +77,22 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
     onCommand('insertHTML', createTableHTML(rows, cols));
   };
 
+  const detectFormatting = () => {
+    const newActiveFormat: { [key: string]: boolean } = {};
+    newActiveFormat.bold = document.queryCommandState('bold');
+    newActiveFormat.italic = document.queryCommandState('italic');
+    newActiveFormat.underline = document.queryCommandState('underline');
+    newActiveFormat.strikeThrough = document.queryCommandState('strikeThrough');
 
-  const addRow = () => {
-    const selectedTable = document.querySelector('.custom-table') as HTMLTableElement;
-    if (selectedTable) {
-      const row = selectedTable.insertRow(-1);
-      for (let i = 0; i < selectedTable.rows[0].cells.length; i++) {
-        const cell = row.insertCell(i);
-        cell.innerHTML = 'New Cell';
-        cell.classList.add('table-cell');
-      }
-    }
+    setActiveFormats(newActiveFormat);
   };
 
-  // Function to remove the last row from the selected table
-  const removeRow = () => {
-    const selectedTable = document.querySelector('.custom-table') as HTMLTableElement;
-    if (selectedTable && selectedTable.rows.length > 1) {
-      selectedTable.deleteRow(-1);
-    }
-  };
+  useEffect(() => {
+    document.addEventListener('selectionchange', detectFormatting);
+    return () =>
+      document.removeEventListener('selectionchange', detectFormatting);
+  }, []);
 
-  // Function to add a column to the selected table
-  const addColumn = () => {
-    const selectedTable = document.querySelector('.custom-table') as HTMLTableElement;
-    if (selectedTable) {
-      for (let i = 0; i < selectedTable.rows.length; i++) {
-        const cell = selectedTable.rows[i].insertCell(-1);
-        cell.innerHTML = 'New Cell';
-        cell.classList.add('table-cell');
-      }
-    }
-  };
-
-  // Function to remove the last column from the selected table
-  const removeColumn = () => {
-    const selectedTable = document.querySelector('.custom-table') as HTMLTableElement;
-    if (selectedTable) {
-      for (let i = 0; i < selectedTable.rows.length; i++) {
-        if (selectedTable.rows[i].cells.length > 1) {
-          selectedTable.rows[i].deleteCell(-1);
-        }
-      }
-    }
-  };
 
 
   return (
@@ -148,10 +122,10 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
 
       {/* Text Formatting */}
       <div id="text-formatting-group" className="toolbar-group">
-        <button onClick={() => onCommand('bold')} style={{ fontWeight: '700' }}>B</button>
-        <button onClick={() => onCommand('italic')} style={{ fontStyle: 'italic' }}>I</button>
-        <button onClick={() => onCommand('underline')} style={{ textDecoration: 'underline' }}>U</button>
-        <button onClick={() => onCommand('strikeThrough')} style={{ textDecoration: 'line-through' }}>abc</button>
+        <button onClick={() => onCommand('bold')} style={{ fontWeight: '700', color: activeFormats?.bold ? 'green' : 'black' }}>B</button>
+        <button onClick={() => onCommand('italic')} style={{ fontStyle: 'italic', color: activeFormats?.italic ? 'green' : 'black'}}>I</button>
+        <button onClick={() => onCommand('underline')} style={{ textDecoration: 'underline', color: activeFormats?.underline ? 'green' : 'black' }}>U</button>
+        <button onClick={() => onCommand('strikeThrough')} style={{ textDecoration: 'line-through', color: activeFormats?.strikeThrough ? 'green' : 'black' }}>abc</button>
         <button onClick={() => onCommand('removeFormat')} title='Clear Formatting'><ClearFormatIcon className='button-icon' /></button>
       </div>
 
