@@ -14,6 +14,8 @@ const Editor: FC = () => {
       document.execCommand('createLink', false, value);
     } else if (command === 'insertImage' && value) {
       document.execCommand('insertImage', false, value);
+    } else if (command === 'formatBlock' && value) {
+      document.execCommand('formatBlock', false, value);
     } else if (command === 'insertHTML' && value) {
       editor.innerHTML += value;
     } else {
@@ -40,7 +42,7 @@ const Editor: FC = () => {
     <div id="editor-container" className='editor-canvas'>
       <Toolbar onCommand={applyCommand} />
       <div
-        className="content-area"
+        id="content-area"
         ref={editorRef}
         contentEditable
         onDrop={handleDrop}

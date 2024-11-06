@@ -6,7 +6,6 @@ import AlignRightIcon from '../assets/icons/AlignRightIcon';
 import AlignJustifyIcon from '../assets/icons/AlignJustifyIcon';
 import ListBulletIcon from '../assets/icons/ListBulletIcon';
 import ListNumberIcon from '../assets/icons/ListNumberIcon';
-import ListCheckIcon from '../assets/icons/ListCheckIcon';
 import LinkAddIcon from '../assets/icons/LinkAddIcon';
 import LinkRemoveIcon from '../assets/icons/LinkRemoveIcon';
 import InsertImageIcon from '../assets/icons/InsertImageIcon';
@@ -72,23 +71,6 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
     return tableHTML;
   };
 
-  // const createTableHTML = (rows: number, cols: number) => {
-  //   let tableHTML = '<table class="custom-table" border="1">';
-  //   for (let i = 0; i < rows; i++) {
-  //     tableHTML += '<tr>';
-  //     for (let j = 0; j < cols; j++) {
-  //       tableHTML += `<td class="table-cell">Cell</td>`;
-  //     }
-  //     tableHTML += '</tr>';
-  //   }
-  //   tableHTML += '</table>';
-  //   return tableHTML;
-  // };
-
-  // Command to insert the table into the editor
-  // const insertTable = () => {
-  //   onCommand('insertHTML', createTableHTML(tableRows, tableCols));
-  // };
   const handleTableCreate = (rows: number, cols: number) => {
     onCommand('insertHTML', createTableHTML(rows, cols));
   };
@@ -138,68 +120,6 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
     }
   };
 
-  // Function to collapse all cells in a specific row or column
-  // const toggleCollapseRow = (rowIndex: number) => {
-  //   const selectedTable = document.querySelector('.custom-table') as HTMLTableElement;
-  //   if (selectedTable && rowIndex < selectedTable.rows.length) {
-  //     const row = selectedTable.rows[rowIndex];
-  //     for (let cell of row.cells) {
-  //       cell.style.display = cell.style.display === 'none' ? 'table-cell' : 'none';
-  //     }
-  //   }
-  // };
-
-  // const handleTableOptionChange = (option: string) => {
-  //   switch (option) {
-  //     case 'addRow':
-  //       addRow();
-  //       break;
-  //     case 'removeRow':
-  //       removeRow();
-  //       break;
-  //     case 'addColumn':
-  //       addColumn();
-  //       break;
-  //     case 'removeColumn':
-  //       removeColumn();
-  //       break;
-  //     case 'toggleCollapseRow':
-  //       toggleCollapseRow(0);
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
-
-  // const handleTable = (option: string) => {
-  //   console.log(option)
-
-  //   switch (option) {
-  //     case 'addRow':
-  //       addRow()
-  //       break;
-
-  //     case 'removeRow':
-  //       removeRow()
-  //       break;
-
-  //     case 'addColumn':
-  //       addColumn()
-  //       break;
-
-  //     case 'removeColumn':
-  //       removeColumn()
-  //       break;
-
-  //     case 'horizontalLine':
-  //       onCommand('insertHorizontalRule')
-  //       break;
-
-  //     default:
-  //       break;
-  //   }
-
-  // }
 
   return (
     <div id="toolbar" className="toolbar">
@@ -228,11 +148,11 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
 
       {/* Text Formatting */}
       <div id="text-formatting-group" className="toolbar-group">
-        <button onClick={() => onCommand('bold')} style={{fontWeight:'700'}}>B</button>
+        <button onClick={() => onCommand('bold')} style={{ fontWeight: '700' }}>B</button>
         <button onClick={() => onCommand('italic')} style={{ fontStyle: 'italic' }}>I</button>
         <button onClick={() => onCommand('underline')} style={{ textDecoration: 'underline' }}>U</button>
         <button onClick={() => onCommand('strikeThrough')} style={{ textDecoration: 'line-through' }}>abc</button>
-        <button onClick={() => onCommand('removeFormat')} title='Clear Formatting'><ClearFormatIcon className='button-icon'/></button>
+        <button onClick={() => onCommand('removeFormat')} title='Clear Formatting'><ClearFormatIcon className='button-icon' /></button>
       </div>
 
       {/* Text Color and Background Color */}
@@ -253,7 +173,8 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
       <div id="list-group" className="toolbar-group">
         <button onClick={() => onCommand('insertUnorderedList')}><ListBulletIcon className="button-icon" /></button>
         <button onClick={() => onCommand('insertOrderedList')}><ListNumberIcon className="button-icon" /></button>
-        <button onClick={() => onCommand('insertHTML', '<ul><li>Checklist</li></ul>')}><ListCheckIcon className="button-icon" /></button>
+        {/* <button onClick={() => onCommand('insertHTML', '<ul><li>Checklist</li></ul>')}><ListCheckIcon className="button-icon" /></button> */}
+        {/* <button onClick={() => addChecklist()}><ListCheckIcon className="button-icon" /></button> */}
       </div>
 
       <div id="table" className="toolbar-group">
@@ -269,7 +190,7 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
               <button onClick={() => onCommand('insertHorizontalRule')} value="horizontalLine">Horizontal Line</button>
             </div>
           </div>
-          
+
         </div>
       </div>
 
@@ -280,66 +201,10 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
         <button onClick={() => onCommand('insertImage', prompt('Enter the image URL:', 'https://') || '')}><InsertImageIcon className="button-icon" /></button>
       </div>
 
-     
-
-      {/* <div className="toolbar-group">
-        <select onChange={(e) => handleTable(e.target.value)}>
-
-          <option>Table Options</option>
-          <option value='createTable'>Create Table</option>
-          <option value="addRow">Add Row</option>
-          <option value="removeRow">Remove Row</option>
-          <option value="addColumn">Add Column</option>
-          <option value="removeColumn">Remove Column</option>
-          <option value="horizontalLine">Insert Horizontal Line</option>
-        </select>
-      </div> */}
-
-      {/* Table Creation */}
-      {/* <div id="table-creation-group" className="toolbar-group">
-        <div>
-          <label>Rows:</label>
-          <input
-            type="number"
-            min="1"
-            value={tableRows}
-            onChange={(e) => setTableRows(Math.max(1, Number(e.target.value)))}
-            style={{ width: '50px' }}
-          />
-        </div>
-        <div>
-          <label>Cols:</label>
-          <input
-            type="number"
-            min="1"
-            value={tableCols}
-            onChange={(e) => setTableCols(Math.max(1, Number(e.target.value)))}
-            style={{ width: '50px' }}
-          />
-        </div>
-        <button onClick={insertTable}>Insert Table</button>
-      </div> */}
-
-      {/* Table Options */}
-      {/* <div id="table-options-group" className="toolbar-group">
-        <select onChange={(e) => handleTableOptionChange(e.target.value)}>
-          <option value="">Table Options</option>
-          <option value="addRow">Add Row</option>
-          <option value="removeRow">Remove Row</option>
-          <option value="addColumn">Add Column</option>
-          <option value="removeColumn">Remove Column</option>
-        </select>
-      </div> */}
-
-      {/* Horizontal Line */}
-      {/* <div id="horizontal-line-group" className="toolbar-group">
-        <button onClick={() => onCommand('insertHorizontalRule')}>Insert Horizontal Line</button>
-      </div> */}
-
       {/* Headings and Block Styles */}
       <div id="block-style-group" className="toolbar-group">
         <select onChange={(e) => onCommand('formatBlock', e.target.value)}>
-          <option value="">Normal Text</option>
+          <option value="p">Normal Text</option>
           <option value="h1">Heading 1</option>
           <option value="h2">Heading 2</option>
           <option value="h3">Heading 3</option>
@@ -347,13 +212,6 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
           <option value="pre">Code Block</option>
         </select>
       </div>
-
-       {/* Undo and Redo */}
-       <div id="undo-redo-group" className="toolbar-group">
-        <button onClick={() => onCommand('undo')}><UndoIcon className="button-icon" /></button>
-        <button onClick={() => onCommand('redo')}><RedoIcon className="button-icon" /></button>
-      </div>
-
 
       <div id="symbol" className="toolbar-group">
         <button className="symbol-selector-button">Symbols</button>
@@ -365,24 +223,22 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
               <button onClick={() => onCommand('insertHTML', '&trade;')}>™</button>
               <button onClick={() => onCommand('insertHTML', '&#10077;')}>❝</button>
               <button onClick={() => onCommand('insertHTML', '&#10078;')}>❞</button>
+              <button onClick={() => onCommand('insertHTML', '&#10003;')}>✓</button>
               <button onClick={() => onCommand('insertHTML', '😊')}>😊</button>
               <button onClick={() => onCommand('insertHTML', '👍')}>👍</button>
               <button onClick={() => onCommand('insertHTML', '🎉')}>🎉</button>
             </div>
           </div>
-          
+
         </div>
       </div>
 
-      {/* Special Characters */}
-      {/* <div id="special-characters-group" className="toolbar-group">
-        <button onClick={() => onCommand('insertHTML', '&copy;')}>©</button>
-        <button onClick={() => onCommand('insertHTML', '&euro;')}>€</button>
-        <button onClick={() => onCommand('insertHTML', '&trade;')}>™</button>
-        <button onClick={() => onCommand('insertHTML', '😊')}>😊</button>
-        <button onClick={() => onCommand('insertHTML', '👍')}>👍</button>
-        <button onClick={() => onCommand('insertHTML', '🎉')}>🎉</button>
-      </div> */}
+     {/* Undo and Redo */}
+      <div id="undo-redo-group" className="toolbar-group">
+        <button onClick={() => onCommand('undo')}><UndoIcon className="button-icon" /></button>
+        <button onClick={() => onCommand('redo')}><RedoIcon className="button-icon" /></button>
+      </div>
+
     </div>
   );
 };

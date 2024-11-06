@@ -8,10 +8,26 @@
   text-align: start;
 }
 
-#editor-container .content-area {
+#editor-container #content-area {
   min-height: 300px;
   padding-top: 10px;
   outline: none;
+}
+
+#editor-container #content-area blockquote {
+  margin: 1em 0;
+  padding-left: 1em;
+  border-left: 3px solid #ccc;
+  color: #555;
+  font-style: italic;
+}
+
+#editor-container #content-area pre {
+  background: #f4f4f4;
+  padding: 10px;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-family: monospace;
 }
 
 /* General Toolbar Styling */
@@ -37,12 +53,11 @@
   border-right: none;
 }
 
-/* Buttons and Select Inputs in Toolbar */
 #toolbar button,
 #toolbar select,
 .toolbar input[type="color"] {
-  padding: 6px 8px;
-  max-height:27.73px ;
+  padding: 4px 8px;
+  height: 27px ;
   min-width: 30px;
   font-size: 14px;
   cursor: pointer;
@@ -123,41 +138,36 @@
 
 }
 
-.table-selector {
+#toolbar .table-selector {
   display: inline-block;
   padding: 10px;
-  /* border: 1px solid #ddd; */
   background-color: #fff;
   position: relative;
 }
 
-.table-selector-row {
+#toolbar .table-selector-row {
   display: flex;
 }
 
-.table-selector-cell {
+#toolbar .table-selector-cell {
   width: 20px;
   height: 20px;
   border: 1px solid #ddd;
   cursor: pointer;
 }
 
-.table-selector-cell.highlighted {
+#toolbar .table-selector-cell.highlighted {
   background-color: #d0e8ff;
 }
 
-.table-selector-label {
+#oolbar .table-selector-label {
   margin-top: 5px;
   text-align: center;
   font-size: 14px;
   color: #333;
 }
 
-
-
-
-/* Custom Table Styling */
-.custom-table {
+#editor-container #content-area .custom-table {
   width: 100%;
   display: flex;
   justify-content: center;
@@ -166,8 +176,8 @@
   margin: 10px 0;
 }
 
-.custom-table td,
-.custom-table th {
+#editor-container #content-area .custom-table td,
+#editor-container #content-area .custom-table th {
   padding: 8px;
   text-align: center;
   border: 1px solid #ddd;
@@ -175,32 +185,24 @@
   transition: background-color 0.2s ease;
 }
 
-.custom-table td:hover {
+#editor-container #content-area .custom-table td:hover {
   background-color: #f5f5f5;
 }
 
-.table-cell {
+#editor-container #content-area .table-cell {
   min-width: 80px;
 }
 
-/* Table Cell Colors */
-.custom-table th {
+#editor-container #content-area .custom-table th {
   background-color: #f1f1f1;
   font-weight: bold;
 }
 
-.table-cell-selected {
+/* #editor-container #content-area .table-cell-selected {
   background-color: #d0e8ff !important;
 }
 
-/* Collapsed Cell Visibility */
-.collapsed-cell {
+#editor-container #content-area .collapsed-cell {
   display: none;
-}
+} */
 
-/* Optional Horizontal Scrollbar for Overflow */
-.toolbar-group {
-  /* overflow-x: auto; */
-  /* white-space: nowrap;
- overflow-wrap: break-word; */
-}
