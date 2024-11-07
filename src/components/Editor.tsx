@@ -1,8 +1,13 @@
-import React, { DragEvent, FC, useRef } from 'react';
+import React, { DragEvent, FC, useEffect, useRef } from 'react';
 import Toolbar from './Toolbar';
 import '../styles/editor.css';
 
-const Editor: FC = () => {
+interface EditorProps {
+  value: string;
+  onChange: (content: string) => void;
+}
+
+const Editor: FC<EditorProps> = ({ value, onChange }) => {
   const editorRef = useRef<HTMLDivElement>(null);
 
   const applyCommand = (command: string, value?: string) => {
@@ -22,6 +27,10 @@ const Editor: FC = () => {
       document.execCommand(command, false, value || '');
     }
     editor.focus(); // Keep focus on the editor
+
+    if (editorRef.current) {
+      onChange(editorRef.current.innerHTML);
+    }
   };
 
   const handleDrop = (e: DragEvent<HTMLDivElement>) => {
@@ -33,10 +42,24 @@ const Editor: FC = () => {
         const img = document.createElement('img');
         img.src = event.target?.result as string;
         editorRef.current?.appendChild(img);
+
+        onChange(editorRef.current?.innerHTML || '');
       };
       reader.readAsDataURL(file);
     });
   };
+
+  const handleInput = () => {
+    if (editorRef.current) {
+      onChange(editorRef.current.innerHTML);
+    }
+  };
+
+  useEffect(() => {
+    if (editorRef.current && editorRef.current.innerHTML !== value) {
+      editorRef.current.innerHTML = value;
+    }
+  }, [value]);
 
   return (
     <div id="editor-container" className='editor-canvas'>
@@ -47,6 +70,7 @@ const Editor: FC = () => {
         contentEditable
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
+        onInput={handleInput}
       >
         {/* Content here */}
       </div>

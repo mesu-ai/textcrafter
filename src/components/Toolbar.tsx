@@ -27,8 +27,6 @@ const TableSelector: FC<TableSelectorProps> = ({ onTableCreate }) => {
   const [hoveredRow, setHoveredRow] = useState(0);
   const [hoveredCol, setHoveredCol] = useState(0);
 
-  console.log({ hoveredCol, hoveredRow })
-
   const handleSellHover = (row: number, col: number) => {
     setHoveredRow(row);
     setHoveredCol(col);
@@ -41,9 +39,9 @@ const TableSelector: FC<TableSelectorProps> = ({ onTableCreate }) => {
   return (
     <div className='table-selector'>
       {[...new Array(8)].map((_, row) => (
-        <div key={row} className='table-selector-row'>
+        <div key={`row-${row}`} className='table-selector-row'>
           {[...new Array(8)].map((_, col) => (
-            <div key={col} className={`table-selector-cell ${row <= hoveredRow && col <= hoveredCol ? 'highlighted' : ''}`} onMouseEnter={() => handleSellHover(row, col)} onClick={handleCellClick} />
+            <div key={`col-${col}`} className={`table-selector-cell ${row <= hoveredRow && col <= hoveredCol ? 'highlighted' : ''}`} onMouseEnter={() => handleSellHover(row, col)} onClick={handleCellClick} />
           ))}
         </div>
       ))}
@@ -56,7 +54,7 @@ const TableSelector: FC<TableSelectorProps> = ({ onTableCreate }) => {
 }
 
 const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
-  const [activeFormats, setActiveFormats] = useState<{[key:string]:boolean }>({});
+  const [activeFormats, setActiveFormats] = useState<{ [key: string]: boolean }>({});
 
   const createTableHTML = (rows: number, cols: number) => {
     console.log({ rows, cols });
@@ -77,20 +75,96 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
     onCommand('insertHTML', createTableHTML(rows, cols));
   };
 
-  const detectFormatting = () => {
-    const newActiveFormat: { [key: string]: boolean } = {};
-    newActiveFormat.bold = document.queryCommandState('bold');
-    newActiveFormat.italic = document.queryCommandState('italic');
-    newActiveFormat.underline = document.queryCommandState('underline');
-    newActiveFormat.strikeThrough = document.queryCommandState('strikeThrough');
+  const debounce = <F extends (...args: any[]) => void>(func: F, delay: number) => {
+    let debounceTimer: number;
+    return function (this: any, ...args: Parameters<F>) {
+      clearTimeout(debounceTimer);
+      debounceTimer = window.setTimeout(() => func.apply(this, args), delay);
+    }
+  }
 
+  // const detectFormatting = () => {
+  //   const newActiveFormat: { [key: string]: boolean } = {};
+  //   newActiveFormat.bold = document.queryCommandState('bold');
+  //   newActiveFormat.italic = document.queryCommandState('italic');
+  //   newActiveFormat.underline = document.queryCommandState('underline');
+  //   newActiveFormat.strikeThrough = document.queryCommandState('strikeThrough');
+  //   newActiveFormat.justifyLeft = document.queryCommandState('justifyLeft');
+  //   newActiveFormat.justifyCenter = document.queryCommandState('justifyCenter');
+  //   newActiveFormat.justifyRight = document.queryCommandState('justifyRight');
+  //   newActiveFormat.justifyFull = document.queryCommandState('justifyFull');
+  //   newActiveFormat.insertUnorderedList = document.queryCommandState('insertUnorderedList');
+  //   newActiveFormat.insertOrderedList = document.queryCommandState('insertOrderedList');
+
+  //   setActiveFormats(newActiveFormat);
+  // };
+
+  const detectFormatting = () => {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) {
+      return;
+    }
+  
+    const range = selection.getRangeAt(0);
+    let node = range.startContainer as HTMLElement;
+  
+    // If the node is a text node, get its parent element
+    if (node.nodeType === Node.TEXT_NODE) {
+      node = node.parentElement!;
+    }
+  
+    // Initialize the new active formats object
+    const newActiveFormat: { [key: string]: boolean } = {};
+  
+    // Helper function to check if an ancestor node matches a tag name
+    const hasAncestor = (node: Node | null, tagName: string): boolean => {
+      while (node && node !== document.body) {
+        if ((node as HTMLElement).tagName === tagName) {
+          return true;
+        }
+        node = node.parentNode;
+      }
+      return false;
+    };
+  
+    // Check for bold formatting
+    newActiveFormat.bold = hasAncestor(node, 'B') || hasAncestor(node, 'STRONG') ||
+      window.getComputedStyle(node).fontWeight === '700';
+  
+    // Check for italic formatting
+    newActiveFormat.italic = hasAncestor(node, 'I') || hasAncestor(node, 'EM') ||
+      window.getComputedStyle(node).fontStyle === 'italic';
+  
+    // Check for underline formatting
+    newActiveFormat.underline = hasAncestor(node, 'U') ||
+      window.getComputedStyle(node).textDecorationLine.includes('underline');
+  
+    // Check for strikethrough formatting
+    newActiveFormat.strikeThrough = hasAncestor(node, 'S') || hasAncestor(node, 'STRIKE') ||
+      window.getComputedStyle(node).textDecorationLine.includes('line-through');
+  
+    // Check for text alignment
+    const textAlign = window.getComputedStyle(node).textAlign;
+    newActiveFormat.justifyLeft = textAlign === 'left';
+    newActiveFormat.justifyCenter = textAlign === 'center';
+    newActiveFormat.justifyRight = textAlign === 'right';
+    newActiveFormat.justifyFull = textAlign === 'justify';
+  
+    // Check for unordered list
+    newActiveFormat.insertUnorderedList = hasAncestor(node, 'UL');
+  
+    // Check for ordered list
+    newActiveFormat.insertOrderedList = hasAncestor(node, 'OL');
+  
     setActiveFormats(newActiveFormat);
   };
+  
 
   useEffect(() => {
-    document.addEventListener('selectionchange', detectFormatting);
+    const debounceDetectFormatting = debounce(detectFormatting, 100)
+    document.addEventListener('selectionchange', debounceDetectFormatting);
     return () =>
-      document.removeEventListener('selectionchange', detectFormatting);
+      document.removeEventListener('selectionchange', debounceDetectFormatting);
   }, []);
 
 
@@ -122,10 +196,10 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
 
       {/* Text Formatting */}
       <div id="text-formatting-group" className="toolbar-group">
-        <button onClick={() => onCommand('bold')} style={{ fontWeight: '700', color: activeFormats?.bold ? 'green' : 'black' }}>B</button>
-        <button onClick={() => onCommand('italic')} style={{ fontStyle: 'italic', color: activeFormats?.italic ? 'green' : 'black'}}>I</button>
-        <button onClick={() => onCommand('underline')} style={{ textDecoration: 'underline', color: activeFormats?.underline ? 'green' : 'black' }}>U</button>
-        <button onClick={() => onCommand('strikeThrough')} style={{ textDecoration: 'line-through', color: activeFormats?.strikeThrough ? 'green' : 'black' }}>abc</button>
+        <button onClick={() => onCommand('bold')} style={{ fontWeight: '700' }} className={activeFormats.bold ? 'active' : ''} aria-label='Bold'>B</button>
+        <button onClick={() => onCommand('italic')} className={activeFormats.italic ? 'active' : ''} style={{ fontStyle: 'italic' }} aria-label='Italic'>I</button>
+        <button onClick={() => onCommand('underline')} className={activeFormats.underline ? 'active' : ''} style={{ textDecoration: 'underline' }} aria-label='Underline'>U</button>
+        <button onClick={() => onCommand('strikeThrough')} className={activeFormats.strikeThrough ? 'active' : ''} style={{ textDecoration: 'line-through' }}>abc</button>
         <button onClick={() => onCommand('removeFormat')} title='Clear Formatting'><ClearFormatIcon className='button-icon' /></button>
       </div>
 
@@ -137,18 +211,16 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
 
       {/* Text Alignment */}
       <div id="alignment-group" className="toolbar-group">
-        <button onClick={() => onCommand('justifyLeft')}><AlignLeftIcon className="button-icon" /></button>
-        <button onClick={() => onCommand('justifyCenter')}><AlignCenterIcon className="button-icon" /></button>
-        <button onClick={() => onCommand('justifyRight')}><AlignRightIcon className="button-icon" /></button>
-        <button onClick={() => onCommand('justifyFull')}><AlignJustifyIcon className="button-icon" /></button>
+        <button onClick={() => onCommand('justifyLeft')} className={activeFormats.justifyLeft ? 'active' : ''}><AlignLeftIcon className="button-icon" /></button>
+        <button onClick={() => onCommand('justifyCenter')} className={activeFormats.justifyCenter ? 'active' : ''}><AlignCenterIcon className="button-icon" /></button>
+        <button onClick={() => onCommand('justifyRight')} className={activeFormats.justifyRight ? 'active' : ''}><AlignRightIcon className="button-icon" /></button>
+        <button onClick={() => onCommand('justifyFull')} className={activeFormats.justifyFull ? 'active' : ''}><AlignJustifyIcon className="button-icon" /></button>
       </div>
 
       {/* List Options */}
       <div id="list-group" className="toolbar-group">
-        <button onClick={() => onCommand('insertUnorderedList')}><ListBulletIcon className="button-icon" /></button>
-        <button onClick={() => onCommand('insertOrderedList')}><ListNumberIcon className="button-icon" /></button>
-        {/* <button onClick={() => onCommand('insertHTML', '<ul><li>Checklist</li></ul>')}><ListCheckIcon className="button-icon" /></button> */}
-        {/* <button onClick={() => addChecklist()}><ListCheckIcon className="button-icon" /></button> */}
+        <button onClick={() => onCommand('insertUnorderedList')} className={activeFormats.insertUnorderedList ? 'active' : ''}><ListBulletIcon className="button-icon" /></button>
+        <button onClick={() => onCommand('insertOrderedList')} className={activeFormats.insertOrderedList ? 'active' : ''}><ListNumberIcon className="button-icon" /></button>
       </div>
 
       <div id="table" className="toolbar-group">
@@ -207,7 +279,7 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
         </div>
       </div>
 
-     {/* Undo and Redo */}
+      {/* Undo and Redo */}
       <div id="undo-redo-group" className="toolbar-group">
         <button onClick={() => onCommand('undo')}><UndoIcon className="button-icon" /></button>
         <button onClick={() => onCommand('redo')}><RedoIcon className="button-icon" /></button>

@@ -70,11 +70,10 @@
 #toolbar .button-icon {
   width: 14px;
   height: 14px;
-  fill: #1a1a1a;
+  fill: currentColor;
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
 
 #toolbar button:hover,
@@ -82,6 +81,12 @@
 #toolbar input[type="color"]:hover {
   background-color: #e0e0e0;
   border-color: #bbb;
+}
+
+#toolbar button.active {
+  font-weight: 700;
+  color: #2977ff;
+  background: #f0f7ff;
 }
 
 #toolbar select {
@@ -197,12 +202,3 @@
   background-color: #f1f1f1;
   font-weight: bold;
 }
-
-/* #editor-container #content-area .table-cell-selected {
-  background-color: #d0e8ff !important;
-}
-
-#editor-container #content-area .collapsed-cell {
-  display: none;
-} */
-
