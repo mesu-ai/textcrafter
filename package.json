@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "npx tsc && echo \"TextCrafter Built successfully!\"",
+    "build": "npx tsc && echo \"TextCrafter Build successfully!\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
