@@ -1,9 +1,9 @@
 
 # Ignore node modules
-node_modules/
+/node_modules
 
 # Ignore distribution and build files
-dist/
+/dist
 
 # Ignore lock files (choose one depending on whether you're using npm or yarn)
 package-lock.json
