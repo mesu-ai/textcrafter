@@ -59,7 +59,7 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
   const createTableHTML = (rows: number, cols: number) => {
     console.log({ rows, cols });
 
-    let tableHTML = '<table class="custom-table" border="1">';
+    let tableHTML = '<table id="editor-custom-table" class="custom-table" border="1">';
     for (let i = 0; i < rows; i++) {
       tableHTML += '<tr>';
       for (let j = 0; j < cols; j++) {
