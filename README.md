@@ -1,6 +1,6 @@
 
-```markdown
-# React Text Editor
+
+# TextCrfter
 
 A flexible and customizable text editor built for React, supporting both rich text formatting and HTML elements like tables, lists, links, and images. Ideal for use in React and Next.js (App and Page) applications. Compatible with both JavaScript and TypeScript projects. Easily installable via npm or Yarn.
 
@@ -20,24 +20,31 @@ A flexible and customizable text editor built for React, supporting both rich te
 
 ### Using npm:
 ```bash
-npm install react-text-editor-package
+npm install textcrafter
 ```
 
 ### Using Yarn:
 ```bash
-yarn add react-text-editor-package
+yarn add textcrafter
 ```
 
 ## Usage
 
-### Basic Setup
+### Basic Setup for React
 
-1. Import the `Editor` component in your React component.
+1. Import the `Style` of the Editor and Toolbar in your App component.
+
+```tsx
+import 'textcrafter/dist/styles.min.css';
+
+```
+
+
+2. Import the `Editor` component in your React component.
 
 ```tsx
 import React, { useState } from 'react';
-import { Editor, Toolbar } from 'react-text-editor-package';
-//need css file:
+import { Editor } from 'textcrafter';
 
 const MyEditor = () => {
   const [editorContent, setEditorContent] = useState('<p>Start editing...</p>');
@@ -61,10 +68,19 @@ export default MyEditor;
 If you're using Next.js, the editor can be used both in the App and Page directories.
 
 For App (with React Server Components in Next 13+):
+
+1. Import the `Style` of the Editor and Toolbar in your RootLayout.
+
 ```tsx
-// app/page.tsx or app/somepage.tsx
+import 'textcrafter/dist/styles.min.css';
+
+```
+
+2. Import the `Editor` component in your page component
+
+```tsx
 import React, { useState } from 'react';
-import { Editor, Toolbar } from 'react-text-editor-package';
+import { Editor } from 'textcrafter';
 
 const PageComponent = () => {
   const [editorContent, setEditorContent] = useState('<p>Edit here...</p>');
@@ -84,10 +100,20 @@ export default PageComponent;
 ```
 
 For Page (traditional routing in Next.js):
+
+1. Import the `Style` of the Editor and Toolbar in your _app component.
+
+```tsx
+import 'textcrafter/dist/styles.min.css';
+
+```
+
+2. Import the `Editor` component in your page component
+
 ```tsx
 // pages/index.tsx or pages/somepage.tsx
 import React, { useState } from 'react';
-import { Editor, Toolbar } from 'react-text-editor-package';
+import { Editor } from 'textcrafter';
 
 const HomePage = () => {
   const [editorContent, setEditorContent] = useState('<p>Edit here...</p>');
@@ -98,7 +124,6 @@ const HomePage = () => {
 
   return (
     <div>
-      <Toolbar onCommand={handleEditorChange} />
       <Editor value={editorContent} onChange={handleEditorChange} />
     </div>
   );
@@ -124,20 +149,6 @@ You can customize the editor's appearance by modifying the included CSS styles o
 
 ### Example Styling:
 
-```css
-#editor-container.editor-canvas {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-family: Arial, sans-serif;
-}
-
-.toolbar button.active {
-  background-color: #f0f7ff;
-  color: #2977ff;
-}
-```
-
 ## Contributing
 
 Contributions are welcome! Please fork the repository, make your changes, and submit a pull request.
@@ -145,5 +156,3 @@ Contributions are welcome! Please fork the repository, make your changes, and su
 ## License
 
 This package is licensed under the MIT License.
-
-```
