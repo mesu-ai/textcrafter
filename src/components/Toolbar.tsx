@@ -23,6 +23,11 @@ interface TableSelectorProps {
   onTableCreate: (rows: number, cols: number) => void
 }
 
+const tableStyle = 'width: 100%; border-collapse: collapse; margin: 10px 0;';
+const cellStyle = 'padding: 8px;text-align: center;border: 1px solid #ddd;min-width: 80px;';
+const headerCellStyle = `${cellStyle}background-color: #f1f1f1;font-weight: bold;`;
+
+
 const TableSelector: FC<TableSelectorProps> = ({ onTableCreate }) => {
   const [hoveredRow, setHoveredRow] = useState(0);
   const [hoveredCol, setHoveredCol] = useState(0);
@@ -56,18 +61,41 @@ const TableSelector: FC<TableSelectorProps> = ({ onTableCreate }) => {
 const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
   const [activeFormats, setActiveFormats] = useState<{ [key: string]: boolean }>({});
 
-  const createTableHTML = (rows: number, cols: number) => {
-    console.log({ rows, cols });
+  // const createTableHTML = (rows: number, cols: number) => {
+  //   console.log({ rows, cols });
 
-    let tableHTML = '<table id="editor-custom-table" class="custom-table" border="1">';
-    for (let i = 0; i < rows; i++) {
+  //   let tableHTML = '<table id="editor-custom-table" class="custom-table" border="1">';
+  //   for (let i = 0; i < rows; i++) {
+  //     tableHTML += '<tr>';
+  //     for (let j = 0; j < cols; j++) {
+  //       tableHTML += `<td class="table-cell">Cell</td>`;
+  //     }
+  //     tableHTML += '</tr>';
+  //   }
+  //   tableHTML += '</table>';
+  //   return tableHTML;
+  // };
+
+  const createTableHTML = (rows: number, cols: number) => {
+    
+    let tableHTML = `<div style="overflow-x: auto; max-width: 100%;"><table style="${tableStyle}"><thead><tr>`;
+  
+    for (let j = 0; j < cols; j++) {
+      tableHTML += `<th style="${headerCellStyle}">Header ${j + 1}</th>`;
+    }
+  
+    tableHTML += `</tr></thead><tbody>`;
+  
+    for (let i = 0; i < rows - 1; i++) {
       tableHTML += '<tr>';
       for (let j = 0; j < cols; j++) {
-        tableHTML += `<td class="table-cell">Cell</td>`;
+        tableHTML += `<td style="${cellStyle}">Cell ${i + 1}-${j + 1}</td>`;
       }
       tableHTML += '</tr>';
     }
-    tableHTML += '</table>';
+  
+    tableHTML += `</tbody></table></div>`;
+  
     return tableHTML;
   };
 
