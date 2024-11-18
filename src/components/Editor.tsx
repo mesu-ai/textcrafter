@@ -2,7 +2,7 @@ import React, { DragEvent, FC, useEffect, useRef } from 'react';
 import Toolbar from './Toolbar';
 import '../styles/editor.css';
 
-interface EditorProps {
+export interface EditorProps {
   value: string;
   onChange: (content: string) => void;
 }

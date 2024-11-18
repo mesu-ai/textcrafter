@@ -15,7 +15,7 @@ import TableIcon from '../assets/icons/TableIcon';
 import ClearFormatIcon from '../assets/icons/ClearFormatIcon';
 import { addColumn, addRow, removeColumn, removeRow } from '../utils/commands';
 
-interface ToolbarProps {
+export interface ToolbarProps {
   onCommand: (command: string, value?: string) => void;
 }
 
