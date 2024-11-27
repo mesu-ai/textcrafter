@@ -9,7 +9,7 @@ export default {
   output: [
     {
       file: 'dist/index.js',
-      format: 'umd',
+      format: 'esm',
       name: 'TextCrafter',
       exports: 'named', // Ensure named exports are preserved
       sourcemap: devMode ? 'inline' : false,
