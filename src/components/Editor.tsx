@@ -1,4 +1,4 @@
-import React, { DragEvent, FC, useEffect, useRef } from 'react';
+import React, { DragEvent, FC, FormEvent, useEffect, useRef } from 'react';
 import Toolbar from './Toolbar';
 import '../styles/editor.css';
 
@@ -12,24 +12,27 @@ const Editor: FC<EditorProps> = ({ value, onChange }) => {
 
   const applyCommand = (command: string, value?: string) => {
     const editor = editorRef.current;
-
     if (!editor) return;
 
-    if (command === 'createLink' && value) {
-      document.execCommand('createLink', false, value);
-    } else if (command === 'insertImage' && value) {
-      document.execCommand('insertImage', false, value);
-    } else if (command === 'formatBlock' && value) {
-      document.execCommand('formatBlock', false, value);
-    } else if (command === 'insertHTML' && value) {
-      editor.innerHTML += value;
-    } else {
-      document.execCommand(command, false, value || '');
-    }
-    editor.focus(); // Keep focus on the editor
-
-    if (editorRef.current) {
-      onChange(editorRef.current.innerHTML);
+    try {
+      if (command === 'createLink' && value) {
+        document.execCommand('createLink', false, value);
+      } else if (command === 'insertImage' && value) {
+        document.execCommand('insertImage', false, value);
+      } else if (command === 'formatBlock' && value) {
+        document.execCommand('formatBlock', false, value);
+      } else if (command === 'insertHTML' && value) {
+        editor.innerHTML += value;
+      } else {
+        document.execCommand(command, false, value || '');
+      }
+      editor.focus(); // Keep focus on the editor
+  
+      if (editorRef.current) {
+        onChange(editorRef.current.innerHTML);
+      }
+    } catch (error) {
+      console.error('Error applying command:', error);
     }
   };
 
@@ -49,11 +52,22 @@ const Editor: FC<EditorProps> = ({ value, onChange }) => {
     });
   };
 
-  const handleInput = () => {
+  const handleInput = (e:FormEvent<HTMLDivElement>) => {
+    e.preventDefault(); 
+
     if (editorRef.current) {
       onChange(editorRef.current.innerHTML);
     }
   };
+
+// Container level click handler to prevent form submission
+const handleContainerClick = (e: React.MouseEvent) => {
+  const target = e.target as HTMLElement;
+  if (target.closest('.toolbar')) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+};
 
   useEffect(() => {
     if (editorRef.current && editorRef.current.innerHTML !== value) {
@@ -62,7 +76,7 @@ const Editor: FC<EditorProps> = ({ value, onChange }) => {
   }, [value]);
 
   return (
-    <div id="editor-container" className='editor-canvas'>
+    <div id="editor-container" className='editor-canvas' onClick={handleContainerClick}>
       <Toolbar onCommand={applyCommand} />
       <div
         id="content-area"

@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import '../styles/editor.css';
 import AlignLeftIcon from '../assets/icons/AlignLeftIcon';
 import AlignCenterIcon from '../assets/icons/AlignCenterIcon';
@@ -46,7 +46,9 @@ const TableSelector: FC<TableSelectorProps> = ({ onTableCreate }) => {
       {[...new Array(8)].map((_, row) => (
         <div key={`row-${row}`} className='table-selector-row'>
           {[...new Array(8)].map((_, col) => (
-            <div key={`col-${col}`} className={`table-selector-cell ${row <= hoveredRow && col <= hoveredCol ? 'highlighted' : ''}`} onMouseEnter={() => handleSellHover(row, col)} onClick={handleCellClick} />
+            <div key={`col-${col}`} className={`table-selector-cell ${row <= hoveredRow && col <= hoveredCol ? 'highlighted' : ''}`} onMouseEnter={() => handleSellHover(row, col)} onClick={handleCellClick}
+            role='button' tabIndex={0}
+            />
           ))}
         </div>
       ))}
@@ -60,21 +62,6 @@ const TableSelector: FC<TableSelectorProps> = ({ onTableCreate }) => {
 
 const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
   const [activeFormats, setActiveFormats] = useState<{ [key: string]: boolean }>({});
-
-  // const createTableHTML = (rows: number, cols: number) => {
-  //   console.log({ rows, cols });
-
-  //   let tableHTML = '<table id="editor-custom-table" class="custom-table" border="1">';
-  //   for (let i = 0; i < rows; i++) {
-  //     tableHTML += '<tr>';
-  //     for (let j = 0; j < cols; j++) {
-  //       tableHTML += `<td class="table-cell">Cell</td>`;
-  //     }
-  //     tableHTML += '</tr>';
-  //   }
-  //   tableHTML += '</table>';
-  //   return tableHTML;
-  // };
 
   const createTableHTML = (rows: number, cols: number) => {
     
@@ -174,6 +161,10 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
 
   useEffect(() => {
     const debounceDetectFormatting = debounce(detectFormatting, 100)
+    // const debounceDetectFormatting = useCallback(
+    //   debounce(detectFormatting, 100),
+    //   [detectFormatting]
+    // );
     document.addEventListener('selectionchange', debounceDetectFormatting);
     return () =>
       document.removeEventListener('selectionchange', debounceDetectFormatting);
@@ -182,10 +173,11 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
 
 
   return (
-    <div id="toolbar" className="toolbar">
+    <div id="toolbar" className="toolbar" onClick={(e) => e.stopPropagation()}
+    onMouseDown={(e) => e.preventDefault()} >
       {/* Font Family and Size */}
       <div id="font-group" className="toolbar-group">
-        <select onChange={(e) => onCommand('fontName', e.target.value)}>
+      <select onChange={(e) => { e.preventDefault(); onCommand('fontName', e.target.value); }}>
           <option value="">Font Family</option>
           <option value="Arial">Arial</option>
           <option value="Courier New">Courier New</option>
@@ -194,7 +186,7 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
           <option value="Times New Roman">T New Roman</option>
           <option value="Verdana">Verdana</option>
         </select>
-        <select onChange={(e) => onCommand('fontSize', e.target.value)}>
+        <select onChange={(e) => { e.preventDefault(); onCommand('fontSize', e.target.value); }}>
           <option value="">Font Size</option>
           <option value="1">Tiny</option>
           <option value="2">Small</option>
@@ -217,13 +209,13 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
 
       {/* Text Color and Background Color */}
       <div id="color-group" className="toolbar-group">
-        <input type="color" onChange={(e) => onCommand('foreColor', e.target.value)} title="Text Color" />
-        <input type="color" onChange={(e) => onCommand('backColor', e.target.value)} title="Background Color" />
+        <input type="color" onChange={(e) =>{ e.preventDefault();  e.stopPropagation(); onCommand('foreColor', e.target.value);  }} onMouseDown={(e) => e.preventDefault()} title="Text Color" />
+        <input type="color" onChange={(e) => { e.preventDefault(); e.stopPropagation(); onCommand('backColor', e.target.value); }} onMouseDown={(e) => e.preventDefault()} title="Background Color" />
       </div>
 
       {/* Text Alignment */}
       <div id="alignment-group" className="toolbar-group">
-        <button type="button" onClick={() => onCommand('justifyLeft')} className={activeFormats.justifyLeft ? 'active' : ''}><AlignLeftIcon className="button-icon" /></button>
+        <button type="button" onClick={(e) => { e.preventDefault(); onCommand('justifyLeft')}} className={activeFormats.justifyLeft ? 'active' : ''}><AlignLeftIcon className="button-icon" /></button>
         <button type="button" onClick={() => onCommand('justifyCenter')} className={activeFormats.justifyCenter ? 'active' : ''}><AlignCenterIcon className="button-icon" /></button>
         <button type="button" onClick={() => onCommand('justifyRight')} className={activeFormats.justifyRight ? 'active' : ''}><AlignRightIcon className="button-icon" /></button>
         <button type="button" onClick={() => onCommand('justifyFull')} className={activeFormats.justifyFull ? 'active' : ''}><AlignJustifyIcon className="button-icon" /></button>
@@ -261,7 +253,7 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
 
       {/* Headings and Block Styles */}
       <div id="block-style-group" className="toolbar-group">
-        <select onChange={(e) => onCommand('formatBlock', e.target.value)}>
+        <select onChange={(e) => { e.preventDefault(); onCommand('formatBlock', e.target.value); }}>
           <option value="p">Normal Text</option>
           <option value="h1">Heading 1</option>
           <option value="h2">Heading 2</option>
@@ -276,15 +268,15 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
         <div className="symbol-selector-container">
           <div className='symbol-selector-show'>
             <div className='symbol-option-button'>
-              <button type="button" onClick={() => onCommand('insertHTML', '&copy;')}>©</button>
-              <button type="button" onClick={() => onCommand('insertHTML', '&euro;')}>€</button>
-              <button type="button" onClick={() => onCommand('insertHTML', '&trade;')}>™</button>
-              <button type="button" onClick={() => onCommand('insertHTML', '&#10077;')}>❝</button>
-              <button type="button" onClick={() => onCommand('insertHTML', '&#10078;')}>❞</button>
-              <button type="button" onClick={() => onCommand('insertHTML', '&#10003;')}>✓</button>
-              <button type="button" onClick={() => onCommand('insertHTML', '😊')}>😊</button>
-              <button type="button" onClick={() => onCommand('insertHTML', '👍')}>👍</button>
-              <button type="button" onClick={() => onCommand('insertHTML', '🎉')}>🎉</button>
+              <button type="button" onClick={(e) => { e.preventDefault(); onCommand('insertHTML', '&copy;')}}>©</button>
+              <button type="button" onClick={(e) => { e.preventDefault(); onCommand('insertHTML', '&euro;')}}>€</button>
+              <button type="button" onClick={(e) => { e.preventDefault(); onCommand('insertHTML', '&trade;')}}>™</button>
+              <button type="button" onClick={(e) => { e.preventDefault(); onCommand('insertHTML', '&#10077;')}}>❝</button>
+              <button type="button" onClick={(e) => { e.preventDefault(); onCommand('insertHTML', '&#10078;')}}>❞</button>
+              <button type="button" onClick={(e) => { e.preventDefault(); onCommand('insertHTML', '&#10003;')}}>✓</button>
+              <button type="button" onClick={(e) => { e.preventDefault(); onCommand('insertHTML', '😊')}}>😊</button>
+              <button type="button" onClick={(e) => { e.preventDefault(); onCommand('insertHTML', '👍')}}>👍</button>
+              <button type="button" onClick={(e) => { e.preventDefault(); onCommand('insertHTML', '🎉')}}>🎉</button>
             </div>
           </div>
 
