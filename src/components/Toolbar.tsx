@@ -111,22 +111,6 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
     }
   }
 
-  // const detectFormatting = () => {
-  //   const newActiveFormat: { [key: string]: boolean } = {};
-  //   newActiveFormat.bold = document.queryCommandState('bold');
-  //   newActiveFormat.italic = document.queryCommandState('italic');
-  //   newActiveFormat.underline = document.queryCommandState('underline');
-  //   newActiveFormat.strikeThrough = document.queryCommandState('strikeThrough');
-  //   newActiveFormat.justifyLeft = document.queryCommandState('justifyLeft');
-  //   newActiveFormat.justifyCenter = document.queryCommandState('justifyCenter');
-  //   newActiveFormat.justifyRight = document.queryCommandState('justifyRight');
-  //   newActiveFormat.justifyFull = document.queryCommandState('justifyFull');
-  //   newActiveFormat.insertUnorderedList = document.queryCommandState('insertUnorderedList');
-  //   newActiveFormat.insertOrderedList = document.queryCommandState('insertOrderedList');
-
-  //   setActiveFormats(newActiveFormat);
-  // };
-
   const detectFormatting = () => {
     const selection = window.getSelection();
     if (!selection || selection.rangeCount === 0) {
@@ -224,11 +208,11 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
 
       {/* Text Formatting */}
       <div id="text-formatting-group" className="toolbar-group">
-        <button onClick={() => onCommand('bold')} style={{ fontWeight: '700' }} className={activeFormats.bold ? 'active' : ''} aria-label='Bold'>B</button>
-        <button onClick={() => onCommand('italic')} className={activeFormats.italic ? 'active' : ''} style={{ fontStyle: 'italic' }} aria-label='Italic'>I</button>
-        <button onClick={() => onCommand('underline')} className={activeFormats.underline ? 'active' : ''} style={{ textDecoration: 'underline' }} aria-label='Underline'>U</button>
-        <button onClick={() => onCommand('strikeThrough')} className={activeFormats.strikeThrough ? 'active' : ''} style={{ textDecoration: 'line-through' }}>abc</button>
-        <button onClick={() => onCommand('removeFormat')} title='Clear Formatting'><ClearFormatIcon className='button-icon' /></button>
+        <button type="button" onClick={() => onCommand('bold')} style={{ fontWeight: '700' }} className={activeFormats.bold ? 'active' : ''} aria-label='Bold'>B</button>
+        <button type="button" onClick={() => onCommand('italic')} className={activeFormats.italic ? 'active' : ''} style={{ fontStyle: 'italic' }} aria-label='Italic'>I</button>
+        <button type="button" onClick={() => onCommand('underline')} className={activeFormats.underline ? 'active' : ''} style={{ textDecoration: 'underline' }} aria-label='Underline'>U</button>
+        <button type="button" onClick={() => onCommand('strikeThrough')} className={activeFormats.strikeThrough ? 'active' : ''} style={{ textDecoration: 'line-through' }}>abc</button>
+        <button type="button" onClick={() => onCommand('removeFormat')} title='Clear Formatting'><ClearFormatIcon className='button-icon' /></button>
       </div>
 
       {/* Text Color and Background Color */}
@@ -239,29 +223,29 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
 
       {/* Text Alignment */}
       <div id="alignment-group" className="toolbar-group">
-        <button onClick={() => onCommand('justifyLeft')} className={activeFormats.justifyLeft ? 'active' : ''}><AlignLeftIcon className="button-icon" /></button>
-        <button onClick={() => onCommand('justifyCenter')} className={activeFormats.justifyCenter ? 'active' : ''}><AlignCenterIcon className="button-icon" /></button>
-        <button onClick={() => onCommand('justifyRight')} className={activeFormats.justifyRight ? 'active' : ''}><AlignRightIcon className="button-icon" /></button>
-        <button onClick={() => onCommand('justifyFull')} className={activeFormats.justifyFull ? 'active' : ''}><AlignJustifyIcon className="button-icon" /></button>
+        <button type="button" onClick={() => onCommand('justifyLeft')} className={activeFormats.justifyLeft ? 'active' : ''}><AlignLeftIcon className="button-icon" /></button>
+        <button type="button" onClick={() => onCommand('justifyCenter')} className={activeFormats.justifyCenter ? 'active' : ''}><AlignCenterIcon className="button-icon" /></button>
+        <button type="button" onClick={() => onCommand('justifyRight')} className={activeFormats.justifyRight ? 'active' : ''}><AlignRightIcon className="button-icon" /></button>
+        <button type="button" onClick={() => onCommand('justifyFull')} className={activeFormats.justifyFull ? 'active' : ''}><AlignJustifyIcon className="button-icon" /></button>
       </div>
 
       {/* List Options */}
       <div id="list-group" className="toolbar-group">
-        <button onClick={() => onCommand('insertUnorderedList')} className={activeFormats.insertUnorderedList ? 'active' : ''}><ListBulletIcon className="button-icon" /></button>
-        <button onClick={() => onCommand('insertOrderedList')} className={activeFormats.insertOrderedList ? 'active' : ''}><ListNumberIcon className="button-icon" /></button>
+        <button type="button" onClick={() => onCommand('insertUnorderedList')} className={activeFormats.insertUnorderedList ? 'active' : ''}><ListBulletIcon className="button-icon" /></button>
+        <button type="button" onClick={() => onCommand('insertOrderedList')} className={activeFormats.insertOrderedList ? 'active' : ''}><ListNumberIcon className="button-icon" /></button>
       </div>
 
       <div id="table" className="toolbar-group">
-        <button className="table-selector-button"><TableIcon className="button-icon" /></button>
+        <button type="button" className="table-selector-button"><TableIcon className="button-icon" /></button>
         <div className="table-selector-container">
           <div className='table-selector-show'>
             <TableSelector onTableCreate={handleTableCreate} />
             <div className='table-option-button'>
-              <button onClick={() => addRow()} value="addRow">Add Row</button>
-              <button onClick={() => removeRow()} value="removeRow">Remove Row</button>
-              <button onClick={() => addColumn()} value="addColumn">Add Column</button>
-              <button onClick={() => removeColumn()} value="removeColumn">Remove Column</button>
-              <button onClick={() => onCommand('insertHorizontalRule')} value="horizontalLine">Horizontal Line</button>
+              <button type="button" onClick={() => addRow()} value="addRow">Add Row</button>
+              <button type="button" onClick={() => removeRow()} value="removeRow">Remove Row</button>
+              <button type="button" onClick={() => addColumn()} value="addColumn">Add Column</button>
+              <button type="button" onClick={() => removeColumn()} value="removeColumn">Remove Column</button>
+              <button type="button" onClick={() => onCommand('insertHorizontalRule')} value="horizontalLine">Horizontal Line</button>
             </div>
           </div>
 
@@ -270,9 +254,9 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
 
       {/* Link and Image Insertion */}
       <div id="link-image-group" className="toolbar-group">
-        <button onClick={() => onCommand('createLink', prompt('Enter the URL:', 'https://') || '')}><LinkAddIcon className="button-icon" /></button>
-        <button onClick={() => onCommand('unlink')}><LinkRemoveIcon className="button-icon" /></button>
-        <button onClick={() => onCommand('insertImage', prompt('Enter the image URL:', 'https://') || '')}><InsertImageIcon className="button-icon" /></button>
+        <button type="button" onClick={() => onCommand('createLink', prompt('Enter the URL:', 'https://') || '')}><LinkAddIcon className="button-icon" /></button>
+        <button type="button" onClick={() => onCommand('unlink')}><LinkRemoveIcon className="button-icon" /></button>
+        <button type="button" onClick={() => onCommand('insertImage', prompt('Enter the image URL:', 'https://') || '')}><InsertImageIcon className="button-icon" /></button>
       </div>
 
       {/* Headings and Block Styles */}
@@ -288,19 +272,19 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
       </div>
 
       <div id="symbol" className="toolbar-group">
-        <button className="symbol-selector-button">Symbols</button>
+        <button type="button" className="symbol-selector-button">Symbols</button>
         <div className="symbol-selector-container">
           <div className='symbol-selector-show'>
             <div className='symbol-option-button'>
-              <button onClick={() => onCommand('insertHTML', '&copy;')}>©</button>
-              <button onClick={() => onCommand('insertHTML', '&euro;')}>€</button>
-              <button onClick={() => onCommand('insertHTML', '&trade;')}>™</button>
-              <button onClick={() => onCommand('insertHTML', '&#10077;')}>❝</button>
-              <button onClick={() => onCommand('insertHTML', '&#10078;')}>❞</button>
-              <button onClick={() => onCommand('insertHTML', '&#10003;')}>✓</button>
-              <button onClick={() => onCommand('insertHTML', '😊')}>😊</button>
-              <button onClick={() => onCommand('insertHTML', '👍')}>👍</button>
-              <button onClick={() => onCommand('insertHTML', '🎉')}>🎉</button>
+              <button type="button" onClick={() => onCommand('insertHTML', '&copy;')}>©</button>
+              <button type="button" onClick={() => onCommand('insertHTML', '&euro;')}>€</button>
+              <button type="button" onClick={() => onCommand('insertHTML', '&trade;')}>™</button>
+              <button type="button" onClick={() => onCommand('insertHTML', '&#10077;')}>❝</button>
+              <button type="button" onClick={() => onCommand('insertHTML', '&#10078;')}>❞</button>
+              <button type="button" onClick={() => onCommand('insertHTML', '&#10003;')}>✓</button>
+              <button type="button" onClick={() => onCommand('insertHTML', '😊')}>😊</button>
+              <button type="button" onClick={() => onCommand('insertHTML', '👍')}>👍</button>
+              <button type="button" onClick={() => onCommand('insertHTML', '🎉')}>🎉</button>
             </div>
           </div>
 
@@ -309,8 +293,8 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
 
       {/* Undo and Redo */}
       <div id="undo-redo-group" className="toolbar-group">
-        <button onClick={() => onCommand('undo')}><UndoIcon className="button-icon" /></button>
-        <button onClick={() => onCommand('redo')}><RedoIcon className="button-icon" /></button>
+        <button type="button" onClick={() => onCommand('undo')}><UndoIcon className="button-icon" /></button>
+        <button type="button" onClick={() => onCommand('redo')}><RedoIcon className="button-icon" /></button>
       </div>
 
     </div>

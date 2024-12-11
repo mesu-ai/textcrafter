@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.0-beta.4] - 2024-12-11
+
+### Added
+- **Performance Optimization**: Improve toolbar selection and realtime performance improve. 
+
+### Changed
+- **Toolbar Selection**: Updated toolbar button selection and fixing submit and click option.
+
 ## [1.0.0-beta.2] - 2024-11-12
 
 ### Added
