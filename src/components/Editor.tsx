@@ -69,14 +69,19 @@ const handleHTMLInsertion = (editor: HTMLElement, value?: string) => {
 };
 
 const handleListInsertion = (command: string, listStyleType: string) => {
-    document.execCommand(command);
-    const selection = window.getSelection();
-    const range = selection?.getRangeAt(0);
-    const parentElement = range?.commonAncestorContainer.parentElement;
+  document.execCommand(command);
+  const selection = window.getSelection();
+  const range = selection?.getRangeAt(0);
 
-    if (parentElement && (parentElement.tagName === 'UL' || parentElement.tagName === 'OL')) {
-        parentElement.setAttribute('style', `list-style-position: inside; list-style-type: ${listStyleType};`);
-    }
+  // const commonAncestorContainer = range?.commonAncestorContainer;
+  let listElement = range && range?.commonAncestorContainer as HTMLElement;
+  while (listElement && !(listElement.tagName === 'UL' || listElement.tagName === 'OL')) {
+      listElement = listElement.parentElement!;
+  }
+
+  if (listElement && (listElement.tagName === 'UL' || listElement.tagName === 'OL')) {
+    listElement.setAttribute('style', `list-style-position: inside; list-style-type: ${listStyleType};`);
+}
 };
 
   const handleDrop = (e: DragEvent<HTMLDivElement>) => {
