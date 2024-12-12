@@ -1,6 +1,6 @@
 {
   "name": "textcrafter",
-  "version": "1.0.0-beta.8",
+  "version": "1.0.0-beta.9",
   "type": "module",
   "description": "TextCrafter: A modern, customizable rich text editor for React. Supports rich formatting, media embedding and real-time collaboration. Ideal for content creators.",
   "main": "dist/index.cjs.js",
