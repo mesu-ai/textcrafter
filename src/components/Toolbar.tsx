@@ -15,7 +15,6 @@ import TableIcon from '../assets/icons/TableIcon';
 import ClearFormatIcon from '../assets/icons/ClearFormatIcon';
 import { addColumn, addRow, removeColumn, removeRow } from '../utils/commands';
 
-
 export interface ToolbarProps {
   onCommand: (command: string, value?: string) => void;
 }
@@ -48,7 +47,7 @@ const TableSelector: FC<TableSelectorProps> = ({ onTableCreate }) => {
         <div key={`row-${row}`} className='table-selector-row'>
           {[...new Array(8)].map((_, col) => (
             <div key={`col-${col}`} className={`table-selector-cell ${row <= hoveredRow && col <= hoveredCol ? 'highlighted' : ''}`} onMouseEnter={() => handleSellHover(row, col)} onClick={handleCellClick}
-            role='button' tabIndex={0}
+            // role='button' tabIndex={0}
             />
           ))}
         </div>
@@ -175,7 +174,7 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
 
   return (
     <div id="toolbar" className="toolbar" onClick={(e) => e.stopPropagation()}
-    onMouseDown={(e) => e.preventDefault()} >
+     >
       {/* Font Family and Size */}
       <div id="font-group" className="toolbar-group">
       <select onChange={(e) => { e.preventDefault(); onCommand('fontName', e.target.value); }}>
@@ -216,7 +215,7 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
 
       {/* Text Alignment */}
       <div id="alignment-group" className="toolbar-group">
-        <button type="button" onClick={(e) => { e.preventDefault(); onCommand('justifyLeft')}} className={activeFormats.justifyLeft ? 'active' : ''}><AlignLeftIcon className="button-icon" /></button>
+        <button type="button" onClick={() => onCommand('justifyLeft')} className={activeFormats.justifyLeft ? 'active' : ''}><AlignLeftIcon className="button-icon" /></button>
         <button type="button" onClick={() => onCommand('justifyCenter')} className={activeFormats.justifyCenter ? 'active' : ''}><AlignCenterIcon className="button-icon" /></button>
         <button type="button" onClick={() => onCommand('justifyRight')} className={activeFormats.justifyRight ? 'active' : ''}><AlignRightIcon className="button-icon" /></button>
         <button type="button" onClick={() => onCommand('justifyFull')} className={activeFormats.justifyFull ? 'active' : ''}><AlignJustifyIcon className="button-icon" /></button>
@@ -265,21 +264,20 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
         </select>
       </div>
 
-      {/* Symbols */}
       <div id="symbol" className="toolbar-group">
         <button type="button" className="symbol-selector-button">Symbols</button>
         <div className="symbol-selector-container">
           <div className='symbol-selector-show'>
             <div className='symbol-option-button'>
-              <button type="button" onClick={(e) => { e.preventDefault(); onCommand('insertHTML', '&copy;')}}>©</button>
-              <button type="button" onClick={(e) => { e.preventDefault(); onCommand('insertHTML', '&euro;')}}>€</button>
-              <button type="button" onClick={(e) => { e.preventDefault(); onCommand('insertHTML', '&trade;')}}>™</button>
-              <button type="button" onClick={(e) => { e.preventDefault(); onCommand('insertHTML', '&#10077;')}}>❝</button>
-              <button type="button" onClick={(e) => { e.preventDefault(); onCommand('insertHTML', '&#10078;')}}>❞</button>
-              <button type="button" onClick={(e) => { e.preventDefault(); onCommand('insertHTML', '&#10003;')}}>✓</button>
-              <button type="button" onClick={(e) => { e.preventDefault(); onCommand('insertHTML', '😊')}}>😊</button>
-              <button type="button" onClick={(e) => { e.preventDefault(); onCommand('insertHTML', '👍')}}>👍</button>
-              <button type="button" onClick={(e) => { e.preventDefault(); onCommand('insertHTML', '🎉')}}>🎉</button>
+              <button type="button" onClick={() => onCommand('insertHTML', '&copy;')}>©</button>
+              <button type="button" onClick={() => onCommand('insertHTML', '&euro;')}>€</button>
+              <button type="button" onClick={() => onCommand('insertHTML', '&trade;')}>™</button>
+              <button type="button" onClick={() => onCommand('insertHTML', '&#10077;')}>❝</button>
+              <button type="button" onClick={() => onCommand('insertHTML', '&#10078;')}>❞</button>
+              <button type="button" onClick={() => onCommand('insertHTML', '&#10003;')}>✓</button>
+              <button type="button" onClick={() => onCommand('insertHTML', '😊')}>😊</button>
+              <button type="button" onClick={() => onCommand('insertHTML', '👍')}>👍</button>
+              <button type="button" onClick={() => onCommand('insertHTML', '🎉')}>🎉</button>
             </div>
           </div>
 
