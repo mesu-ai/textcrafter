@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import '../styles/editor.css';
 import AlignLeftIcon from '../assets/icons/AlignLeftIcon';
 import AlignCenterIcon from '../assets/icons/AlignCenterIcon';
@@ -15,6 +15,7 @@ import TableIcon from '../assets/icons/TableIcon';
 import ClearFormatIcon from '../assets/icons/ClearFormatIcon';
 import { addColumn, addRow, removeColumn, removeRow } from '../utils/commands';
 
+
 export interface ToolbarProps {
   onCommand: (command: string, value?: string) => void;
 }
@@ -23,9 +24,9 @@ interface TableSelectorProps {
   onTableCreate: (rows: number, cols: number) => void
 }
 
-const tableStyle = 'width: 100%; border-collapse: collapse; margin: 10px 0;';
-const cellStyle = 'padding: 8px;text-align: center;border: 1px solid #ddd;min-width: 80px;';
-const headerCellStyle = `${cellStyle}background-color: #f1f1f1;font-weight: bold;`;
+const customTable = 'width: 100%; border-collapse: collapse; margin: 10px 0;';
+const tableCell = 'padding: 8px;text-align: center;border: 1px solid #ddd;min-width: 80px;';
+const tableHeaderCell = `${tableCell} background-color: #f1f1f1;font-weight: bold;`;
 
 
 const TableSelector: FC<TableSelectorProps> = ({ onTableCreate }) => {
@@ -65,10 +66,10 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
 
   const createTableHTML = (rows: number, cols: number) => {
     
-    let tableHTML = `<div style="overflow-x: auto; max-width: 100%;"><table style="${tableStyle}"><thead><tr>`;
+    let tableHTML = `<div style="overflow-x: auto; max-width: 100%;"><table id="editor-custom-table" style="${customTable}"><thead><tr>`;
   
     for (let j = 0; j < cols; j++) {
-      tableHTML += `<th style="${headerCellStyle}">Header ${j + 1}</th>`;
+      tableHTML += `<th style="${tableHeaderCell}">Header ${j + 1}</th>`;
     }
   
     tableHTML += `</tr></thead><tbody>`;
@@ -76,7 +77,7 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
     for (let i = 0; i < rows - 1; i++) {
       tableHTML += '<tr>';
       for (let j = 0; j < cols; j++) {
-        tableHTML += `<td style="${cellStyle}">Cell ${i + 1}-${j + 1}</td>`;
+        tableHTML += `<td style="${tableCell}">Cell ${i + 1}-${j + 1}</td>`;
       }
       tableHTML += '</tr>';
     }
@@ -144,7 +145,7 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
   
     // Check for text alignment
     const textAlign = window.getComputedStyle(node).textAlign;
-    newActiveFormat.justifyLeft = textAlign === 'left';
+    newActiveFormat.justifyLeft =  textAlign === 'left';
     newActiveFormat.justifyCenter = textAlign === 'center';
     newActiveFormat.justifyRight = textAlign === 'right';
     newActiveFormat.justifyFull = textAlign === 'justify';
@@ -160,7 +161,7 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
   
 
   useEffect(() => {
-    const debounceDetectFormatting = debounce(detectFormatting, 100)
+    const debounceDetectFormatting = debounce(detectFormatting, 200);
     // const debounceDetectFormatting = useCallback(
     //   debounce(detectFormatting, 100),
     //   [detectFormatting]
@@ -227,6 +228,7 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
         <button type="button" onClick={() => onCommand('insertOrderedList')} className={activeFormats.insertOrderedList ? 'active' : ''}><ListNumberIcon className="button-icon" /></button>
       </div>
 
+       {/* Table Option */}
       <div id="table" className="toolbar-group">
         <button type="button" className="table-selector-button"><TableIcon className="button-icon" /></button>
         <div className="table-selector-container">
@@ -263,6 +265,7 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
         </select>
       </div>
 
+      {/* Symbols */}
       <div id="symbol" className="toolbar-group">
         <button type="button" className="symbol-selector-button">Symbols</button>
         <div className="symbol-selector-container">

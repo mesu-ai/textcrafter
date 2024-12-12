@@ -15,6 +15,7 @@ const Editor: FC<EditorProps> = ({ value, onChange }) => {
     if (!editor) return;
 
     try {
+
       if (command === 'createLink' && value) {
         document.execCommand('createLink', false, value);
       } else if (command === 'insertImage' && value) {
@@ -22,11 +23,34 @@ const Editor: FC<EditorProps> = ({ value, onChange }) => {
       } else if (command === 'formatBlock' && value) {
         document.execCommand('formatBlock', false, value);
       } else if (command === 'insertHTML' && value) {
+
+        console.log({value})
+       // Detect whether the operation is table creation or general HTML insertion
+      if (value.includes('<table id="editor-custom-table"')) {
+        // Insert table at the end of the editor content
         editor.innerHTML += value;
+      } else {
+        // Insert other HTML at the current cursor position
+        const selection = window.getSelection();
+        const range = selection?.getRangeAt(0);
+
+        if (range) {
+          range.deleteContents();
+          const fragment = range.createContextualFragment(value);
+          range.insertNode(fragment);
+
+          // Adjust selection to move the cursor after the inserted content
+          const newRange = document.createRange();
+          newRange.setStartAfter(fragment.lastChild!);
+          newRange.collapse(true);
+          selection?.removeAllRanges();
+          selection?.addRange(newRange);
+        }
+      }
       } else {
         document.execCommand(command, false, value || '');
       }
-      editor.focus(); // Keep focus on the editor
+      editor.focus();
   
       if (editorRef.current) {
         onChange(editorRef.current.innerHTML);
