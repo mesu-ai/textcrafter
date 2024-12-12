@@ -1,12 +1,37 @@
+Here's the updated changelog with the latest changes:
+
+---
+
 # Changelog
+
+## [1.0.0-beta.6] - 2024-12-12
+
+### Added
+- **Keyboard Accessibility**: 
+  - Added `role="button"` and `tabIndex={0}` to interactive elements for better screen reader support and keyboard navigation.
+  - Enhanced focus management with `Enter` and `Space` key activation for interactive toolbar components.
+
+### Changed
+- **HTML Table Creation**:
+  - Updated table generation to use inline styles instead of CSS classes for improved portability when sharing HTML content.
+  - Enhanced `addRow` and `addColumn` functionality to dynamically apply inline styles, ensuring consistent table design for all rows and columns.
+  - Header cells (`<th>`) in the first row now include inline styles directly for better visibility when exported.
+  
+### Fixed
+- **Cursor Behavior in Symbol Insertion**:
+  - Resolved an issue where symbols were not inserted at the current cursor position.
+
+---
 
 ## [1.0.0-beta.4] - 2024-12-11
 
 ### Added
-- **Performance Optimization**: Improve toolbar selection and realtime performance improve. 
+- **Performance Optimization**: Improved toolbar selection responsiveness and editor performance during real-time usage.
 
 ### Changed
-- **Toolbar Selection**: Updated toolbar button selection and fixing submit and click option.
+- **Toolbar Selection**: Updated toolbar button selection logic and resolved conflicts with form submission on click.
+
+---
 
 ## [1.0.0-beta.2] - 2024-11-12
 
@@ -19,6 +44,8 @@
 - **Table Styling**: Updated table generation to include inline styles for better consistency across different platforms.
   - Tables now have a width of 100%, collapsed borders, and a margin of 10px 0.
   - Table cells feature padding of 8px, centered text alignment, a border of 1px solid `#ddd`, and a minimum width of 80px.
+
+---
 
 ## [1.0.0-beta.1] - 2024-11-11
 
