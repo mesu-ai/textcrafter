@@ -15,43 +15,69 @@ const Editor: FC<EditorProps> = ({ value, onChange }) => {
     if (!editor) return;
 
     try {
-      if (command === 'createLink' && value) {
-        document.execCommand('createLink', false, value);
-      } else if (command === 'insertImage' && value) {
-        document.execCommand('insertImage', false, value);
-      } else if (command === 'formatBlock' && value) {
-        document.execCommand('formatBlock', false, value);
-      } else if (command === 'insertHTML' && value) {
-        if (value.includes('<table id="editor-custom-table"')) {
-          editor.innerHTML += value;
-        } else {
-          const selection = window.getSelection();
-          const range = selection?.getRangeAt(0);
+        switch (command) {
+            case 'createLink':
+                value && document.execCommand('createLink', false, value);
+                break;
+            case 'insertImage':
+                value && document.execCommand('insertImage', false, value);
+                break;
+            case 'formatBlock':
+                value && document.execCommand('formatBlock', false, value);
+                break;
+            case 'insertHTML':
+                handleHTMLInsertion(editor, value);
+                break;
+            case 'insertUnorderedList':
+                handleListInsertion(command, 'disc');
+                break;
+            case 'insertOrderedList':
+                handleListInsertion(command, 'decimal');
+                break;
+            default:
+                document.execCommand(command, false, value || '');
+        }
 
-          if (range) {
+        editor.focus();
+        onChange(editor.innerHTML);
+    } catch (error) {
+        console.error('Error applying command:', error);
+    }
+};
+
+const handleHTMLInsertion = (editor: HTMLElement, value?: string) => {
+    if (!value) return;
+
+    if (value.includes('<table id="editor-custom-table"')) {
+        editor.innerHTML += value;
+    } else {
+        const selection = window.getSelection();
+        const range = selection?.getRangeAt(0);
+
+        if (range) {
             range.deleteContents();
             const fragment = range.createContextualFragment(value);
             range.insertNode(fragment);
-            
+
             const newRange = document.createRange();
             newRange.setStartAfter(fragment.lastChild!);
             newRange.collapse(true);
             selection?.removeAllRanges();
             selection?.addRange(newRange);
-          }
         }
-      } else {
-        document.execCommand(command, false, value || '');
-      }
-      editor.focus();
-
-      if (editorRef.current) {
-        onChange(editorRef.current.innerHTML);
-      }
-    } catch (error) {
-      console.error('Error applying command:', error);
     }
-  };
+};
+
+const handleListInsertion = (command: string, listStyleType: string) => {
+    document.execCommand(command);
+    const selection = window.getSelection();
+    const range = selection?.getRangeAt(0);
+    const parentElement = range?.commonAncestorContainer.parentElement;
+
+    if (parentElement && (parentElement.tagName === 'UL' || parentElement.tagName === 'OL')) {
+        parentElement.setAttribute('style', `list-style-position: inside; list-style-type: ${listStyleType};`);
+    }
+};
 
   const handleDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
