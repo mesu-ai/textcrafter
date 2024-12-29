@@ -6,7 +6,7 @@ node_modules/
 /dist
 
 # Ignore lock files (choose one depending on whether you're using npm or yarn)
-package-lock.json
+# package-lock.json
 yarn.lock
 
 # Ignore environment variables and secrets
