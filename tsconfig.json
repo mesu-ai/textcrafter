@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    "types": [
+      "jest",
+      "@testing-library/jest-dom"
+    ],
     "target": "ES6",
     "module": "ESNext",
     "jsx": "react",
@@ -11,5 +15,5 @@
     "importHelpers": true,
     "allowSyntheticDefaultImports": true // Ensure default import compatibility
   },
-  "include": ["src"]
+  "include": ["src", "jest.d.ts", "**/*.ts", "**/*.tsx"],
 }
