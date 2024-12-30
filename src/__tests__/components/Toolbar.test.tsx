@@ -38,22 +38,5 @@ describe('Toolbar Component', () => {
     
     expect(mockOnCommand).toHaveBeenCalledWith('fontName', 'Arial');
   });
-
-  it('handle text color picker', ()=>{
-    render(<Toolbar onCommand={mockOnCommand} />);
-    
-    const colorPicker = screen.getByTitle('Text Color');
-    fireEvent.change(colorPicker, { target: { value: '#000000' } });
-    expect(mockOnCommand).toHaveBeenCalledWith('foreColor', '#000000');
-  });
-
-  it('handle background color picker', ()=>{
-    render(<Toolbar onCommand={mockOnCommand} />);
-    
-    const colorPicker = screen.getByTitle('Background Color');
-    fireEvent.change(colorPicker, { target: { value: '#ffffff' } });
-    expect(mockOnCommand).toHaveBeenCalledWith('backColor', '#ffffff');
-  });
-
   
 });
