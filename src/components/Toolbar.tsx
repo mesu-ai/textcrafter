@@ -1,3 +1,5 @@
+//src/components/Toolbar.tsx
+
 import React, { FC, useEffect, useState } from 'react';
 import '../styles/editor.css';
 import AlignLeftIcon from '../assets/icons/AlignLeftIcon';
@@ -177,7 +179,7 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
      >
       {/* Font Family and Size */}
       <div id="font-group" className="toolbar-group">
-      <select onChange={(e) => { e.preventDefault(); onCommand('fontName', e.target.value); }}>
+        <select onChange={(e) => { e.preventDefault(); onCommand('fontName', e.target.value); }} role='combobox'>
           <option value="">Font Family</option>
           <option value="Arial">Arial</option>
           <option value="Courier New">Courier New</option>
@@ -203,7 +205,7 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
         <button type="button" onClick={() => onCommand('bold')} style={{ fontWeight: '700' }} className={activeFormats.bold ? 'active' : ''} aria-label='Bold'>B</button>
         <button type="button" onClick={() => onCommand('italic')} className={activeFormats.italic ? 'active' : ''} style={{ fontStyle: 'italic' }} aria-label='Italic'>I</button>
         <button type="button" onClick={() => onCommand('underline')} className={activeFormats.underline ? 'active' : ''} style={{ textDecoration: 'underline' }} aria-label='Underline'>U</button>
-        <button type="button" onClick={() => onCommand('strikeThrough')} className={activeFormats.strikeThrough ? 'active' : ''} style={{ textDecoration: 'line-through' }}>abc</button>
+        <button type="button" onClick={() => onCommand('strikeThrough')} className={activeFormats.strikeThrough ? 'active' : ''} style={{ textDecoration: 'line-through' }} aria-label='strikeThrough'>abc</button>
         <button type="button" onClick={() => onCommand('removeFormat')} title='Clear Formatting'><ClearFormatIcon className='button-icon' /></button>
       </div>
 

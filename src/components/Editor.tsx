@@ -1,3 +1,5 @@
+//scr/components/Editor.tsx
+
 import React, { DragEvent, FC, FormEvent, useEffect, useRef } from 'react';
 import Toolbar from './Toolbar';
 import '../styles/editor.css';
@@ -133,6 +135,7 @@ const handleContainerClick = (e: React.MouseEvent) => {
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
         onInput={handleInput}
+        role="textbox"
       >
         {/* Content here */}
       </div>
