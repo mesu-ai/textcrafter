@@ -86,20 +86,47 @@ const handleListInsertion = (command: string, listStyleType: string) => {
 }
 };
 
-  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+
+const handleImagaUpload = async (file: File): Promise<string> => {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const response = await fetch("/upload API", {
+    method: "POST",
+    headers: {
+      Authorization: "Client-ID YOUR_CLIENT_ID",
+    },
+    body: formData,
+  });
+
+  const data = await response.json();
+  return data.imageUrl;
+};
+
+  // const handleDrop = async (e: DragEvent<HTMLDivElement>) => {
+  //   e.preventDefault();
+  //   const files = Array.from(e.dataTransfer.files);
+  //   files.forEach((file) => {
+  //     const reader = new FileReader();
+  //     reader.onload = (event) => {
+  //       const img = document.createElement('img');
+  //       img.src = event.target?.result as string;
+  //       editorRef.current?.appendChild(img);
+
+  //       onChange(editorRef.current?.innerHTML || '');
+  //     };
+  //     reader.readAsDataURL(file);
+  //   });
+  // };
+
+  const handleDrop = async (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const files = Array.from(e.dataTransfer.files);
-    files.forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const img = document.createElement('img');
-        img.src = event.target?.result as string;
-        editorRef.current?.appendChild(img);
-
-        onChange(editorRef.current?.innerHTML || '');
-      };
-      reader.readAsDataURL(file);
-    });
+    for (const file of files) {
+      const imageUrl = await handleImagaUpload(file);
+      const imgHtml = `<div class="image-container" contenteditable="false"><img src="${imageUrl}" alt="Uploaded Image"/><button class="remove-image-button">x</button></div>`;
+      applyCommand('insertHTML', imgHtml);
+    }
   };
 
   const handleInput = (e:FormEvent<HTMLDivElement>) => {
@@ -111,11 +138,30 @@ const handleListInsertion = (command: string, listStyleType: string) => {
   };
 
 // Container level click handler to prevent form submission
+// const handleContainerClick = (e: React.MouseEvent) => {
+//   const target = e.target as HTMLElement;
+//   if (target.closest('.toolbar')) {
+//     e.preventDefault();
+//     e.stopPropagation();
+//   }
+// };
+
 const handleContainerClick = (e: React.MouseEvent) => {
   const target = e.target as HTMLElement;
   if (target.closest('.toolbar')) {
     e.preventDefault();
     e.stopPropagation();
+  } else if (target.classList.contains('remove-image-button')) {
+    const imageContainer = target.closest('.image-container');
+    if (imageContainer) {
+      imageContainer.remove();
+      onChange(editorRef.current?.innerHTML || '');
+      // Optionally, send a request to delete the image from the server
+      const imgSrc = imageContainer.querySelector('img')?.src;
+      if (imgSrc) {
+        fetch(`/delete-image?src=${encodeURIComponent(imgSrc)}`, { method: 'DELETE' });
+      }
+    }
   }
 };
 

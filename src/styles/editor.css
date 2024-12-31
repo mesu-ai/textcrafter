@@ -194,3 +194,34 @@
   background-color: #f1f1f1;
   font-weight: bold;
 } */
+
+
+/* Existing styles... */
+
+/* Styles for image container and remove button */
+.image-container {
+  position: relative;
+  display: inline-block;
+  margin: 5px;
+}
+
+.image-container img {
+  max-width: 100%;
+  height: auto;
+}
+
+.remove-image-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 20px;
+  text-align: center;
+}
