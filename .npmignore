@@ -1,5 +1,4 @@
 
-
 # Ignore node_modules from the npm package
 node_modules/
 
@@ -8,9 +7,19 @@ node_modules/
 !/dist
 !/styles/editor.css
 
+# Ignore test files
+src/__tests__/
+*.test.tsx
+*.test.ts
+*.spec.ts
+*.spec.tsx
+jest.setup.ts
+__mocks__/
+
 # Ignore build configuration files
 rollup.config.js
 tsconfig.json
+jest.config.ts
 
 # Ignore Git-specific files
 .git/
