@@ -6,10 +6,16 @@ import '../styles/editor.css';
 
 export interface EditorProps {
   value: string;
+  isServer?: boolean;
+  token?: string;
+  apiEndpoint?: {
+    uploadImage: string;
+    deleteImage: string;
+  }
   onChange: (content: string) => void;
 }
 
-const Editor: FC<EditorProps> = ({ value, onChange }) => {
+const Editor: FC<EditorProps> = ({ value, onChange, isServer = false, token, apiEndpoint }) => {
   const editorRef = useRef<HTMLDivElement>(null);
 
   const applyCommand = (command: string, value?: string) => {
@@ -91,43 +97,69 @@ const handleImagaUpload = async (file: File): Promise<string> => {
   const formData = new FormData();
   formData.append("image", file);
 
-  const response = await fetch("/upload API", {
-    method: "POST",
-    headers: {
-      Authorization: "Client-ID YOUR_CLIENT_ID",
-    },
-    body: formData,
-  });
+  console.log({ formData, apiEndpoint });
+
+  if(!apiEndpoint?.uploadImage){
+    throw new Error("Upload image endpoint is not provided");
+  }
+
+  const response = await fetch(apiEndpoint?.uploadImage,
+    {
+      method: "POST",
+      headers: {
+        Authorization:
+          "Bearer " + token,
+      },
+      body: formData,
+    }
+  );
 
   const data = await response.json();
+  console.log({ data });
   return data.imageUrl;
 };
 
   // const handleDrop = async (e: DragEvent<HTMLDivElement>) => {
   //   e.preventDefault();
   //   const files = Array.from(e.dataTransfer.files);
-  //   files.forEach((file) => {
-  //     const reader = new FileReader();
-  //     reader.onload = (event) => {
-  //       const img = document.createElement('img');
-  //       img.src = event.target?.result as string;
-  //       editorRef.current?.appendChild(img);
+    // files.forEach((file) => {
+    //   const reader = new FileReader();
+    //   reader.onload = (event) => {
+    //     const img = document.createElement('img');
+    //     img.src = event.target?.result as string;
+    //     editorRef.current?.appendChild(img);
 
-  //       onChange(editorRef.current?.innerHTML || '');
-  //     };
-  //     reader.readAsDataURL(file);
-  //   });
+    //     onChange(editorRef.current?.innerHTML || '');
+    //   };
+    //   reader.readAsDataURL(file);
+    // });
   // };
 
-  const handleDrop = async (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const files = Array.from(e.dataTransfer.files);
-    for (const file of files) {
-      const imageUrl = await handleImagaUpload(file);
-      const imgHtml = `<div class="image-container" contenteditable="false"><img src="${imageUrl}" alt="Uploaded Image"/><button class="remove-image-button">x</button></div>`;
-      applyCommand('insertHTML', imgHtml);
-    }
-  };
+    const handleDrop = async (e: DragEvent<HTMLDivElement>, isServer: boolean) => {
+      e.preventDefault();
+      const files = Array.from(e.dataTransfer.files);
+
+      if (isServer) {
+        const promises = files.map(async (file) => {
+          const imageUrl = await handleImagaUpload(file);
+          const imgHtml = `<div class="image-container" contenteditable="false"><img src="${imageUrl}" alt="Uploaded Image"/><button class="remove-image-button">x</button></div>`;
+          applyCommand("insertHTML", imgHtml);
+        });
+        await Promise.all(promises);
+      } else {
+        files.forEach((file) => {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const img = document.createElement("img");
+            img.src = event.target?.result as string;
+            editorRef.current?.appendChild(img);
+
+            onChange(editorRef.current?.innerHTML || "");
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+    };
 
   const handleInput = (e:FormEvent<HTMLDivElement>) => {
     e.preventDefault(); 
@@ -159,7 +191,7 @@ const handleContainerClick = (e: React.MouseEvent) => {
       // Optionally, send a request to delete the image from the server
       const imgSrc = imageContainer.querySelector('img')?.src;
       if (imgSrc) {
-        fetch(`/delete-image?src=${encodeURIComponent(imgSrc)}`, { method: 'DELETE' });
+        fetch(`${apiEndpoint?.deleteImage}?src=${encodeURIComponent(imgSrc)}`, { method: 'DELETE' });
       }
     }
   }
@@ -178,7 +210,7 @@ const handleContainerClick = (e: React.MouseEvent) => {
         id="content-area"
         ref={editorRef}
         contentEditable
-        onDrop={handleDrop}
+        onDrop={(e) => handleDrop(e, isServer)}
         onDragOver={(e) => e.preventDefault()}
         onInput={handleInput}
         role="textbox"
