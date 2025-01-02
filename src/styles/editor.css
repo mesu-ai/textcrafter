@@ -36,6 +36,9 @@
   flex-wrap: wrap;
   gap: 8px;
   padding: 10px;
+}
+
+#toolbar.default-toolbar-class {
   background-color: #f3f3f3;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -196,21 +199,19 @@
 } */
 
 
-/* Existing styles... */
-
 /* Styles for image container and remove button */
-.image-container {
+#editor-container #content-area .image-container {
   position: relative;
   display: inline-block;
   margin: 5px;
 }
 
-.image-container img {
+#editor-container #content-area .image-container img {
   max-width: 100%;
   height: auto;
 }
 
-.remove-image-button {
+#editor-container #content-area .remove-image-button {
   position: absolute;
   top: 5px;
   right: 5px;

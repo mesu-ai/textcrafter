@@ -18,6 +18,7 @@ import ClearFormatIcon from '../assets/icons/ClearFormatIcon';
 import { addColumn, addRow, removeColumn, removeRow } from '../utils/commands';
 
 export interface ToolbarProps {
+  customToolbarClass?: string;
   onCommand: (command: string, value?: string) => void;
 }
 
@@ -62,7 +63,7 @@ const TableSelector: FC<TableSelectorProps> = ({ onTableCreate }) => {
   )
 }
 
-const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
+const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass }) => {
   const [activeFormats, setActiveFormats] = useState<{ [key: string]: boolean }>({});
 
   const createTableHTML = (rows: number, cols: number) => {
@@ -173,10 +174,9 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand }) => {
   }, []);
 
 
-
   return (
-    <div id="toolbar" className="toolbar" onClick={(e) => e.stopPropagation()}
-     >
+    <div id="toolbar" className={`toolbar ${customToolbarClass ? customToolbarClass : 'default-toolbar-class'}`} onClick={(e) => e.stopPropagation()}>
+      
       {/* Font Family and Size */}
       <div id="font-group" className="toolbar-group">
         <select onChange={(e) => { e.preventDefault(); onCommand('fontName', e.target.value); }} role='combobox'>
