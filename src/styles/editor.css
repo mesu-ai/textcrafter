@@ -1,11 +1,14 @@
 /* Editor Area */
 #editor-container.editor-canvas {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
   overflow-y: auto;
   font-family: Arial, sans-serif;
   text-align: start;
+}
+
+#editor-container .default-editor-canvas {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
 }
 
 #editor-container #content-area {
@@ -39,6 +42,7 @@
 }
 
 #toolbar.default-toolbar-class {
+  color: black;
   background-color: #f3f3f3;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -66,6 +70,7 @@
   cursor: pointer;
   border: 1px solid #ccc;
   border-radius: 4px;
+  color: currentColor;
   background-color: #ffffff;
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }

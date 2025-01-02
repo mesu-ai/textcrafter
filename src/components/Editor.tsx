@@ -7,13 +7,14 @@ import '../styles/editor.css';
 export interface EditorProps {
   value: string;
   isServer?: boolean;
+  customEditorClass?: string;
   customToolbarClass?: string;
   handleImagaUpload?: (file: File) => Promise<string>;
   handleImageDelete?: (src: string) => Promise<void>;
   onChange: (content: string) => void;
 }
 
-const Editor: FC<EditorProps> = ({value, onChange, isServer = false, customToolbarClass, handleImagaUpload, handleImageDelete}) => {
+const Editor: FC<EditorProps> = ({value, onChange, isServer = false, customEditorClass, customToolbarClass, handleImagaUpload, handleImageDelete}) => {
   const editorRef = useRef<HTMLDivElement>(null);
 
   const applyCommand = (command: string, value?: string) => {
@@ -173,7 +174,7 @@ const Editor: FC<EditorProps> = ({value, onChange, isServer = false, customToolb
   return (
     <div
       id="editor-container"
-      className="editor-canvas"
+      className={`editor-canvas ${customEditorClass ? customEditorClass : 'default-editor-canvas'}`}
       onClick={handleContainerClick}
     >
       <Toolbar onCommand={applyCommand} customToolbarClass={customToolbarClass}/>
