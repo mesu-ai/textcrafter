@@ -108,6 +108,10 @@ const Editor: FC<EditorProps> = ({value, onChange, isServer = false, customEdito
     const files = Array.from(e.dataTransfer.files);
 
     if (isServer && handleImagaUpload) {
+      const editor = editorRef.current;
+      if (!editor) return;
+      editor.focus();
+
       const promises = files.map(async (file) => {
         const imageUrl = await handleImagaUpload(file);
         const imgHtml = `<div class="image-container" contenteditable="false"><img src="${imageUrl}" alt="Uploaded Image"/><button class="remove-image-button">x</button></div>`;

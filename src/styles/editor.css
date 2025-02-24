@@ -217,17 +217,22 @@
 }
 
 #editor-container #content-area .remove-image-button {
-  position: absolute;
-  top: 5px;
-  right: 5px;
   background-color: red;
-  color: white;
   border: none;
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
+  color: #fff;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 16px;
   line-height: 20px;
+  position: absolute;
+  right: 6px;
   text-align: center;
+  top: 6px;
+  padding: 5px 11px;
+  outline: none;
+}
+
+#editor-container #content-area .remove-image-button:hover {
+  background-color: darkred;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
