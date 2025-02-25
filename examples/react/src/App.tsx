@@ -10,6 +10,8 @@ function App() {
     setEditorContent(content);
   };
 
+  console.log(editorContent);
+
   const handleImageUpload = async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append("image", file);
@@ -24,6 +26,7 @@ function App() {
     const data = await response.json();
     return data.imageUrl;
   };
+
 
   const handleImageDelete = async (imgSrc: string) => {
     const response = await fetch(
