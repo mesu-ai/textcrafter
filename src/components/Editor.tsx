@@ -9,12 +9,12 @@ export interface EditorProps {
   isServer?: boolean;
   customEditorClass?: string;
   customToolbarClass?: string;
-  handleImagaUpload?: (file: File) => Promise<string>;
+  handleImageUpload?: (file: File) => Promise<string>;
   handleImageDelete?: (src: string) => Promise<void>;
   onChange: (content: string) => void;
 }
 
-const Editor: FC<EditorProps> = ({value, onChange, isServer = false, customEditorClass, customToolbarClass, handleImagaUpload, handleImageDelete}) => {
+const Editor: FC<EditorProps> = ({value, onChange, isServer = false, customEditorClass, customToolbarClass, handleImageUpload, handleImageDelete}) => {
   const editorRef = useRef<HTMLDivElement>(null);
 
   const applyCommand = (command: string, value?: string) => {
@@ -100,33 +100,35 @@ const Editor: FC<EditorProps> = ({value, onChange, isServer = false, customEdito
     }
   };
 
+
   const handleDrop = async (
     e: DragEvent<HTMLDivElement>,
     isServer: boolean
   ) => {
     e.preventDefault();
     const files = Array.from(e.dataTransfer.files);
+    const editor = editorRef.current;
 
-    if (isServer && handleImagaUpload) {
-      const editor = editorRef.current;
+    if (isServer && handleImageUpload) {
       if (!editor) return;
       editor.focus();
 
       const promises = files.map(async (file) => {
-        const imageUrl = await handleImagaUpload(file);
+        const imageUrl = await handleImageUpload(file);
         const imgHtml = `<div class="image-container" contenteditable="false"><img src="${imageUrl}" alt="Uploaded Image"/><button class="remove-image-button">x</button></div>`;
         applyCommand("insertHTML", imgHtml);
       });
       await Promise.all(promises);
+      onChange(editor.innerHTML);
+
     } else {
       files.forEach((file) => {
         const reader = new FileReader();
         reader.onload = (event) => {
           const img = document.createElement("img");
           img.src = event.target?.result as string;
-          editorRef.current?.appendChild(img);
-
-          onChange(editorRef.current?.innerHTML || "");
+          editor?.appendChild(img);
+          onChange(editor?.innerHTML || "");
         };
         reader.readAsDataURL(file);
       });

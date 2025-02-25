@@ -4,61 +4,33 @@ import { Editor } from "textcrafter";
 import "textcrafter/dist/styles.min.css";
 
 function App() {
-  const [editorContent, setEditorContent] = useState("<p>Start editing...</p>");
+  const [editorContent, setEditorContent] = useState("");
 
   const handleEditorChange = (content: string) => {
     setEditorContent(content);
   };
 
-  // const handleImagaUpload = async (file: File): Promise<string> => {
-  //   const formData = new FormData();
-  //   formData.append("image", file);
-  //   console.log({ formData, file });
-
-  //   const response = await fetch("/api/upload-image", {
-  //     method: "POST",
-  //     headers: {
-  //       Authorization: "Bearer token",
-  //     },
-  //     body: formData,
-  //   });
-  //   const data = await response.json();
-  //   console.log({ data });
-  //   return data.imageUrl;
-  // };
-
-  const handleImagaUpload = async (file: File): Promise<string> => {
+  const handleImageUpload = async (file: File): Promise<string> => {
     const formData = new FormData();
-    formData.append("File", file);
+    formData.append("image", file);
 
-    formData.append("MediaStorageInfo.Name", file.name);
-    formData.append("MediaStorageInfo.ValidExt", ".jpg,.jpeg,.png");
-    formData.append("MediaStorageInfo.UseFor", "category");
-
-    const response = await fetch(
-      "https://prod.saraemart.com/api/Media/CreateOrUpdateFile",
-      {
-        method: "POST",
-        headers: {
-          Authorization:
-            "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI4MSIsImVtYWlsIjoiMCIsInVuaXF1ZV9uYW1lIjoiU2FSYSBBZG1pbiIsImNlcnRzZXJpYWxudW1iZXIiOiI4MSIsInJvbGUiOiIxIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbW9iaWxlcGhvbmUiOiIwIiwibmJmIjoxNzQwMzc2ODI0LCJleHAiOjE3NDI5Njg4MjQsImlhdCI6MTc0MDM3NjgyNH0.7IGiPjZqGlbpsFykcz1YmizlF327yQtRh63rM26FeE2erzoOlbYZRbGDsrg72MgwwEdc4egH6CcVDX8nkXyAyw",
-        },
-        body: formData,
-      }
-    );
-
+    const response = await fetch("/api/upload-image", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer token",
+      },
+      body: formData,
+    });
     const data = await response.json();
-   return `https://prod.saraemart.com${data.optional}`;
-};
+    return data.imageUrl;
+  };
 
   const handleImageDelete = async (imgSrc: string) => {
-    console.log({ imgSrc });
     const response = await fetch(
       `/image-delete?src=${encodeURIComponent(imgSrc)}`,
       { method: "DELETE" }
     );
-    const data = await response.json();
-    console.log({ data });
+    await response.json();
   };
 
 
@@ -70,7 +42,7 @@ function App() {
         value={editorContent}
         customToolbarClass="custom-toolbar"
         customEditorClass="custom-editor"
-        handleImagaUpload={handleImagaUpload}
+        handleImageUpload={handleImageUpload}
         handleImageDelete={handleImageDelete}
         onChange={handleEditorChange}
       />
