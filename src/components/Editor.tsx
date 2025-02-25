@@ -107,9 +107,9 @@ const Editor: FC<EditorProps> = ({value, onChange, isServer = false, customEdito
   ) => {
     e.preventDefault();
     const files = Array.from(e.dataTransfer.files);
-    const editor = editorRef.current;
-
+    
     if (isServer && handleImageUpload) {
+      const editor = editorRef.current;
       if (!editor) return;
       editor.focus();
 
@@ -127,8 +127,8 @@ const Editor: FC<EditorProps> = ({value, onChange, isServer = false, customEdito
         reader.onload = (event) => {
           const img = document.createElement("img");
           img.src = event.target?.result as string;
-          editor?.appendChild(img);
-          onChange(editor?.innerHTML || "");
+          editorRef.current?.appendChild(img);
+          onChange(editorRef.current?.innerHTML || "");
         };
         reader.readAsDataURL(file);
       });

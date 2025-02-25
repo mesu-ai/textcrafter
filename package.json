@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
   "name": "textcrafter",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "description": "TextCrafter: A modern, customizable rich text editor for React. Supports rich formatting, media embedding and real-time collaboration. Ideal for content creators.",
   "main": "dist/index.cjs.js",

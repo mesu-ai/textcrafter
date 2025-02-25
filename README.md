@@ -91,7 +91,7 @@ function App() {
     setEditorContent(content);
   };
 
-  const handleImagaUpload = async (file: File): Promise<string> => {
+  const handleImageUpload = async (file: File): Promise<string> => {
     // We just need the image URL
     // You can handle image with formdata or base64
     // Upload image to server and return Image URL
@@ -128,7 +128,7 @@ function App() {
         value={editorContent}
         customToolbarClass="custom-toolbar" //customize toolbar
         customEditorClass="custom-editor"  //customize editor
-        handleImagaUpload={handleImagaUpload}
+        handleImageUpload={handleImegaUpload}
         handleImageDelete={handleImageDelete}
         onChange={handleEditorChange}
       />
