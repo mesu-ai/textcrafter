@@ -12,15 +12,15 @@ Here's the updated changelog with the latest changes:
   - External functionality added for server related work. No security risk.
 
 - **Custom Toolbar & Editor**:
-  - User can customize the toolbar with class `custom-toolbar` and editor  with class `custom-editor` as per requirement 
+  - User can customize the toolbar and editor as per requirement.
 
 ### Changed
 - **Added Latest and Oldest React Compatibility**:
-  - Package can work with latest and oldest react
+  - Package can work with latest and oldest react.
   
 ### Fixed
 - **Cursor Behavior in Symbol Insertion**:
-  - Resolve some minor bugs and make it stable now
+  - Resolve some minor bugs and make it stable now.
 
 ---
 
