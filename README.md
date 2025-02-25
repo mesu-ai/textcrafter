@@ -1,4 +1,3 @@
-
 ---
 
 # TextCrafter
@@ -15,9 +14,10 @@
 - **Tables**: Easily add or remove rows and columns.
 - **Links & Images**: Insert links and images (via URLs).
 - **Undo & Redo**: Restore previous actions quickly.
-- **Customizable Toolbar**: Extend and style the toolbar to match your design.
+- **Customizable Toolbar & Eidor**: Extend and style the toolbar to match your design.
 - **Cross-Compatible**: Compatible with React, Next.js, TypeScript, and JavaScript.
 - **Drag-and-Drop Image Upload**: Drag images directly into the editor for easy insertion.
+- **External Media Management**: External functionality added for server related work (upload image to server when drop-down). No security risk.
 
 ---
 
@@ -26,11 +26,13 @@
 To install TextCrafter, choose your preferred package manager:
 
 ### npm
+
 ```bash
 npm install textcrafter
 ```
 
 ### Yarn
+
 ```bash
 yarn add textcrafter
 ```
@@ -45,18 +47,20 @@ yarn add textcrafter
    Import the editor's default stylesheet into your main app component to apply necessary styles.
 
    ```tsx
-   import 'textcrafter/dist/styles.min.css';
+   import "textcrafter/dist/styles.min.css";
    ```
 
 2. **Implement the Editor Component**  
    Import and use the `Editor` component within your React component.
 
    ```tsx
-   import React, { useState } from 'react';
-   import { Editor } from 'textcrafter';
+   import React, { useState } from "react";
+   import { Editor } from "textcrafter";
 
    const MyEditor = () => {
-     const [editorContent, setEditorContent] = useState('<p>Start editing...</p>');
+     const [editorContent, setEditorContent] = useState(
+       "<p>Start editing...</p>"
+     );
 
      const handleEditorChange = (content: string) => {
        setEditorContent(content);
@@ -72,6 +76,69 @@ yarn add textcrafter
    export default MyEditor;
    ```
 
+3. **External Server Fuctionality for Image**
+
+```tsx
+import { useState } from "react";
+import "./App.css";
+import { Editor } from "textcrafter";
+import "textcrafter/dist/styles.min.css";
+
+function App() {
+  const [editorContent, setEditorContent] = useState("<p>Start editing...</p>");
+
+  const handleEditorChange = (content: string) => {
+    setEditorContent(content);
+  };
+
+  const handleImagaUpload = async (file: File): Promise<string> => {
+    // We just need the image URL
+    // You can handle image with formdata or base64
+    // Upload image to server and return Image URL
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    // handle the image upload
+    const response = await fetch("/api/upload-image", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer token",
+      },
+      body: formdata,
+    });
+    const data = await response.json();
+
+    return data.imageUrl; // return the image url
+  };
+
+  const handleImageDelete = async (imgSrc: string) => {
+    // Write your own delete functionality
+    const response = await fetch(
+      `/image-delete?src=${encodeURIComponent(imgSrc)}`,
+      { method: "DELETE" }
+    );
+    await response.json();
+  };
+
+  return (
+    <div>
+      <Editor
+        isServer
+        value={editorContent}
+        customToolbarClass="custom-toolbar" //customize toolbar
+        customEditorClass="custom-editor"  //customize editor
+        handleImagaUpload={handleImagaUpload}
+        handleImageDelete={handleImageDelete}
+        onChange={handleEditorChange}
+      />
+    </div>
+  );
+}
+
+export default App;
+```
+
 ---
 
 ### Using TextCrafter with Next.js
@@ -82,18 +149,18 @@ yarn add textcrafter
    Import the editor styles in your root layout to apply them globally.
 
    ```tsx
-   import 'textcrafter/dist/styles.min.css';
+   import "textcrafter/dist/styles.min.css";
    ```
 
 2. **Add the Editor Component in Page Components**  
    Use the `Editor` component in your page-level components.
 
    ```tsx
-   import React, { useState } from 'react';
-   import { Editor } from 'textcrafter';
+   import React, { useState } from "react";
+   import { Editor } from "textcrafter";
 
    const PageComponent = () => {
-     const [editorContent, setEditorContent] = useState('<p>Edit here...</p>');
+     const [editorContent, setEditorContent] = useState("<p>Edit here...</p>");
 
      const handleEditorChange = (content: string) => {
        setEditorContent(content);
@@ -111,21 +178,21 @@ yarn add textcrafter
 
 #### For Page Router (Traditional Next.js Routing)
 
-1. **Import Styles in the _app Component**  
+1. **Import Styles in the \_app Component**  
    Include the editor styles in the `_app.js` or `_app.tsx` file.
 
    ```tsx
-   import 'textcrafter/dist/styles.min.css';
+   import "textcrafter/dist/styles.min.css";
    ```
 
 2. **Add the Editor Component in Page Components**
 
    ```tsx
-   import React, { useState } from 'react';
-   import { Editor } from 'textcrafter';
+   import React, { useState } from "react";
+   import { Editor } from "textcrafter";
 
    const HomePage = () => {
-     const [editorContent, setEditorContent] = useState('<p>Edit here...</p>');
+     const [editorContent, setEditorContent] = useState("<p>Edit here...</p>");
 
      const handleEditorChange = (content: string) => {
        setEditorContent(content);
@@ -159,6 +226,30 @@ TextCrafter offers extensive configuration options to customize the editor to fi
 ## Styling
 
 You can easily modify TextCrafter’s appearance by updating the provided CSS or adding custom styles. The toolbar and editor areas are designed for straightforward customization, allowing you to style them to fit your application’s theme.
+
+For customize the Editor and Toolbal you must have pass the your className through props:
+
+```ts
+customToolbarClass = "custom-toolbar";
+customEditorClass = "custom-editor";
+```
+
+```css
+/* You can customize as your requirement*/
+.custom-toolbar {
+  background-color: #f3f3f3;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Custom shadow */
+}
+
+.custom-editor {
+  padding: 10px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+```
 
 ---
 
