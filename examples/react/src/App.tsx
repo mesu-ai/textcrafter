@@ -10,24 +10,46 @@ function App() {
     setEditorContent(content);
   };
 
+  // const handleImagaUpload = async (file: File): Promise<string> => {
+  //   const formData = new FormData();
+  //   formData.append("image", file);
+  //   console.log({ formData, file });
+
+  //   const response = await fetch("/api/upload-image", {
+  //     method: "POST",
+  //     headers: {
+  //       Authorization: "Bearer token",
+  //     },
+  //     body: formData,
+  //   });
+  //   const data = await response.json();
+  //   console.log({ data });
+  //   return data.imageUrl;
+  // };
+
   const handleImagaUpload = async (file: File): Promise<string> => {
     const formData = new FormData();
-    formData.append("image", file);
-    console.log({ formData, file });
+    formData.append("File", file);
 
-    const response = await fetch("/api/upload-image", {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer token",
-      },
-      body: formData,
-    });
+    formData.append("MediaStorageInfo.Name", file.name);
+    formData.append("MediaStorageInfo.ValidExt", ".jpg,.jpeg,.png");
+    formData.append("MediaStorageInfo.UseFor", "category");
+
+    const response = await fetch(
+      "https://prod.saraemart.com/api/Media/CreateOrUpdateFile",
+      {
+        method: "POST",
+        headers: {
+          Authorization:
+            "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI4MSIsImVtYWlsIjoiMCIsInVuaXF1ZV9uYW1lIjoiU2FSYSBBZG1pbiIsImNlcnRzZXJpYWxudW1iZXIiOiI4MSIsInJvbGUiOiIxIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbW9iaWxlcGhvbmUiOiIwIiwibmJmIjoxNzQwMzc2ODI0LCJleHAiOjE3NDI5Njg4MjQsImlhdCI6MTc0MDM3NjgyNH0.7IGiPjZqGlbpsFykcz1YmizlF327yQtRh63rM26FeE2erzoOlbYZRbGDsrg72MgwwEdc4egH6CcVDX8nkXyAyw",
+        },
+        body: formData,
+      }
+    );
+
     const data = await response.json();
-    console.log({ data });
-    return data.imageUrl;
-  };
-
-
+   return `https://prod.saraemart.com${data.optional}`;
+};
 
   const handleImageDelete = async (imgSrc: string) => {
     console.log({ imgSrc });
