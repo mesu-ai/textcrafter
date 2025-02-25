@@ -1,11 +1,14 @@
 /* Editor Area */
 #editor-container.editor-canvas {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
   overflow-y: auto;
   font-family: Arial, sans-serif;
   text-align: start;
+}
+
+#editor-container .default-editor-canvas {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
 }
 
 #editor-container #content-area {
@@ -36,6 +39,10 @@
   flex-wrap: wrap;
   gap: 8px;
   padding: 10px;
+}
+
+#toolbar.default-toolbar-class {
+  color: black;
   background-color: #f3f3f3;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -63,6 +70,7 @@
   cursor: pointer;
   border: 1px solid #ccc;
   border-radius: 4px;
+  color: currentColor;
   background-color: #ffffff;
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }
@@ -172,25 +180,35 @@
   color: #333;
 }
 
-
-/* table style  */
-/* #editor-custom-table.custom-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 10px 0;
+/* Styles for image container and remove button */
+#editor-container #content-area .image-container {
+  position: relative;
+  display: inline-block;
+  margin: 5px;
 }
 
-#editor-custom-table .table-cell {
-  padding: 8px;
-  text-align: center;
-  border: 1px solid #ddd;
-  min-width: 80px;
+#editor-container #content-area .image-container img {
+  max-width: 100%;
+  height: auto;
 }
-#editor-custom-table .table-header-cell {
-  padding: 8px;
+
+#editor-container #content-area .remove-image-button {
+  background-color: red;
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 20px;
+  position: absolute;
+  right: 6px;
   text-align: center;
-  border: 1px solid #ddd;
-  min-width: 80px;
-  background-color: #f1f1f1;
-  font-weight: bold;
-} */
+  top: 6px;
+  padding: 5px 11px;
+  outline: none;
+}
+
+#editor-container #content-area .remove-image-button:hover {
+  background-color: darkred;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
