@@ -4,6 +4,26 @@ Here's the updated changelog with the latest changes:
 
 # Changelog
 
+## [1.0.0] - 2025-2-25
+
+### Added
+- **Image Management**: 
+  - User can decide how to serve the image to editor, he can save direct `base64` or `image-url`.
+  - External functionality added for server related work. No security risk.
+
+- **Custom Toolbar & Editor**:
+  - User can customize the toolbar with class `custom-toolbar` and editor  with class `custom-editor` as per requirement 
+
+### Changed
+- **Added Latest and Oldest React Compatibility**:
+  - Package can work with latest and oldest react
+  
+### Fixed
+- **Cursor Behavior in Symbol Insertion**:
+  - Resolve some minor bugs and make it stable now
+
+---
+
 ## [1.0.0-beta.6] - 2024-12-12
 
 ### Added
