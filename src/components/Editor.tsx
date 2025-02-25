@@ -106,8 +106,6 @@ const Editor: FC<EditorProps> = ({value, onChange, isServer = false, customEdito
     e.preventDefault();
     const files = Array.from(e.dataTransfer.files);
 
-    console.log({isServer, handleImageUpload})
-
     if (isServer && handleImageUpload) {
       const editor = editorRef.current;
       if (!editor) return;

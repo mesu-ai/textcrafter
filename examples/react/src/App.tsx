@@ -10,8 +10,6 @@ function App() {
     setEditorContent(content);
   };
 
-  console.log(editorContent);
-
   const handleImageUpload = async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append("image", file);
