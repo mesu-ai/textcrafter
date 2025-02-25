@@ -101,13 +101,13 @@ const Editor: FC<EditorProps> = ({value, onChange, isServer = false, customEdito
   };
 
 
-  const handleDrop = async (
-    e: DragEvent<HTMLDivElement>,
-    isServer: boolean
-  ) => {
+  const handleDrop = async (e: DragEvent<HTMLDivElement>, isServer: boolean) => {
+    
     e.preventDefault();
     const files = Array.from(e.dataTransfer.files);
-    
+
+    console.log({isServer, handleImageUpload})
+
     if (isServer && handleImageUpload) {
       const editor = editorRef.current;
       if (!editor) return;
