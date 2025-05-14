@@ -7,6 +7,7 @@ import '../styles/editor.css';
 export interface EditorProps {
   value: string;
   isServer?: boolean;
+  isEditable?: boolean;
   customEditorClass?: string;
   customToolbarClass?: string;
   handleImageUpload?: (file: File) => Promise<string>;
@@ -14,7 +15,16 @@ export interface EditorProps {
   onChange: (content: string) => void;
 }
 
-const Editor: FC<EditorProps> = ({value, onChange, isServer = false, customEditorClass, customToolbarClass, handleImageUpload, handleImageDelete}) => {
+const Editor: FC<EditorProps> = ({
+  value,
+  onChange,
+  isServer = false,
+  isEditable = true,
+  customEditorClass,
+  customToolbarClass,
+  handleImageUpload,
+  handleImageDelete,
+}) => {
   const editorRef = useRef<HTMLDivElement>(null);
 
   const applyCommand = (command: string, value?: string) => {
@@ -101,32 +111,34 @@ const Editor: FC<EditorProps> = ({value, onChange, isServer = false, customEdito
   };
 
 
-  const handleDrop = async (e: DragEvent<HTMLDivElement>, isServer: boolean) => {
-    
+  const handleDrop = async (
+    e: DragEvent<HTMLDivElement>,
+    isServer: boolean
+  ) => {
     e.preventDefault();
     const files = Array.from(e.dataTransfer.files);
+    const editor = editorRef.current;
+
+    if (!editor) return;
+    editor.focus();
 
     if (isServer && handleImageUpload) {
-      const editor = editorRef.current;
-      if (!editor) return;
-      editor.focus();
-
       const promises = files.map(async (file) => {
         const imageUrl = await handleImageUpload(file);
-        const imgHtml = `<div class="image-container" contenteditable="false"><img src="${imageUrl}" alt="Uploaded Image"/><button class="remove-image-button">x</button></div>`;
+        const imgHtml = `<div class="image-container" contenteditable="false"><img src="${imageUrl}" alt="Uploaded Image"/></div>`;
         applyCommand("insertHTML", imgHtml);
+        
       });
       await Promise.all(promises);
       onChange(editor.innerHTML);
-
     } else {
       files.forEach((file) => {
         const reader = new FileReader();
         reader.onload = (event) => {
-          const img = document.createElement("img");
-          img.src = event.target?.result as string;
-          editorRef.current?.appendChild(img);
-          onChange(editorRef.current?.innerHTML || "");
+          const base64Url = event.target?.result as string;
+          const imgHtml = `<div class="image-container" contenteditable="false"><img src="${base64Url}" alt="Uploaded Image"/></div>`;
+          applyCommand("insertHTML", imgHtml);
+          onChange(editor?.innerHTML || "");
         };
         reader.readAsDataURL(file);
       });
@@ -141,34 +153,37 @@ const Editor: FC<EditorProps> = ({value, onChange, isServer = false, customEdito
     }
   };
 
-  // Container level click handler to prevent form submission
-  // const handleContainerClick = (e: React.MouseEvent) => {
-  //   const target = e.target as HTMLElement;
-  //   if (target.closest('.toolbar')) {
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //   }
-  // };
 
   const handleContainerClick = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
+  
     if (target.closest(".toolbar")) {
       e.preventDefault();
       e.stopPropagation();
-    } else if (target.classList.contains("remove-image-button")) {
-      const imageContainer = target.closest(".image-container");
-      if (imageContainer) {
-        imageContainer.remove();
-        onChange(editorRef.current?.innerHTML || "");
-        // Optionally, send a request to delete the image from the server
-        const imgSrc = imageContainer.querySelector("img")?.src;
-        if (isServer && handleImageDelete && imgSrc) {
-          handleImageDelete(imgSrc);
-        }
+      return;
+    }
+  
+    const container = target.closest(".image-container");
+    if (!container) return;
+  
+    // Detect pseudo-element click (matches ::after zone)
+    const rect = container.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const offsetY = e.clientY - rect.top;
+  
+    // Assume "button" zone is top-right 30x30px
+    if (offsetX > rect.width - 70 && offsetY < 27) {
+
+      container.remove();
+      onChange(editorRef.current ? editorRef.current.innerHTML : '');
+  
+      const imgSrc = container.querySelector("img")?.src;
+      if (isServer && handleImageDelete && imgSrc) {
+        handleImageDelete(imgSrc);
       }
     }
   };
-
+  
   useEffect(() => {
     if (editorRef.current && editorRef.current.innerHTML !== value) {
       editorRef.current.innerHTML = value;
@@ -178,10 +193,13 @@ const Editor: FC<EditorProps> = ({value, onChange, isServer = false, customEdito
   return (
     <div
       id="editor-container"
-      className={`editor-canvas ${customEditorClass ? customEditorClass : 'default-editor-canvas'}`}
+      className={`editor-canvas ${isEditable ? 'editor-canvas-editable' : ''} ${customEditorClass ?? "default-editor-canvas"}`}
       onClick={handleContainerClick}
     >
-      <Toolbar onCommand={applyCommand} customToolbarClass={customToolbarClass}/>
+      <Toolbar
+        onCommand={applyCommand}
+        customToolbarClass={customToolbarClass}
+      />
       <div
         id="content-area"
         ref={editorRef}

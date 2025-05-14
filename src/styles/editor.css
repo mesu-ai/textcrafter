@@ -39,6 +39,7 @@
   flex-wrap: wrap;
   gap: 8px;
   padding: 10px;
+ 
 }
 
 #toolbar.default-toolbar-class {
@@ -61,8 +62,7 @@
 }
 
 #toolbar button,
-#toolbar select,
-.toolbar input[type="color"] {
+#toolbar select {
   padding: 4px 8px;
   height: 27px ;
   min-width: 30px;
@@ -75,6 +75,55 @@
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
+#toolbar #color-group .color-picker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 12px;
+  border: 1px solid #ccc;
+  min-width: 30px;
+  height: 25.24px ;
+  overflow: hidden;
+  padding: 0 5px;
+  border-radius: 4px;
+  background-color: #ffffff;
+}
+
+#toolbar #color-group input[type="color"] {
+  padding: 0;
+  height: 5px;
+  width: 30px;
+  cursor: pointer;
+  border: none;
+  color: currentColor;
+  background-color: transparent;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+/* Hide the actual color picker UI swatch (square/triangle) */
+#toolbar #color-group input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+#toolbar #color-group input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 0;
+}
+
+/* Firefox */
+.custom-color-swatch input[type="color"]::-moz-color-swatch {
+  border: none;
+  border-radius: 0;
+}
+
+
+
 #toolbar .button-icon {
   width: 14px;
   height: 14px;
@@ -86,7 +135,7 @@
 
 #toolbar button:hover,
 #toolbar select:hover,
-#toolbar input[type="color"]:hover {
+#toolbar #color-group .color-picker:hover {
   background-color: #e0e0e0;
   border-color: #bbb;
 }
@@ -173,7 +222,7 @@
   background-color: #d0e8ff;
 }
 
-#oolbar .table-selector-label {
+#toolbar .table-selector-label {
   margin-top: 5px;
   text-align: center;
   font-size: 14px;
@@ -192,23 +241,25 @@
   height: auto;
 }
 
-#editor-container #content-area .remove-image-button {
-  background-color: red;
-  border: none;
-  border-radius: 50%;
-  color: #fff;
-  cursor: pointer;
-  font-size: 16px;
-  line-height: 20px;
+#editor-container.editor-canvas-editable .image-container::after {
+  content: "remove";
   position: absolute;
-  right: 6px;
-  text-align: center;
   top: 6px;
-  padding: 5px 11px;
-  outline: none;
+  right: 6px;
+  width: 62px;
+  padding: 3px 0;
+
+  background-color: rgb(210, 15, 15);
+  color: #fff;
+  font-size: 14px;
+  border-radius: 2px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
-#editor-container #content-area .remove-image-button:hover {
-  background-color: darkred;
+#editor-container.editor-canvas-editable .image-container:hover::after {
+  display: flex;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }

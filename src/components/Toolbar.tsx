@@ -211,8 +211,12 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass }) => {
 
       {/* Text Color and Background Color */}
       <div id="color-group" className="toolbar-group">
-        <input type="color" onChange={(e) =>{ e.preventDefault();  e.stopPropagation(); onCommand('foreColor', e.target.value);  }} onMouseDown={(e) => e.preventDefault()} title="Text Color" />
-        <input type="color" onChange={(e) => { e.preventDefault(); e.stopPropagation(); onCommand('backColor', e.target.value); }} onMouseDown={(e) => e.preventDefault()} title="Background Color" />
+         <label className='color-picker'>A
+           <input type="color" onChange={(e) =>{ e.preventDefault();  e.stopPropagation(); onCommand('foreColor', e.target.value);  }} onMouseDown={(e) => e.preventDefault()} title="Text Color" />
+         </label>
+        <label htmlFor="highlight-color" className='color-picker'>H
+          <input type="color" id='highlight-color' onChange={(e) => { e.preventDefault(); e.stopPropagation(); onCommand('hiliteColor', e.target.value); }} onMouseDown={(e) => e.preventDefault()} title="Highlight Color" />
+        </label> 
       </div>
 
       {/* Text Alignment */}
