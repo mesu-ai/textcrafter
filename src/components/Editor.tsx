@@ -34,7 +34,15 @@ const Editor: FC<EditorProps> = ({
     try {
       switch (command) {
         case "createLink":
-          value && document.execCommand("createLink", false, value);
+          if(value){
+             document.execCommand("createLink", false, value);
+             const sel= window.getSelection();
+             if(sel && sel.anchorNode?.parentElement?.tagName === 'A'){
+              const anchor = sel.anchorNode.parentElement as HTMLAnchorElement;
+              anchor.title = value;
+              anchor.target = "_blank";
+             }
+          }
           break;
         case "insertImage":
           value && document.execCommand("insertImage", false, value);

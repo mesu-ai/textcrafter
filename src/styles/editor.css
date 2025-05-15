@@ -68,11 +68,16 @@
   min-width: 30px;
   font-size: 14px;
   cursor: pointer;
+  outline: none;
   border: 1px solid #ccc;
   border-radius: 4px;
   color: currentColor;
   background-color: #ffffff;
   transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+#toolbar option {
+  font-size: 13px;
 }
 
 #toolbar #color-group .color-picker {
@@ -90,11 +95,12 @@
   padding: 0 5px;
   border-radius: 4px;
   background-color: #ffffff;
+  pointer-events: none;
 }
 
 #toolbar #color-group input[type="color"] {
   padding: 0;
-  height: 5px;
+  height: 7px;
   width: 30px;
   cursor: pointer;
   border: none;
@@ -102,8 +108,10 @@
   background-color: transparent;
   transition: background-color 0.2s ease, border-color 0.2s ease;
   appearance: none;
+  pointer-events: auto;
   -webkit-appearance: none;
   -moz-appearance: none;
+  
 }
 
 /* Hide the actual color picker UI swatch (square/triangle) */

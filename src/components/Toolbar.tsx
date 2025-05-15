@@ -26,9 +26,9 @@ interface TableSelectorProps {
   onTableCreate: (rows: number, cols: number) => void
 }
 
-const customTable = 'width: 100%; border-collapse: collapse; margin: 10px 0;';
-const tableCell = 'padding: 8px;text-align: center;border: 1px solid #ddd;min-width: 80px;';
-const tableHeaderCell = `${tableCell} background-color: #f1f1f1;font-weight: bold;`;
+const customTable = "width: 100%; border-collapse: collapse; margin: 10px 0;";
+export const tableCell = "padding: 8px; text-align: center; border: 1px solid #ddd; min-width: 80px;";
+export const tableHeaderCell = `${tableCell} background-color: #f1f1f1;font-weight: bold;`;
 
 
 const TableSelector: FC<TableSelectorProps> = ({ onTableCreate }) => {
@@ -50,7 +50,6 @@ const TableSelector: FC<TableSelectorProps> = ({ onTableCreate }) => {
         <div key={`row-${row}`} className='table-selector-row'>
           {[...new Array(8)].map((_, col) => (
             <div key={`col-${col}`} className={`table-selector-cell ${row <= hoveredRow && col <= hoveredCol ? 'highlighted' : ''}`} onMouseEnter={() => handleSellHover(row, col)} onClick={handleCellClick}
-            // role='button' tabIndex={0}
             />
           ))}
         </div>
@@ -214,8 +213,8 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass }) => {
          <label className='color-picker'>A
            <input type="color" onChange={(e) =>{ e.preventDefault();  e.stopPropagation(); onCommand('foreColor', e.target.value);  }} onMouseDown={(e) => e.preventDefault()} title="Text Color" />
          </label>
-        <label htmlFor="highlight-color" className='color-picker'>H
-          <input type="color" id='highlight-color' onChange={(e) => { e.preventDefault(); e.stopPropagation(); onCommand('hiliteColor', e.target.value); }} onMouseDown={(e) => e.preventDefault()} title="Highlight Color" />
+        <label className='color-picker'>H
+          <input type="color" onChange={(e) => { e.preventDefault(); e.stopPropagation(); onCommand('hiliteColor', e.target.value); }} onMouseDown={(e) => e.preventDefault()} title="Highlight Color" />
         </label> 
       </div>
 
@@ -247,7 +246,6 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass }) => {
               <button type="button" onClick={() => onCommand('insertHorizontalRule')} value="horizontalLine">Horizontal Line</button>
             </div>
           </div>
-
         </div>
       </div>
 
