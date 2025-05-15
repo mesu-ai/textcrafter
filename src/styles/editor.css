@@ -3,6 +3,7 @@
   overflow-y: auto;
   font-family: Arial, sans-serif;
   text-align: start;
+  position: relative;
 }
 
 #editor-container .default-editor-canvas {
@@ -16,6 +17,22 @@
   padding-top: 10px;
   outline: none;
 }
+
+#editor-container #editor-drop-overlay.drop-overlay {
+  display: none; 
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.85);
+  border: 2px dashed #2977ff;
+  color: #2977ff;
+  font-size: 24px;
+  font-weight: 600;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
 
 #editor-container #content-area blockquote {
   margin: 1em 0;
@@ -236,6 +253,7 @@
   font-size: 14px;
   color: #333;
 }
+
 
 /* Styles for image container and remove button */
 #editor-container #content-area .image-container {

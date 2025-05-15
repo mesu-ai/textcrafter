@@ -16,6 +16,7 @@ import RedoIcon from '../assets/icons/RedoIcon';
 import TableIcon from '../assets/icons/TableIcon';
 import ClearFormatIcon from '../assets/icons/ClearFormatIcon';
 import { addColumn, addRow, removeColumn, removeRow } from '../utils/commands';
+import { customTable, tableCell, tableHeaderCell } from '../utils/constant';
 
 export interface ToolbarProps {
   customToolbarClass?: string;
@@ -25,10 +26,6 @@ export interface ToolbarProps {
 interface TableSelectorProps {
   onTableCreate: (rows: number, cols: number) => void
 }
-
-const customTable = "width: 100%; border-collapse: collapse; margin: 10px 0;";
-export const tableCell = "padding: 8px; text-align: center; border: 1px solid #ddd; min-width: 80px;";
-export const tableHeaderCell = `${tableCell} background-color: #f1f1f1;font-weight: bold;`;
 
 
 const TableSelector: FC<TableSelectorProps> = ({ onTableCreate }) => {

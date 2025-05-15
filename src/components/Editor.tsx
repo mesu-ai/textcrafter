@@ -118,12 +118,27 @@ const Editor: FC<EditorProps> = ({
     }
   };
 
+  const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const overlay = document.getElementById("editor-drop-overlay");
+    if (overlay) overlay.style.display = "flex";
+  };
+
+  const handleDragLeave = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const overlay = document.getElementById("editor-drop-overlay");
+    if (overlay) overlay.style.display = "none";
+  };
+
 
   const handleDrop = async (
     e: DragEvent<HTMLDivElement>,
     isServer: boolean
   ) => {
     e.preventDefault();
+      const overlay = document.getElementById("editor-drop-overlay");
+  if (overlay) overlay.style.display = "none";
+
     const files = Array.from(e.dataTransfer.files);
     const editor = editorRef.current;
 
@@ -213,7 +228,8 @@ const Editor: FC<EditorProps> = ({
         ref={editorRef}
         contentEditable
         onDrop={(e) => handleDrop(e, isServer)}
-        onDragOver={(e) => e.preventDefault()}
+        onDragOver={(e) => handleDragOver(e)}
+        onDragLeave={(e) => handleDragLeave(e)}
         onInput={handleInput}
         role="textbox"
       >

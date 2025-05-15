@@ -1,4 +1,5 @@
-import { tableCell, tableHeaderCell } from "../components/Toolbar";
+import { tableCell, tableHeaderCell } from "./constant";
+
 
 export const addRow = () => {
   const selectedTable = document.getElementById('editor-custom-table') as HTMLTableElement;
