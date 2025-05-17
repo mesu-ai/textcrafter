@@ -19,9 +19,12 @@
 }
 
 #editor-container #editor-drop-overlay.drop-overlay {
-  display: none; 
+  display: none;
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 10;
   background: rgba(255, 255, 255, 0.85);
   border: 2px dashed #2977ff;
@@ -56,7 +59,7 @@
   flex-wrap: wrap;
   gap: 8px;
   padding: 10px;
- 
+
 }
 
 #toolbar.default-toolbar-class {
@@ -81,9 +84,24 @@
 #toolbar button,
 #toolbar select {
   padding: 4px 8px;
-  height: 27px ;
+  height: 27px;
   min-width: 30px;
   font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  color: currentColor;
+  background-color: #ffffff;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+#toolbar #image .image-upload-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 27px;
+  min-width: 30px;
   cursor: pointer;
   outline: none;
   border: 1px solid #ccc;
@@ -107,7 +125,7 @@
   line-height: 12px;
   border: 1px solid #ccc;
   min-width: 30px;
-  height: 25.24px ;
+  height: 25.24px;
   overflow: hidden;
   padding: 0 5px;
   border-radius: 4px;
@@ -128,7 +146,7 @@
   pointer-events: auto;
   -webkit-appearance: none;
   -moz-appearance: none;
-  
+
 }
 
 /* Hide the actual color picker UI swatch (square/triangle) */
@@ -147,8 +165,6 @@
   border-radius: 0;
 }
 
-
-
 #toolbar .button-icon {
   width: 14px;
   height: 14px;
@@ -160,7 +176,8 @@
 
 #toolbar button:hover,
 #toolbar select:hover,
-#toolbar #color-group .color-picker:hover {
+#toolbar #color-group .color-picker:hover,
+#toolbar #image .image-upload-button:hover {
   background-color: #e0e0e0;
   border-color: #bbb;
 }
@@ -178,23 +195,32 @@
   appearance: none;
 }
 
-#toolbar #table, #toolbar #symbol {
+#toolbar #table,
+#toolbar #symbol,
+#toolbar #image {
   position: relative;
 }
 
-#toolbar .table-selector-container, #toolbar .symbol-selector-container {
+#toolbar .table-selector-container,
+#toolbar .symbol-selector-container,
+#toolbar .image-selector-container {
   display: none;
   position: absolute;
   top: 28px;
   right: 0;
-  
+
 }
 
-#toolbar #table:hover .table-selector-container, #toolbar #symbol:hover .symbol-selector-container {
+#toolbar #table:hover .table-selector-container,
+#toolbar #symbol:hover .symbol-selector-container,
+#toolbar #image:hover .image-selector-container {
   display: block;
+  z-index: 10;
 }
 
-#toolbar #table:hover .table-selector-show, #toolbar #symbol:hover .symbol-selector-show {
+#toolbar #table:hover .table-selector-show,
+#toolbar #symbol:hover .symbol-selector-show,
+#toolbar #image:hover .image-selector-show {
   margin-top: 5px;
   display: flex;
   border: 1px solid #ddd;
@@ -205,6 +231,17 @@
 
 }
 
+#toolbar #image:hover .image-option-button {
+  padding: 10px;
+  min-width: 50px;
+  display: flex;
+  gap: 6px;
+}
+
+#toolbar .image-option-button input[type="file"] {
+  display: none;
+}
+
 #toolbar #table:hover .table-option-button {
   margin-top: 10px;
   padding: 10px;
@@ -212,16 +249,14 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
-
 }
 
 #toolbar #symbol:hover .symbol-option-button {
-  margin-top: 10px;
   padding: 10px;
   min-width: 130px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 5px;
+  gap: 6px;
 
 }
 

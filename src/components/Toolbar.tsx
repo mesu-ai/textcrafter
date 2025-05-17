@@ -17,10 +17,13 @@ import TableIcon from '../assets/icons/TableIcon';
 import ClearFormatIcon from '../assets/icons/ClearFormatIcon';
 import { addColumn, addRow, removeColumn, removeRow } from '../utils/commands';
 import { customTable, tableCell, tableHeaderCell } from '../utils/constant';
+import FolderIcon from '../assets/icons/FolderIcon';
+import AttachIcon from '../assets/icons/AttachIcon';
 
 export interface ToolbarProps {
   customToolbarClass?: string;
   onCommand: (command: string, value?: string) => void;
+  onInsertImageFromDevice?: (file: File) => void;
 }
 
 interface TableSelectorProps {
@@ -59,7 +62,8 @@ const TableSelector: FC<TableSelectorProps> = ({ onTableCreate }) => {
   )
 }
 
-const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass }) => {
+
+const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass, onInsertImageFromDevice }) => {
   const [activeFormats, setActiveFormats] = useState<{ [key: string]: boolean }>({});
 
   const createTableHTML = (rows: number, cols: number) => {
@@ -156,7 +160,6 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass }) => {
   
     setActiveFormats(newActiveFormat);
   };
-  
 
   useEffect(() => {
     const debounceDetectFormatting = debounce(detectFormatting, 200);
@@ -247,11 +250,35 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass }) => {
       </div>
 
       {/* Link and Image Insertion */}
-      <div id="link-image-group" className="toolbar-group">
+       <div id="link-image-group" className="toolbar-group">
         <button type="button" onClick={() => onCommand('createLink', prompt('Enter the URL:', 'https://') || '')}><LinkAddIcon className="button-icon" /></button>
         <button type="button" onClick={() => onCommand('unlink')}><LinkRemoveIcon className="button-icon" /></button>
-        <button type="button" onClick={() => onCommand('insertImage', prompt('Enter the image URL:', 'https://') || '')}><InsertImageIcon className="button-icon" /></button>
+        
+        <div id="image">
+          <button type="button" className="image-selector-button"><InsertImageIcon className="button-icon" /></button>
+          <div className="image-selector-container">
+            <div className='image-selector-show'>
+              <div className='image-option-button'>
+                 <label htmlFor="file-upload" className="custom-file-upload">
+                  <div className='image-upload-button'><FolderIcon className='button-icon'/></div>
+                  <input accept="image/*" type="file" id="file-upload" 
+                    onChange={ (e) => {
+                    const file = e.target.files?.[0];
+                    if(file && onInsertImageFromDevice){
+                      onInsertImageFromDevice(file);
+                      e.target.value = '';
+                    }
+                  }} 
+                   />
+                </label>
+                <button type="button" onClick={() => onCommand('insertImage', prompt('Enter the image URL:', 'https://') || '')} value="removeRow"><AttachIcon className='button-icon'/></button>
+              </div>
+            </div>
+          </div>
       </div>
+      </div>
+
+
 
       {/* Headings and Block Styles */}
       <div id="block-style-group" className="toolbar-group">

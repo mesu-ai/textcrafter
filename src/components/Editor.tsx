@@ -1,8 +1,8 @@
 //scr/components/Editor.tsx
 
-import React, { DragEvent, FC, FormEvent, useEffect, useRef } from 'react';
-import Toolbar from './Toolbar';
-import '../styles/editor.css';
+import React, { DragEvent, FC, FormEvent, useEffect, useRef } from "react";
+import Toolbar from "./Toolbar";
+import "../styles/editor.css";
 
 export interface EditorProps {
   value: string;
@@ -34,14 +34,14 @@ const Editor: FC<EditorProps> = ({
     try {
       switch (command) {
         case "createLink":
-          if(value){
-             document.execCommand("createLink", false, value);
-             const sel= window.getSelection();
-             if(sel && sel.anchorNode?.parentElement?.tagName === 'A'){
+          if (value) {
+            document.execCommand("createLink", false, value);
+            const sel = window.getSelection();
+            if (sel && sel.anchorNode?.parentElement?.tagName === "A") {
               const anchor = sel.anchorNode.parentElement as HTMLAnchorElement;
               anchor.title = value;
               anchor.target = "_blank";
-             }
+            }
           }
           break;
         case "insertImage":
@@ -79,13 +79,17 @@ const Editor: FC<EditorProps> = ({
       const selection = window.getSelection();
       const range = selection?.getRangeAt(0);
 
-      if (range) {
-        range.deleteContents();
-        const fragment = range.createContextualFragment(value);
-        range.insertNode(fragment);
+      if (!range) return;
 
+      range.deleteContents();
+      const fragment = range.createContextualFragment(value);
+      range.insertNode(fragment);
+
+      const lastNode = fragment.lastChild || fragment.firstChild;
+
+      if (lastNode && lastNode.parentNode) {
         const newRange = document.createRange();
-        newRange.setStartAfter(fragment.lastChild!);
+        newRange.setStartAfter(lastNode);
         newRange.collapse(true);
         selection?.removeAllRanges();
         selection?.addRange(newRange);
@@ -118,6 +122,28 @@ const Editor: FC<EditorProps> = ({
     }
   };
 
+  const handleInsertImageFromDevice = async (file: File) => {
+    const editor = editorRef.current;
+    if (!editor) return;
+    editor.focus();
+
+    if (isServer && handleImageUpload) {
+      const imageUrl = await handleImageUpload(file);
+      const imgHtml = `<div class="image-container" contenteditable="false"><img src="${imageUrl}" alt="Uploaded Image"/></div>`;
+      applyCommand("insertHTML", imgHtml);
+      onChange(editor.innerHTML);
+    } else {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64Url = event.target?.result as string;
+        const imgHtml = `<div class="image-container" contenteditable="false"><img src="${base64Url}" alt="Uploaded Image"/></div>`;
+        applyCommand("insertHTML", imgHtml);
+        onChange(editor?.innerHTML || "");
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const overlay = document.getElementById("editor-drop-overlay");
@@ -130,41 +156,37 @@ const Editor: FC<EditorProps> = ({
     if (overlay) overlay.style.display = "none";
   };
 
-
   const handleDrop = async (
     e: DragEvent<HTMLDivElement>,
     isServer: boolean
   ) => {
     e.preventDefault();
-      const overlay = document.getElementById("editor-drop-overlay");
-  if (overlay) overlay.style.display = "none";
+    const overlay = document.getElementById("editor-drop-overlay");
+    if (overlay) overlay.style.display = "none";
 
     const files = Array.from(e.dataTransfer.files);
+
     const editor = editorRef.current;
 
-    if (!editor) return;
+    if (!editor || files.length === 0) return;
     editor.focus();
+    const file = files[0];
+    if (!file.type.startsWith("image/")) return;
 
     if (isServer && handleImageUpload) {
-      const promises = files.map(async (file) => {
-        const imageUrl = await handleImageUpload(file);
-        const imgHtml = `<div class="image-container" contenteditable="false"><img src="${imageUrl}" alt="Uploaded Image"/></div>`;
-        applyCommand("insertHTML", imgHtml);
-        
-      });
-      await Promise.all(promises);
+      const imageUrl = await handleImageUpload(file);
+      const imgHtml = `<div class="image-container" contenteditable="false"><img src="${imageUrl}" alt="Uploaded Image"/></div>`;
+      applyCommand("insertHTML", imgHtml);
       onChange(editor.innerHTML);
     } else {
-      files.forEach((file) => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const base64Url = event.target?.result as string;
-          const imgHtml = `<div class="image-container" contenteditable="false"><img src="${base64Url}" alt="Uploaded Image"/></div>`;
-          applyCommand("insertHTML", imgHtml);
-          onChange(editor?.innerHTML || "");
-        };
-        reader.readAsDataURL(file);
-      });
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64Url = event.target?.result as string;
+        const imgHtml = `<div class="image-container" contenteditable="false"><img src="${base64Url}" alt="Uploaded Image"/></div>`;
+        applyCommand("insertHTML", imgHtml);
+        onChange(editor?.innerHTML || "");
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -176,37 +198,35 @@ const Editor: FC<EditorProps> = ({
     }
   };
 
-
   const handleContainerClick = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
-  
+
     if (target.closest(".toolbar")) {
       e.preventDefault();
       e.stopPropagation();
       return;
     }
-  
+
     const container = target.closest(".image-container");
     if (!container) return;
-  
+
     // Detect pseudo-element click (matches ::after zone)
     const rect = container.getBoundingClientRect();
     const offsetX = e.clientX - rect.left;
     const offsetY = e.clientY - rect.top;
-  
+
     // Assume "button" zone is top-right 30x30px
     if (offsetX > rect.width - 70 && offsetY < 27) {
-
       container.remove();
-      onChange(editorRef.current ? editorRef.current.innerHTML : '');
-  
+      onChange(editorRef.current ? editorRef.current.innerHTML : "");
+
       const imgSrc = container.querySelector("img")?.src;
       if (isServer && handleImageDelete && imgSrc) {
         handleImageDelete(imgSrc);
       }
     }
   };
-  
+
   useEffect(() => {
     if (editorRef.current && editorRef.current.innerHTML !== value) {
       editorRef.current.innerHTML = value;
@@ -216,13 +236,21 @@ const Editor: FC<EditorProps> = ({
   return (
     <div
       id="editor-container"
-      className={`editor-canvas ${isEditable ? 'editor-canvas-editable' : ''} ${customEditorClass ?? "default-editor-canvas"}`}
+      className={`editor-canvas ${isEditable ? "editor-canvas-editable" : ""} ${
+        customEditorClass ?? "default-editor-canvas"
+      }`}
       onClick={handleContainerClick}
     >
       <Toolbar
         onCommand={applyCommand}
+        onInsertImageFromDevice={handleInsertImageFromDevice}
         customToolbarClass={customToolbarClass}
       />
+
+      <div id="editor-drop-overlay" className="drop-overlay">
+        Drop your images here
+      </div>
+
       <div
         id="content-area"
         ref={editorRef}
