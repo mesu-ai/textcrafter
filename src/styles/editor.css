@@ -96,7 +96,7 @@
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-#toolbar #image .image-upload-button {
+#toolbar #image .image-insert-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -174,10 +174,11 @@
   align-items: center;
 }
 
+
 #toolbar button:hover,
 #toolbar select:hover,
 #toolbar #color-group .color-picker:hover,
-#toolbar #image .image-upload-button:hover {
+#toolbar #image .image-insert-button:hover {
   background-color: #e0e0e0;
   border-color: #bbb;
 }
@@ -197,13 +198,15 @@
 
 #toolbar #table,
 #toolbar #symbol,
-#toolbar #image {
+#toolbar #image,
+#toolbar #link {
   position: relative;
 }
 
 #toolbar .table-selector-container,
 #toolbar .symbol-selector-container,
-#toolbar .image-selector-container {
+#toolbar .image-selector-container,
+#toolbar .link-selector-container {
   display: none;
   position: absolute;
   top: 28px;
@@ -213,14 +216,16 @@
 
 #toolbar #table:hover .table-selector-container,
 #toolbar #symbol:hover .symbol-selector-container,
-#toolbar #image:hover .image-selector-container {
+#toolbar #image:hover .image-selector-container,
+#toolbar #link:hover .link-selector-container {
   display: block;
   z-index: 10;
 }
 
 #toolbar #table:hover .table-selector-show,
 #toolbar #symbol:hover .symbol-selector-show,
-#toolbar #image:hover .image-selector-show {
+#toolbar #image:hover .image-selector-show,
+#toolbar #link:hover .link-selector-show {
   margin-top: 5px;
   display: flex;
   border: 1px solid #ddd;
@@ -228,7 +233,6 @@
   border-bottom-right-radius: 5px;
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   background-color: white;
-
 }
 
 #toolbar #image:hover .image-option-button {
@@ -237,6 +241,77 @@
   display: flex;
   gap: 6px;
 }
+
+#toolbar #link:hover .link-insert-option {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+
+#toolbar #link:hover .link-insert-option .link-selected-text {
+  padding: 5px;
+  font-size: 12px;
+  background-color: rgba(95, 143, 225, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#toolbar #link:hover .link-insert-option .link-selected-text .link-unselect-button {
+  all: unset;
+  cursor: pointer;
+  color: #555;
+  font-size: 14px;
+}
+
+#toolbar #link:hover .link-insert-option .link-selected-text .link-unselect-button:hover {
+  color: #f90909;
+}
+
+#toolbar #image .image-option-button .image-insert-url,
+#toolbar #link .link-insert-url {
+  display: flex;
+  border: 1px solid #ddd;
+  height: 27px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+#toolbar #image .image-option-button .image-insert-url input[type="url"],
+#toolbar #link .link-insert-option input[type="url"] {
+  outline: none;
+  border: none;
+  cursor: text;
+  padding: 4px 5px;
+}
+
+#toolbar #image .image-option-button .image-insert-url:focus-within,
+#toolbar #link .link-insert-url:focus-within {
+  border-color: #88d1ee;
+}
+
+#toolbar #image .image-option-button .image-insert-url .image-insert-url-button,
+#toolbar #link .link-insert-url .link-insert-url-button {
+  all: unset;
+  padding: 0px 8px;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  border-radius: 4px;
+  color: currentColor;
+  background-color: #f2f2f2;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+#toolbar #image .image-option-button .image-insert-url .image-insert-url-button:hover,
+#toolbar #link .link-insert-url .link-insert-url-button:hover {
+  color: #2977ff;
+  background: #f0f7ff;
+}
+
+
 
 #toolbar .image-option-button input[type="file"] {
   display: none;

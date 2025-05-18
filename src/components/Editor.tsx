@@ -25,6 +25,7 @@ const Editor: FC<EditorProps> = ({
   handleImageUpload,
   handleImageDelete,
 }) => {
+  
   const editorRef = useRef<HTMLDivElement>(null);
 
   const applyCommand = (command: string, value?: string) => {
@@ -45,6 +46,7 @@ const Editor: FC<EditorProps> = ({
           }
           break;
         case "insertImage":
+          console.log("insertImage", value);
           value && document.execCommand("insertImage", false, value);
           break;
         case "formatBlock":
@@ -120,6 +122,15 @@ const Editor: FC<EditorProps> = ({
         `list-style-position: inside; list-style-type: ${listStyleType};`
       );
     }
+  };
+
+  const handleInsertImageFromURL = (imageURL: string) => {
+    const editor = editorRef.current;
+    if (!editor || !imageURL) return;
+    editor.focus();
+    const imgHtml = `<div class="image-container" contenteditable="false"><img src="${imageURL}" alt="Uploaded Image"/></div>`;
+    applyCommand("insertHTML", imgHtml);
+    onChange(editor.innerHTML);
   };
 
   const handleInsertImageFromDevice = async (file: File) => {
@@ -234,7 +245,7 @@ const Editor: FC<EditorProps> = ({
   }, [value]);
 
   return (
-    <div
+    <div 
       id="editor-container"
       className={`editor-canvas ${isEditable ? "editor-canvas-editable" : ""} ${
         customEditorClass ?? "default-editor-canvas"
@@ -244,11 +255,14 @@ const Editor: FC<EditorProps> = ({
       <Toolbar
         onCommand={applyCommand}
         onInsertImageFromDevice={handleInsertImageFromDevice}
+        onInsertImageFromURL={handleInsertImageFromURL}
         customToolbarClass={customToolbarClass}
+        
+        
       />
 
       <div id="editor-drop-overlay" className="drop-overlay">
-        Drop your images here
+        Drop Your Image Here
       </div>
 
       <div

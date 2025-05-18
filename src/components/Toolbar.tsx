@@ -24,6 +24,7 @@ export interface ToolbarProps {
   customToolbarClass?: string;
   onCommand: (command: string, value?: string) => void;
   onInsertImageFromDevice?: (file: File) => void;
+  onInsertImageFromURL?: (url: string) => void;
 }
 
 interface TableSelectorProps {
@@ -63,8 +64,101 @@ const TableSelector: FC<TableSelectorProps> = ({ onTableCreate }) => {
 }
 
 
-const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass, onInsertImageFromDevice }) => {
+const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass, onInsertImageFromDevice, onInsertImageFromURL }) => {
   const [activeFormats, setActiveFormats] = useState<{ [key: string]: boolean }>({});
+  const [imageURL, setImageURL] = useState<string>('');
+  const [insertURL, setInsertURL] = useState<string>('');
+  const [savedSelection, setSavedSelection] = useState<Range | null>(null);
+  const [selectedText, setSelectedText] = useState<string>('');
+
+  
+  const saveSelection = () => {
+    const selection = window.getSelection();
+    if (selection && selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0).cloneRange();
+      setSavedSelection(range);
+      
+      // Also save the selected text for display
+      setSelectedText(selection.toString());
+      
+      // Apply highlight to the selected text temporarily
+      if (!document.getElementById('temp-selection-highlight')) {
+        // Create a temporary style element
+        const style = document.createElement('style');
+        style.id = 'temp-selection-highlight';
+        style.innerHTML = `
+          .temp-selection-highlight {
+            background-color: rgba(41, 119, 255, 0.2);
+            border-radius: 2px;
+          }
+        `;
+        document.head.appendChild(style);
+      }
+      
+      // Create a temporary span to highlight the selection
+      const span = document.createElement('span');
+      span.className = 'temp-selection-highlight';
+      span.id = 'current-selection-highlight';
+      
+      // Store the current selection contents in the span
+      // First, remove any existing highlights
+      const existingHighlight = document.getElementById('current-selection-highlight');
+      if (existingHighlight) {
+        const parent = existingHighlight.parentNode;
+        while (existingHighlight.firstChild) {
+          parent?.insertBefore(existingHighlight.firstChild, existingHighlight);
+        }
+        parent?.removeChild(existingHighlight);
+      }
+      
+      try {
+        range.surroundContents(span);
+      } catch (e) {
+        console.warn('Could not highlight complex selection (likely spans multiple elements)', e);
+      }
+    }
+  };
+
+  // Enhanced restoreSelection function
+  const restoreSelection = () => {
+    if (savedSelection) {
+      const selection = window.getSelection();
+      selection?.removeAllRanges();
+      selection?.addRange(savedSelection.cloneRange());
+      
+      // Remove the temporary highlight
+      setTimeout(() => {
+        const highlight = document.getElementById('current-selection-highlight');
+        if (highlight) {
+          const parent = highlight.parentNode;
+          while (highlight.firstChild) {
+            parent?.insertBefore(highlight.firstChild, highlight);
+          }
+          parent?.removeChild(highlight);
+        }
+      }, 0);
+      
+      return true;
+    }
+    return false;
+  };
+
+  // Function to clear selection highlight and state
+  const clearSelection = () => {
+    setSavedSelection(null);
+    setSelectedText('');
+    
+    // Remove the temporary highlight
+    const highlight = document.getElementById('current-selection-highlight');
+    if (highlight) {
+      const parent = highlight.parentNode;
+      while (highlight.firstChild) {
+        parent?.insertBefore(highlight.firstChild, highlight);
+      }
+      parent?.removeChild(highlight);
+    }
+  };
+
 
   const createTableHTML = (rows: number, cols: number) => {
     
@@ -251,7 +345,49 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass, onInsertImag
 
       {/* Link and Image Insertion */}
        <div id="link-image-group" className="toolbar-group">
-        <button type="button" onClick={() => onCommand('createLink', prompt('Enter the URL:', 'https://') || '')}><LinkAddIcon className="button-icon" /></button>
+        <div id="link">
+          <button 
+            type="button" 
+            className="link-selector-button"
+          >
+            <LinkAddIcon className="button-icon" />
+          </button>
+          <div className="link-selector-container">
+            <div className='link-selector-show'>
+              <div className='link-insert-option'>
+                {selectedText && (
+                  <div className='link-selected-text'>
+                    <span> Linking: {selectedText.length > 20 ? `${selectedText.substring(0, 20)}...` : selectedText}</span>
+                    <button type="button" className='link-unselect-button' onClick={clearSelection}>✕</button>
+                  </div>
+                )}
+                <div className='link-insert-url'>
+                  <input 
+                    type="url" 
+                    placeholder="URL" 
+                    onChange={(e) => setInsertURL(e.target.value)}
+                    onClick={(e) => e.stopPropagation()} 
+                    onFocus={saveSelection}
+                  />
+                  <button 
+                    type="button" 
+                    className='link-insert-url-button' 
+                    onClick={() => {
+                      if (insertURL && onCommand && restoreSelection()) {
+                        onCommand('createLink', insertURL);
+                        document.querySelector<HTMLInputElement>('.link-insert-url input')!.value = '';
+                        setInsertURL('');
+                        clearSelection(); // Clear the selection after applying
+                      }
+                    }}
+                  >
+                    <AttachIcon className='button-icon'/>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <button type="button" onClick={() => onCommand('unlink')}><LinkRemoveIcon className="button-icon" /></button>
         
         <div id="image">
@@ -260,7 +396,7 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass, onInsertImag
             <div className='image-selector-show'>
               <div className='image-option-button'>
                  <label htmlFor="file-upload" className="custom-file-upload">
-                  <div className='image-upload-button'><FolderIcon className='button-icon'/></div>
+                  <div className='image-insert-button'><FolderIcon className='button-icon'/></div>
                   <input accept="image/*" type="file" id="file-upload" 
                     onChange={ (e) => {
                     const file = e.target.files?.[0];
@@ -271,14 +407,24 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass, onInsertImag
                   }} 
                    />
                 </label>
-                <button type="button" onClick={() => onCommand('insertImage', prompt('Enter the image URL:', 'https://') || '')} value="removeRow"><AttachIcon className='button-icon'/></button>
+                
+                <div className='image-insert-url'>
+                  <input type="url" placeholder="Image URL" onBlur={(e) => { setImageURL(e.target.value); }} />
+                  <button type="button" className='image-insert-url-button' onClick={()=>{
+                    if (imageURL && onInsertImageFromURL) {
+                      onInsertImageFromURL(imageURL);
+                      document.querySelector<HTMLInputElement>('.image-insert-url input')!.value = '';
+                      setImageURL('');
+                    }
+                  }}><AttachIcon className='button-icon'/></button>
+                </div>
+                
               </div>
+              
             </div>
           </div>
+        </div>
       </div>
-      </div>
-
-
 
       {/* Headings and Block Styles */}
       <div id="block-style-group" className="toolbar-group">
