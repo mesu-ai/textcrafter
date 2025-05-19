@@ -102,13 +102,23 @@ const Editor: FC<EditorProps> = ({
   const handleListInsertion = (command: string, listStyleType: string) => {
     document.execCommand(command);
     const selection = window.getSelection();
+    if(!selection || selection.rangeCount === 0) return;
+    
     const range = selection?.getRangeAt(0);
+    let node = range.commonAncestorContainer as HTMLElement
 
-    // const commonAncestorContainer = range?.commonAncestorContainer;
-    let listElement = range && (range?.commonAncestorContainer as HTMLElement);
+    // If node is a text node, get its parent
+    if (node.nodeType === Node.TEXT_NODE){
+      node = node.parentElement!;
+    }
+
+    // Find the closest list element (UL or OL)
+    let listElement = node;
     while (
       listElement &&
-      !(listElement.tagName === "UL" || listElement.tagName === "OL")
+      !(listElement.tagName === "UL" || listElement.tagName === "OL") &&
+      listElement.parentElement &&
+      listElement !== editorRef.current
     ) {
       listElement = listElement.parentElement!;
     }
@@ -117,10 +127,19 @@ const Editor: FC<EditorProps> = ({
       listElement &&
       (listElement.tagName === "UL" || listElement.tagName === "OL")
     ) {
-      listElement.setAttribute(
-        "style",
-        `list-style-position: inside; list-style-type: ${listStyleType};`
-      );
+
+    const listStyles = `
+      margin: 10px 0px 10px 20px;
+      padding-left: 0;
+      list-style-position: inside;
+      list-style-type: ${listStyleType};
+    `;
+      listElement.setAttribute("style", listStyles);
+
+      const listItems = listElement.querySelectorAll("li");
+      listItems.forEach((item) => {
+         item.setAttribute("style", "margin: 4px 0; padding: 0;");
+      });
     }
   };
 
