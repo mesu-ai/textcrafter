@@ -71,6 +71,8 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass, onInsertImag
   const [savedSelection, setSavedSelection] = useState<Range | null>(null);
   const [selectedText, setSelectedText] = useState<string>('');
 
+  const isSelectAlign = activeFormats.justifyLeft || activeFormats.justifyCenter || activeFormats.justifyRight || activeFormats.justifyFull;
+
   
   const saveSelection = () => {
     const selection = window.getSelection();
@@ -257,10 +259,6 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass, onInsertImag
 
   useEffect(() => {
     const debounceDetectFormatting = debounce(detectFormatting, 200);
-    // const debounceDetectFormatting = useCallback(
-    //   debounce(detectFormatting, 100),
-    //   [detectFormatting]
-    // );
     document.addEventListener('selectionchange', debounceDetectFormatting);
     return () =>
       document.removeEventListener('selectionchange', debounceDetectFormatting);
@@ -312,12 +310,28 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass, onInsertImag
         </label> 
       </div>
 
+      
       {/* Text Alignment */}
       <div id="alignment-group" className="toolbar-group">
-        <button type="button" onClick={() => onCommand('justifyLeft')} className={activeFormats.justifyLeft ? 'active' : ''}><AlignLeftIcon className="button-icon" /></button>
-        <button type="button" onClick={() => onCommand('justifyCenter')} className={activeFormats.justifyCenter ? 'active' : ''}><AlignCenterIcon className="button-icon" /></button>
-        <button type="button" onClick={() => onCommand('justifyRight')} className={activeFormats.justifyRight ? 'active' : ''}><AlignRightIcon className="button-icon" /></button>
-        <button type="button" onClick={() => onCommand('justifyFull')} className={activeFormats.justifyFull ? 'active' : ''}><AlignJustifyIcon className="button-icon" /></button>
+        <div className='alignment-container'>
+          <button type='button' className={isSelectAlign ? "active" : ''}> { 
+            activeFormats?.justifyLeft ? 
+            <AlignLeftIcon className="button-icon" /> : activeFormats?.justifyCenter ? 
+            <AlignCenterIcon className="button-icon" /> : activeFormats?.justifyRight ?
+            <AlignRightIcon className="button-icon" /> : activeFormats?.justifyFull ?
+            <AlignJustifyIcon className="button-icon" /> : <AlignLeftIcon className="button-icon" />
+          }</button>
+          <div className="alignment-selector-container">
+            <div className='alignment-selector-show'>
+              <div className='alignment-option-button'>
+                <button type="button" onClick={() => onCommand('justifyLeft')} className={activeFormats.justifyLeft ? 'active' : ''}><AlignLeftIcon className="button-icon" /></button>
+                <button type="button" onClick={() => onCommand('justifyCenter')} className={activeFormats.justifyCenter ? 'active' : ''}><AlignCenterIcon className="button-icon" /></button>
+                <button type="button" onClick={() => onCommand('justifyRight')} className={activeFormats.justifyRight ? 'active' : ''}><AlignRightIcon className="button-icon" /></button>
+                <button type="button" onClick={() => onCommand('justifyFull')} className={activeFormats.justifyFull ? 'active' : ''}><AlignJustifyIcon className="button-icon" /></button>
+              </div>
+            </div>
+          </div >
+        </div>
       </div>
 
       {/* List Options */}
@@ -327,17 +341,19 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass, onInsertImag
       </div>
 
        {/* Table Option */}
-      <div id="table" className="toolbar-group">
-        <button type="button" className="table-selector-button"><TableIcon className="button-icon" /></button>
-        <div className="table-selector-container">
-          <div className='table-selector-show'>
-            <TableSelector onTableCreate={handleTableCreate} />
-            <div className='table-option-button'>
-              <button type="button" onClick={() => addRow()} value="addRow">Add Row</button>
-              <button type="button" onClick={() => removeRow()} value="removeRow">Remove Row</button>
-              <button type="button" onClick={() => addColumn()} value="addColumn">Add Column</button>
-              <button type="button" onClick={() => removeColumn()} value="removeColumn">Remove Column</button>
-              <button type="button" onClick={() => onCommand('insertHorizontalRule')} value="horizontalLine">Horizontal Line</button>
+      <div id="table-group" className="toolbar-group">
+        <div className="table-container">
+          <button type="button"><TableIcon className="button-icon" /></button>
+          <div className="table-selector-container">
+            <div className='table-selector-show'>
+              <TableSelector onTableCreate={handleTableCreate} />
+              <div className='table-option-button'>
+                <button type="button" onClick={() => addRow()} value="addRow">Add Row</button>
+                <button type="button" onClick={() => removeRow()} value="removeRow">Remove Row</button>
+                <button type="button" onClick={() => addColumn()} value="addColumn">Add Column</button>
+                <button type="button" onClick={() => removeColumn()} value="removeColumn">Remove Column</button>
+                <button type="button" onClick={() => onCommand('insertHorizontalRule')} value="horizontalLine">Horizontal Line</button>
+              </div>
             </div>
           </div>
         </div>
@@ -389,14 +405,13 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass, onInsertImag
           </div>
         </div>
         <button type="button" onClick={() => onCommand('unlink')}><LinkRemoveIcon className="button-icon" /></button>
-        
         <div id="image">
           <button type="button" className="image-selector-button"><InsertImageIcon className="button-icon" /></button>
           <div className="image-selector-container">
             <div className='image-selector-show'>
               <div className='image-option-button'>
                  <label htmlFor="file-upload" className="custom-file-upload">
-                  <div className='image-insert-button'><FolderIcon className='button-icon'/></div>
+                  <div className='image-insert-button' title='Browse Folder'><FolderIcon className='button-icon'/></div>
                   <input accept="image/*" type="file" id="file-upload" 
                     onChange={ (e) => {
                     const file = e.target.files?.[0];
@@ -418,9 +433,7 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass, onInsertImag
                     }
                   }}><AttachIcon className='button-icon'/></button>
                 </div>
-                
               </div>
-              
             </div>
           </div>
         </div>
@@ -438,23 +451,25 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass, onInsertImag
         </select>
       </div>
 
-      <div id="symbol" className="toolbar-group">
-        <button type="button" className="symbol-selector-button">Symbols</button>
-        <div className="symbol-selector-container">
-          <div className='symbol-selector-show'>
-            <div className='symbol-option-button'>
-              <button type="button" onClick={() => onCommand('insertHTML', '&copy;')}>©</button>
-              <button type="button" onClick={() => onCommand('insertHTML', '&euro;')}>€</button>
-              <button type="button" onClick={() => onCommand('insertHTML', '&trade;')}>™</button>
-              <button type="button" onClick={() => onCommand('insertHTML', '&#10077;')}>❝</button>
-              <button type="button" onClick={() => onCommand('insertHTML', '&#10078;')}>❞</button>
-              <button type="button" onClick={() => onCommand('insertHTML', '&#10003;')}>✓</button>
-              <button type="button" onClick={() => onCommand('insertHTML', '😊')}>😊</button>
-              <button type="button" onClick={() => onCommand('insertHTML', '👍')}>👍</button>
-              <button type="button" onClick={() => onCommand('insertHTML', '🎉')}>🎉</button>
+      <div id="symbol-group" className="toolbar-group">
+        <div className="symbol-container">
+          <button type="button">Symbols</button>
+          <div className="symbol-selector-container">
+            <div className='symbol-selector-show'>
+              <div className='symbol-option-button'>
+                <button type="button" onClick={() => onCommand('insertHTML', '&copy;')}>©</button>
+                <button type="button" onClick={() => onCommand('insertHTML', '&euro;')}>€</button>
+                <button type="button" onClick={() => onCommand('insertHTML', '&trade;')}>™</button>
+                <button type="button" onClick={() => onCommand('insertHTML', '&#10077;')}>❝</button>
+                <button type="button" onClick={() => onCommand('insertHTML', '&#10078;')}>❞</button>
+                <button type="button" onClick={() => onCommand('insertHTML', '&#10003;')}>✓</button>
+                <button type="button" onClick={() => onCommand('insertHTML', '😊')}>😊</button>
+                <button type="button" onClick={() => onCommand('insertHTML', '👍')}>👍</button>
+                <button type="button" onClick={() => onCommand('insertHTML', '🎉')}>🎉</button>
+              </div>
             </div>
-          </div>
 
+          </div>
         </div>
       </div>
 

@@ -196,17 +196,19 @@
   appearance: none;
 }
 
-#toolbar #table,
-#toolbar #symbol,
+#toolbar #table-group .table-container,
+#toolbar #symbol-group .symbol-container,
 #toolbar #image,
-#toolbar #link {
+#toolbar #link,
+#toolbar #alignment-group .alignment-container {
   position: relative;
 }
 
 #toolbar .table-selector-container,
 #toolbar .symbol-selector-container,
 #toolbar .image-selector-container,
-#toolbar .link-selector-container {
+#toolbar .link-selector-container,
+#toolbar .alignment-selector-container {
   display: none;
   position: absolute;
   top: 28px;
@@ -214,18 +216,20 @@
 
 }
 
-#toolbar #table:hover .table-selector-container,
-#toolbar #symbol:hover .symbol-selector-container,
+#toolbar #table-group .table-container:hover .table-selector-container,
+#toolbar #symbol-group .symbol-container:hover .symbol-selector-container,
 #toolbar #image:hover .image-selector-container,
-#toolbar #link:hover .link-selector-container {
+#toolbar #link:hover .link-selector-container,
+#toolbar #alignment-group .alignment-container:hover .alignment-selector-container {
   display: block;
   z-index: 10;
 }
 
-#toolbar #table:hover .table-selector-show,
-#toolbar #symbol:hover .symbol-selector-show,
+#toolbar #table-group .table-container:hover .table-selector-show,
+#toolbar #symbol-group .symbol-container:hover .symbol-selector-show,
 #toolbar #image:hover .image-selector-show,
-#toolbar #link:hover .link-selector-show {
+#toolbar #link:hover .link-selector-show,
+#toolbar #alignment-group .alignment-container:hover .alignment-selector-show {
   margin-top: 5px;
   display: flex;
   border: 1px solid #ddd;
@@ -235,9 +239,10 @@
   background-color: white;
 }
 
-#toolbar #image:hover .image-option-button {
+#toolbar #image:hover .image-option-button,
+#toolbar #alignment-group .alignment-container:hover .alignment-option-button {
   padding: 10px;
-  min-width: 50px;
+  /* min-width: 50px; */
   display: flex;
   gap: 6px;
 }
@@ -317,7 +322,7 @@
   display: none;
 }
 
-#toolbar #table:hover .table-option-button {
+#toolbar #table-group .table-container:hover .table-option-button {
   margin-top: 10px;
   padding: 10px;
   min-width: 130px;
@@ -326,7 +331,7 @@
   gap: 5px;
 }
 
-#toolbar #symbol:hover .symbol-option-button {
+#toolbar #symbol-group .symbol-container:hover .symbol-option-button {
   padding: 10px;
   min-width: 130px;
   display: grid;
