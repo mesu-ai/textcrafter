@@ -21,7 +21,7 @@ import FolderIcon from '../assets/icons/FolderIcon';
 import AttachIcon from '../assets/icons/AttachIcon';
 
 export interface ToolbarProps {
-  customToolbarClass?: string;
+  toolbarClassName?: string;
   onCommand: (command: string, value?: string) => void;
   onInsertImageFromDevice?: (file: File) => void;
   onInsertImageFromURL?: (url: string) => void;
@@ -64,7 +64,7 @@ const TableSelector: FC<TableSelectorProps> = ({ onTableCreate }) => {
 }
 
 
-const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass, onInsertImageFromDevice, onInsertImageFromURL }) => {
+const Toolbar: FC<ToolbarProps> = ({ onCommand, toolbarClassName, onInsertImageFromDevice, onInsertImageFromURL }) => {
   const [activeFormats, setActiveFormats] = useState<{ [key: string]: boolean }>({});
   const [imageURL, setImageURL] = useState<string>('');
   const [insertURL, setInsertURL] = useState<string>('');
@@ -266,7 +266,7 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass, onInsertImag
 
 
   return (
-    <div id="toolbar" className={`toolbar ${customToolbarClass ? customToolbarClass : 'default-toolbar-class'}`} onClick={(e) => e.stopPropagation()}>
+    <div id="toolbar" className={`toolbar ${toolbarClassName ? toolbarClassName : 'default-toolbar-class'}`} onClick={(e) => e.stopPropagation()}>
       
       {/* Font Family and Size */}
       <div id="font-group" className="toolbar-group">

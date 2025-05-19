@@ -8,8 +8,8 @@ export interface EditorProps {
   value: string;
   isServer?: boolean;
   isEditable?: boolean;
-  customEditorClass?: string;
-  customToolbarClass?: string;
+  editorClassName?: string;
+  toolbarClassName?: string;
   handleImageUpload?: (file: File) => Promise<string>;
   handleImageDelete?: (src: string) => Promise<void>;
   onChange: (content: string) => void;
@@ -20,8 +20,8 @@ const Editor: FC<EditorProps> = ({
   onChange,
   isServer = false,
   isEditable = true,
-  customEditorClass,
-  customToolbarClass,
+  editorClassName,
+  toolbarClassName,
   handleImageUpload,
   handleImageDelete,
 }) => {
@@ -267,7 +267,7 @@ const Editor: FC<EditorProps> = ({
     <div 
       id="editor-container"
       className={`editor-canvas ${isEditable ? "editor-canvas-editable" : ""} ${
-        customEditorClass ?? "default-editor-canvas"
+        editorClassName ?? "default-editor-canvas"
       }`}
       onClick={handleContainerClick}
     >
@@ -275,9 +275,7 @@ const Editor: FC<EditorProps> = ({
         onCommand={applyCommand}
         onInsertImageFromDevice={handleInsertImageFromDevice}
         onInsertImageFromURL={handleInsertImageFromURL}
-        customToolbarClass={customToolbarClass}
-        
-        
+        toolbarClassName={toolbarClassName}
       />
 
       <div id="editor-drop-overlay" className="drop-overlay">
