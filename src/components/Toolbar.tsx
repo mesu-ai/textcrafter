@@ -309,8 +309,7 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass, onInsertImag
           <input type="color" onChange={(e) => { e.preventDefault(); e.stopPropagation(); onCommand('hiliteColor', e.target.value); }} onMouseDown={(e) => e.preventDefault()} title="Highlight Color" />
         </label> 
       </div>
-
-      
+ 
       {/* Text Alignment */}
       <div id="alignment-group" className="toolbar-group">
         <div className='alignment-container'>
