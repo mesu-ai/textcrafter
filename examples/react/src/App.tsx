@@ -41,10 +41,10 @@ function App() {
       <Editor
         // isServer
         value={editorContent}
-        customToolbarClass="custom-toolbar"
-        customEditorClass="custom-editor"
-        handleImageUpload={handleImageUpload}
-        handleImageDelete={handleImageDelete}
+        toolbarClassName="custom-toolbar"
+        editorClassName="custom-editor"
+        // handleImageUpload={handleImageUpload}
+        // handleImageDelete={handleImageDelete}
         onChange={handleEditorChange}
       />
     </div>
