@@ -4,8 +4,12 @@ describe('Table Commands', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <table id="editor-custom-table">
-        <tr><td>1,1</td><td>1,2</td></tr>
-        <tr><td>2,1</td><td>2,2</td></tr>
+        <thead>
+          <tr><th>Header</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Initial</td></tr>
+        </tbody>
       </table>
     `;
   });

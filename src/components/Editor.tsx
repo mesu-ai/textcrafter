@@ -68,7 +68,7 @@ const Editor: FC<EditorProps> = ({
       editor.focus();
       onChange(editor.innerHTML);
     } catch (error) {
-      console.error("Error applying command:", error);
+      // console.error("Error applying command:", error);
     }
   };
 
@@ -284,6 +284,7 @@ const Editor: FC<EditorProps> = ({
 
       <div
         id="content-area"
+        data-testid="editor"
         ref={editorRef}
         contentEditable
         onDrop={(e) => handleDrop(e, isServer)}
