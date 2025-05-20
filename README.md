@@ -1,8 +1,6 @@
----
-
 # TextCrafter
 
-**TextCrafter** is a powerful, flexible, and customizable rich text editor designed for React applications. It supports a wide range of text formatting and HTML elements, including tables, lists, links, and images. Built with compatibility in mind, TextCrafter is ideal for React and Next.js (App and Page) applications and is compatible with both JavaScript and TypeScript projects. Installation is quick and easy via npm or Yarn.
+**TextCrafter** is a powerful, flexible, and fully customizable rich text editor built specifically for modern React applications. It supports a comprehensive set of formatting tools and HTML elements, including text styles, tables, lists, links, and images. Designed with compatibility and ease of integration in mind, TextCrafter works seamlessly with both React and Next.js (App Router and Page Router), and supports projects written in JavaScript or TypeScript. Whether you're building a blog platform, CMS, or document editor, TextCrafter provides a robust editing experience with fast installation via npm or Yarn.
 
 ---
 
@@ -14,10 +12,10 @@
 - **Tables**: Easily add or remove rows and columns.
 - **Links & Images**: Insert links and images (via URLs).
 - **Undo & Redo**: Restore previous actions quickly.
-- **Customizable Toolbar & Eidor**: Extend and style the toolbar to match your design.
+- **Customizable Toolbar & Editor**: Extend and style the toolbar to match your design.
 - **Cross-Compatible**: Compatible with React, Next.js, TypeScript, and JavaScript.
 - **Drag-and-Drop Image Upload**: Drag images directly into the editor for easy insertion.
-- **External Media Management**: External functionality added for server related work (upload image to server when drop-down). No security risk.
+- **External Media Management**: Upload images to a server when dropped or selected. No security risk.
 
 ---
 
@@ -76,7 +74,7 @@ yarn add textcrafter
    export default MyEditor;
    ```
 
-3. **External Server Fuctionality for Image**
+3. **External Server Functionality for Image**
 
 ```tsx
 import { useState } from "react";
@@ -105,7 +103,7 @@ function App() {
       headers: {
         Authorization: "Bearer token",
       },
-      body: formdata,
+      body: formData,
     });
     const data = await response.json();
 
@@ -126,9 +124,9 @@ function App() {
       <Editor
         isServer
         value={editorContent}
-        customToolbarClass="custom-toolbar" //customize toolbar
-        customEditorClass="custom-editor"  //customize editor
-        handleImageUpload={handleImegaUpload}
+        toolbarClassName="custom-toolbar" //customize toolbar
+        editorClassName="custom-editor"  //customize editor
+        handleImageUpload={handleImageUpload}
         handleImageDelete={handleImageDelete}
         onChange={handleEditorChange}
       />
@@ -227,11 +225,11 @@ TextCrafter offers extensive configuration options to customize the editor to fi
 
 You can easily modify TextCrafter’s appearance by updating the provided CSS or adding custom styles. The toolbar and editor areas are designed for straightforward customization, allowing you to style them to fit your application’s theme.
 
-For customize the Editor and Toolbal you must have pass the your className through props:
+To customize the editor and toolbar, pass your className through props:
 
 ```ts
-customToolbarClass = "custom-toolbar";
-customEditorClass = "custom-editor";
+toolbarClassName = "custom-toolbar";
+editorClassName = "custom-editor";
 ```
 
 ```css

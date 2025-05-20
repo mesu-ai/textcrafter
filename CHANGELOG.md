@@ -4,6 +4,39 @@ Here's the updated changelog with the latest changes:
 
 # Changelog
 
+## [1.0.0-stable-2] - 2025-05-19
+
+### Added
+- **Insert Image from Device**:  
+  - Users can now upload and insert images directly from their device into the editor.
+
+- **Link & Anchor Insertion**:  
+  - Support added for inserting hyperlinks and anchor tags with improved UI and selection behavior.
+
+### Changed
+- **Image Insertion via URL**:  
+  - Optimized the insertion of images from external links (e.g., `src` URLs) for better performance and reliability.
+
+- **Color Picker Behavior**:  
+  - Improved user experience for both text color (`foreColor`) and background highlight (`hiliteColor`) selection tools.
+
+- **Table Management**:  
+  - Enhanced the add/remove row and column functionality to be more stable and consistent across browsers.
+
+- **List Handling**:  
+  - Fixed issues with ordered and unordered list insertion logic to ensure predictable structure.
+
+### Fixed
+- **Toolbar Layout & Design**:  
+  - Resolved multiple UI inconsistencies and alignment issues in the toolbar for a cleaner user interface.
+
+- **Editor Selection Stability**:  
+  - Fixed bugs related to text selection retention and behavior after interactions with toolbar components.
+
+- **General Improvements**:  
+  - Overall optimization of toolbar interactions and styling for smoother editing workflow.
+
+
 ## [1.0.0] - 2025-2-25
 
 ### Added

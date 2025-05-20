@@ -39,7 +39,7 @@ function App() {
     <div>
       <h2>React TextCrafter Example</h2>
       <Editor
-        isServer
+        // isServer
         value={editorContent}
         customToolbarClass="custom-toolbar"
         customEditorClass="custom-editor"

@@ -16,19 +16,20 @@ import RedoIcon from '../assets/icons/RedoIcon';
 import TableIcon from '../assets/icons/TableIcon';
 import ClearFormatIcon from '../assets/icons/ClearFormatIcon';
 import { addColumn, addRow, removeColumn, removeRow } from '../utils/commands';
+import { customTable, tableCell, tableHeaderCell } from '../utils/constant';
+import FolderIcon from '../assets/icons/FolderIcon';
+import AttachIcon from '../assets/icons/AttachIcon';
 
 export interface ToolbarProps {
-  customToolbarClass?: string;
+  toolbarClassName?: string;
   onCommand: (command: string, value?: string) => void;
+  onInsertImageFromDevice?: (file: File) => void;
+  onInsertImageFromURL?: (url: string) => void;
 }
 
 interface TableSelectorProps {
   onTableCreate: (rows: number, cols: number) => void
 }
-
-const customTable = 'width: 100%; border-collapse: collapse; margin: 10px 0;';
-const tableCell = 'padding: 8px;text-align: center;border: 1px solid #ddd;min-width: 80px;';
-const tableHeaderCell = `${tableCell} background-color: #f1f1f1;font-weight: bold;`;
 
 
 const TableSelector: FC<TableSelectorProps> = ({ onTableCreate }) => {
@@ -50,7 +51,6 @@ const TableSelector: FC<TableSelectorProps> = ({ onTableCreate }) => {
         <div key={`row-${row}`} className='table-selector-row'>
           {[...new Array(8)].map((_, col) => (
             <div key={`col-${col}`} className={`table-selector-cell ${row <= hoveredRow && col <= hoveredCol ? 'highlighted' : ''}`} onMouseEnter={() => handleSellHover(row, col)} onClick={handleCellClick}
-            // role='button' tabIndex={0}
             />
           ))}
         </div>
@@ -63,8 +63,104 @@ const TableSelector: FC<TableSelectorProps> = ({ onTableCreate }) => {
   )
 }
 
-const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass }) => {
+
+const Toolbar: FC<ToolbarProps> = ({ onCommand, toolbarClassName, onInsertImageFromDevice, onInsertImageFromURL }) => {
   const [activeFormats, setActiveFormats] = useState<{ [key: string]: boolean }>({});
+  const [imageURL, setImageURL] = useState<string>('');
+  const [insertURL, setInsertURL] = useState<string>('');
+  const [savedSelection, setSavedSelection] = useState<Range | null>(null);
+  const [selectedText, setSelectedText] = useState<string>('');
+
+  const isSelectAlign = activeFormats.justifyLeft || activeFormats.justifyCenter || activeFormats.justifyRight || activeFormats.justifyFull;
+
+  
+  const saveSelection = () => {
+    const selection = window.getSelection();
+    if (selection && selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0).cloneRange();
+      setSavedSelection(range);
+      
+      // Also save the selected text for display
+      setSelectedText(selection.toString());
+      
+      // Apply highlight to the selected text temporarily
+      if (!document.getElementById('temp-selection-highlight')) {
+        // Create a temporary style element
+        const style = document.createElement('style');
+        style.id = 'temp-selection-highlight';
+        style.innerHTML = `
+          .temp-selection-highlight {
+            background-color: rgba(41, 119, 255, 0.2);
+            border-radius: 2px;
+          }
+        `;
+        document.head.appendChild(style);
+      }
+      
+      // Create a temporary span to highlight the selection
+      const span = document.createElement('span');
+      span.className = 'temp-selection-highlight';
+      span.id = 'current-selection-highlight';
+      
+      // Store the current selection contents in the span
+      // First, remove any existing highlights
+      const existingHighlight = document.getElementById('current-selection-highlight');
+      if (existingHighlight) {
+        const parent = existingHighlight.parentNode;
+        while (existingHighlight.firstChild) {
+          parent?.insertBefore(existingHighlight.firstChild, existingHighlight);
+        }
+        parent?.removeChild(existingHighlight);
+      }
+      
+      try {
+        range.surroundContents(span);
+      } catch (e) {
+        console.warn('Could not highlight complex selection (likely spans multiple elements)', e);
+      }
+    }
+  };
+
+  // Enhanced restoreSelection function
+  const restoreSelection = () => {
+    if (savedSelection) {
+      const selection = window.getSelection();
+      selection?.removeAllRanges();
+      selection?.addRange(savedSelection.cloneRange());
+      
+      // Remove the temporary highlight
+      setTimeout(() => {
+        const highlight = document.getElementById('current-selection-highlight');
+        if (highlight) {
+          const parent = highlight.parentNode;
+          while (highlight.firstChild) {
+            parent?.insertBefore(highlight.firstChild, highlight);
+          }
+          parent?.removeChild(highlight);
+        }
+      }, 0);
+      
+      return true;
+    }
+    return false;
+  };
+
+  // Function to clear selection highlight and state
+  const clearSelection = () => {
+    setSavedSelection(null);
+    setSelectedText('');
+    
+    // Remove the temporary highlight
+    const highlight = document.getElementById('current-selection-highlight');
+    if (highlight) {
+      const parent = highlight.parentNode;
+      while (highlight.firstChild) {
+        parent?.insertBefore(highlight.firstChild, highlight);
+      }
+      parent?.removeChild(highlight);
+    }
+  };
+
 
   const createTableHTML = (rows: number, cols: number) => {
     
@@ -160,14 +256,9 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass }) => {
   
     setActiveFormats(newActiveFormat);
   };
-  
 
   useEffect(() => {
     const debounceDetectFormatting = debounce(detectFormatting, 200);
-    // const debounceDetectFormatting = useCallback(
-    //   debounce(detectFormatting, 100),
-    //   [detectFormatting]
-    // );
     document.addEventListener('selectionchange', debounceDetectFormatting);
     return () =>
       document.removeEventListener('selectionchange', debounceDetectFormatting);
@@ -175,7 +266,7 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass }) => {
 
 
   return (
-    <div id="toolbar" className={`toolbar ${customToolbarClass ? customToolbarClass : 'default-toolbar-class'}`} onClick={(e) => e.stopPropagation()}>
+    <div id="toolbar" className={`toolbar ${toolbarClassName ? toolbarClassName : 'default-toolbar-class'}`} onClick={(e) => e.stopPropagation()}>
       
       {/* Font Family and Size */}
       <div id="font-group" className="toolbar-group">
@@ -211,16 +302,35 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass }) => {
 
       {/* Text Color and Background Color */}
       <div id="color-group" className="toolbar-group">
-        <input type="color" onChange={(e) =>{ e.preventDefault();  e.stopPropagation(); onCommand('foreColor', e.target.value);  }} onMouseDown={(e) => e.preventDefault()} title="Text Color" />
-        <input type="color" onChange={(e) => { e.preventDefault(); e.stopPropagation(); onCommand('backColor', e.target.value); }} onMouseDown={(e) => e.preventDefault()} title="Background Color" />
+         <label className='color-picker'>A
+           <input type="color" onChange={(e) =>{ e.preventDefault();  e.stopPropagation(); onCommand('foreColor', e.target.value);  }} onMouseDown={(e) => e.preventDefault()} title="Text Color" />
+         </label>
+        <label className='color-picker'>H
+          <input type="color" onChange={(e) => { e.preventDefault(); e.stopPropagation(); onCommand('hiliteColor', e.target.value); }} onMouseDown={(e) => e.preventDefault()} title="Highlight Color" />
+        </label> 
       </div>
-
+ 
       {/* Text Alignment */}
       <div id="alignment-group" className="toolbar-group">
-        <button type="button" onClick={() => onCommand('justifyLeft')} className={activeFormats.justifyLeft ? 'active' : ''}><AlignLeftIcon className="button-icon" /></button>
-        <button type="button" onClick={() => onCommand('justifyCenter')} className={activeFormats.justifyCenter ? 'active' : ''}><AlignCenterIcon className="button-icon" /></button>
-        <button type="button" onClick={() => onCommand('justifyRight')} className={activeFormats.justifyRight ? 'active' : ''}><AlignRightIcon className="button-icon" /></button>
-        <button type="button" onClick={() => onCommand('justifyFull')} className={activeFormats.justifyFull ? 'active' : ''}><AlignJustifyIcon className="button-icon" /></button>
+        <div className='alignment-container'>
+          <button type='button' className={isSelectAlign ? "active" : ''}> { 
+            activeFormats?.justifyLeft ? 
+            <AlignLeftIcon className="button-icon" /> : activeFormats?.justifyCenter ? 
+            <AlignCenterIcon className="button-icon" /> : activeFormats?.justifyRight ?
+            <AlignRightIcon className="button-icon" /> : activeFormats?.justifyFull ?
+            <AlignJustifyIcon className="button-icon" /> : <AlignLeftIcon className="button-icon" />
+          }</button>
+          <div className="alignment-selector-container">
+            <div className='alignment-selector-show'>
+              <div className='alignment-option-button'>
+                <button type="button" onClick={() => onCommand('justifyLeft')} className={activeFormats.justifyLeft ? 'active' : ''}><AlignLeftIcon className="button-icon" /></button>
+                <button type="button" onClick={() => onCommand('justifyCenter')} className={activeFormats.justifyCenter ? 'active' : ''}><AlignCenterIcon className="button-icon" /></button>
+                <button type="button" onClick={() => onCommand('justifyRight')} className={activeFormats.justifyRight ? 'active' : ''}><AlignRightIcon className="button-icon" /></button>
+                <button type="button" onClick={() => onCommand('justifyFull')} className={activeFormats.justifyFull ? 'active' : ''}><AlignJustifyIcon className="button-icon" /></button>
+              </div>
+            </div>
+          </div >
+        </div>
       </div>
 
       {/* List Options */}
@@ -230,28 +340,102 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass }) => {
       </div>
 
        {/* Table Option */}
-      <div id="table" className="toolbar-group">
-        <button type="button" className="table-selector-button"><TableIcon className="button-icon" /></button>
-        <div className="table-selector-container">
-          <div className='table-selector-show'>
-            <TableSelector onTableCreate={handleTableCreate} />
-            <div className='table-option-button'>
-              <button type="button" onClick={() => addRow()} value="addRow">Add Row</button>
-              <button type="button" onClick={() => removeRow()} value="removeRow">Remove Row</button>
-              <button type="button" onClick={() => addColumn()} value="addColumn">Add Column</button>
-              <button type="button" onClick={() => removeColumn()} value="removeColumn">Remove Column</button>
-              <button type="button" onClick={() => onCommand('insertHorizontalRule')} value="horizontalLine">Horizontal Line</button>
+      <div id="table-group" className="toolbar-group">
+        <div className="table-container">
+          <button type="button"><TableIcon className="button-icon" /></button>
+          <div className="table-selector-container">
+            <div className='table-selector-show'>
+              <TableSelector onTableCreate={handleTableCreate} />
+              <div className='table-option-button'>
+                <button type="button" onClick={() => addRow()} value="addRow">Add Row</button>
+                <button type="button" onClick={() => removeRow()} value="removeRow">Remove Row</button>
+                <button type="button" onClick={() => addColumn()} value="addColumn">Add Column</button>
+                <button type="button" onClick={() => removeColumn()} value="removeColumn">Remove Column</button>
+                <button type="button" onClick={() => onCommand('insertHorizontalRule')} value="horizontalLine">Horizontal Line</button>
+              </div>
             </div>
           </div>
-
         </div>
       </div>
 
       {/* Link and Image Insertion */}
-      <div id="link-image-group" className="toolbar-group">
-        <button type="button" onClick={() => onCommand('createLink', prompt('Enter the URL:', 'https://') || '')}><LinkAddIcon className="button-icon" /></button>
+       <div id="link-image-group" className="toolbar-group">
+        <div id="link">
+          <button 
+            type="button" 
+            className="link-selector-button"
+          >
+            <LinkAddIcon className="button-icon" />
+          </button>
+          <div className="link-selector-container">
+            <div className='link-selector-show'>
+              <div className='link-insert-option'>
+                {selectedText && (
+                  <div className='link-selected-text'>
+                    <span> Linking: {selectedText.length > 20 ? `${selectedText.substring(0, 20)}...` : selectedText}</span>
+                    <button type="button" className='link-unselect-button' onClick={clearSelection}>✕</button>
+                  </div>
+                )}
+                <div className='link-insert-url'>
+                  <input 
+                    type="url" 
+                    placeholder="URL" 
+                    onChange={(e) => setInsertURL(e.target.value)}
+                    onClick={(e) => e.stopPropagation()} 
+                    onFocus={saveSelection}
+                  />
+                  <button 
+                    type="button" 
+                    className='link-insert-url-button' 
+                    onClick={() => {
+                      if (insertURL && onCommand && restoreSelection()) {
+                        onCommand('createLink', insertURL);
+                        document.querySelector<HTMLInputElement>('.link-insert-url input')!.value = '';
+                        setInsertURL('');
+                        clearSelection(); // Clear the selection after applying
+                      }
+                    }}
+                  >
+                    <AttachIcon className='button-icon'/>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <button type="button" onClick={() => onCommand('unlink')}><LinkRemoveIcon className="button-icon" /></button>
-        <button type="button" onClick={() => onCommand('insertImage', prompt('Enter the image URL:', 'https://') || '')}><InsertImageIcon className="button-icon" /></button>
+        <div id="image">
+          <button type="button" className="image-selector-button"><InsertImageIcon className="button-icon" /></button>
+          <div className="image-selector-container">
+            <div className='image-selector-show'>
+              <div className='image-option-button'>
+                 <label htmlFor="file-upload" className="custom-file-upload">
+                  <div className='image-insert-button' title='Browse Folder'><FolderIcon className='button-icon'/></div>
+                  <input accept="image/*" type="file" id="file-upload" 
+                    onChange={ (e) => {
+                    const file = e.target.files?.[0];
+                    if(file && onInsertImageFromDevice){
+                      onInsertImageFromDevice(file);
+                      e.target.value = '';
+                    }
+                  }} 
+                   />
+                </label>
+                
+                <div className='image-insert-url'>
+                  <input type="url" placeholder="Image URL" onBlur={(e) => { setImageURL(e.target.value); }} />
+                  <button type="button" className='image-insert-url-button' onClick={()=>{
+                    if (imageURL && onInsertImageFromURL) {
+                      onInsertImageFromURL(imageURL);
+                      document.querySelector<HTMLInputElement>('.image-insert-url input')!.value = '';
+                      setImageURL('');
+                    }
+                  }}><AttachIcon className='button-icon'/></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Headings and Block Styles */}
@@ -266,23 +450,25 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, customToolbarClass }) => {
         </select>
       </div>
 
-      <div id="symbol" className="toolbar-group">
-        <button type="button" className="symbol-selector-button">Symbols</button>
-        <div className="symbol-selector-container">
-          <div className='symbol-selector-show'>
-            <div className='symbol-option-button'>
-              <button type="button" onClick={() => onCommand('insertHTML', '&copy;')}>©</button>
-              <button type="button" onClick={() => onCommand('insertHTML', '&euro;')}>€</button>
-              <button type="button" onClick={() => onCommand('insertHTML', '&trade;')}>™</button>
-              <button type="button" onClick={() => onCommand('insertHTML', '&#10077;')}>❝</button>
-              <button type="button" onClick={() => onCommand('insertHTML', '&#10078;')}>❞</button>
-              <button type="button" onClick={() => onCommand('insertHTML', '&#10003;')}>✓</button>
-              <button type="button" onClick={() => onCommand('insertHTML', '😊')}>😊</button>
-              <button type="button" onClick={() => onCommand('insertHTML', '👍')}>👍</button>
-              <button type="button" onClick={() => onCommand('insertHTML', '🎉')}>🎉</button>
+      <div id="symbol-group" className="toolbar-group">
+        <div className="symbol-container">
+          <button type="button">Symbols</button>
+          <div className="symbol-selector-container">
+            <div className='symbol-selector-show'>
+              <div className='symbol-option-button'>
+                <button type="button" onClick={() => onCommand('insertHTML', '&copy;')}>©</button>
+                <button type="button" onClick={() => onCommand('insertHTML', '&euro;')}>€</button>
+                <button type="button" onClick={() => onCommand('insertHTML', '&trade;')}>™</button>
+                <button type="button" onClick={() => onCommand('insertHTML', '&#10077;')}>❝</button>
+                <button type="button" onClick={() => onCommand('insertHTML', '&#10078;')}>❞</button>
+                <button type="button" onClick={() => onCommand('insertHTML', '&#10003;')}>✓</button>
+                <button type="button" onClick={() => onCommand('insertHTML', '😊')}>😊</button>
+                <button type="button" onClick={() => onCommand('insertHTML', '👍')}>👍</button>
+                <button type="button" onClick={() => onCommand('insertHTML', '🎉')}>🎉</button>
+              </div>
             </div>
-          </div>
 
+          </div>
         </div>
       </div>
 

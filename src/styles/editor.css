@@ -3,6 +3,7 @@
   overflow-y: auto;
   font-family: Arial, sans-serif;
   text-align: start;
+  position: relative;
 }
 
 #editor-container .default-editor-canvas {
@@ -16,6 +17,25 @@
   padding-top: 10px;
   outline: none;
 }
+
+#editor-container #editor-drop-overlay.drop-overlay {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.85);
+  border: 2px dashed #2977ff;
+  color: #2977ff;
+  font-size: 24px;
+  font-weight: 600;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
 
 #editor-container #content-area blockquote {
   margin: 1em 0;
@@ -39,6 +59,7 @@
   flex-wrap: wrap;
   gap: 8px;
   padding: 10px;
+
 }
 
 #toolbar.default-toolbar-class {
@@ -61,18 +82,87 @@
 }
 
 #toolbar button,
-#toolbar select,
-.toolbar input[type="color"] {
+#toolbar select {
   padding: 4px 8px;
-  height: 27px ;
+  height: 27px;
   min-width: 30px;
   font-size: 14px;
   cursor: pointer;
+  outline: none;
   border: 1px solid #ccc;
   border-radius: 4px;
   color: currentColor;
   background-color: #ffffff;
   transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+#toolbar #image .image-insert-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 27px;
+  min-width: 30px;
+  cursor: pointer;
+  outline: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  color: currentColor;
+  background-color: #ffffff;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+#toolbar option {
+  font-size: 13px;
+}
+
+#toolbar #color-group .color-picker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 12px;
+  border: 1px solid #ccc;
+  min-width: 30px;
+  height: 25.24px;
+  overflow: hidden;
+  padding: 0 5px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  pointer-events: none;
+}
+
+#toolbar #color-group input[type="color"] {
+  padding: 0;
+  height: 7px;
+  width: 30px;
+  cursor: pointer;
+  border: none;
+  color: currentColor;
+  background-color: transparent;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  appearance: none;
+  pointer-events: auto;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+}
+
+/* Hide the actual color picker UI swatch (square/triangle) */
+#toolbar #color-group input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+#toolbar #color-group input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 0;
+}
+
+/* Firefox */
+.custom-color-swatch input[type="color"]::-moz-color-swatch {
+  border: none;
+  border-radius: 0;
 }
 
 #toolbar .button-icon {
@@ -84,9 +174,11 @@
   align-items: center;
 }
 
+
 #toolbar button:hover,
 #toolbar select:hover,
-#toolbar input[type="color"]:hover {
+#toolbar #color-group .color-picker:hover,
+#toolbar #image .image-insert-button:hover {
   background-color: #e0e0e0;
   border-color: #bbb;
 }
@@ -104,23 +196,40 @@
   appearance: none;
 }
 
-#toolbar #table, #toolbar #symbol {
+#toolbar #table-group .table-container,
+#toolbar #symbol-group .symbol-container,
+#toolbar #image,
+#toolbar #link,
+#toolbar #alignment-group .alignment-container {
   position: relative;
 }
 
-#toolbar .table-selector-container, #toolbar .symbol-selector-container {
+#toolbar .table-selector-container,
+#toolbar .symbol-selector-container,
+#toolbar .image-selector-container,
+#toolbar .link-selector-container,
+#toolbar .alignment-selector-container {
   display: none;
   position: absolute;
   top: 28px;
   right: 0;
-  
+
 }
 
-#toolbar #table:hover .table-selector-container, #toolbar #symbol:hover .symbol-selector-container {
+#toolbar #table-group .table-container:hover .table-selector-container,
+#toolbar #symbol-group .symbol-container:hover .symbol-selector-container,
+#toolbar #image:hover .image-selector-container,
+#toolbar #link:hover .link-selector-container,
+#toolbar #alignment-group .alignment-container:hover .alignment-selector-container {
   display: block;
+  z-index: 10;
 }
 
-#toolbar #table:hover .table-selector-show, #toolbar #symbol:hover .symbol-selector-show {
+#toolbar #table-group .table-container:hover .table-selector-show,
+#toolbar #symbol-group .symbol-container:hover .symbol-selector-show,
+#toolbar #image:hover .image-selector-show,
+#toolbar #link:hover .link-selector-show,
+#toolbar #alignment-group .alignment-container:hover .alignment-selector-show {
   margin-top: 5px;
   display: flex;
   border: 1px solid #ddd;
@@ -128,26 +237,106 @@
   border-bottom-right-radius: 5px;
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   background-color: white;
-
 }
 
-#toolbar #table:hover .table-option-button {
+#toolbar #image:hover .image-option-button,
+#toolbar #alignment-group .alignment-container:hover .alignment-option-button {
+  padding: 10px;
+  /* min-width: 50px; */
+  display: flex;
+  gap: 6px;
+}
+
+#toolbar #link:hover .link-insert-option {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+
+#toolbar #link:hover .link-insert-option .link-selected-text {
+  padding: 5px;
+  font-size: 12px;
+  background-color: rgba(95, 143, 225, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#toolbar #link:hover .link-insert-option .link-selected-text .link-unselect-button {
+  all: unset;
+  cursor: pointer;
+  color: #555;
+  font-size: 14px;
+}
+
+#toolbar #link:hover .link-insert-option .link-selected-text .link-unselect-button:hover {
+  color: #f90909;
+}
+
+#toolbar #image .image-option-button .image-insert-url,
+#toolbar #link .link-insert-url {
+  display: flex;
+  border: 1px solid #ddd;
+  height: 27px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+#toolbar #image .image-option-button .image-insert-url input[type="url"],
+#toolbar #link .link-insert-option input[type="url"] {
+  outline: none;
+  border: none;
+  cursor: text;
+  padding: 4px 5px;
+}
+
+#toolbar #image .image-option-button .image-insert-url:focus-within,
+#toolbar #link .link-insert-url:focus-within {
+  border-color: #88d1ee;
+}
+
+#toolbar #image .image-option-button .image-insert-url .image-insert-url-button,
+#toolbar #link .link-insert-url .link-insert-url-button {
+  all: unset;
+  padding: 0px 8px;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  border-radius: 4px;
+  color: currentColor;
+  background-color: #f2f2f2;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+#toolbar #image .image-option-button .image-insert-url .image-insert-url-button:hover,
+#toolbar #link .link-insert-url .link-insert-url-button:hover {
+  color: #2977ff;
+  background: #f0f7ff;
+}
+
+
+
+#toolbar .image-option-button input[type="file"] {
+  display: none;
+}
+
+#toolbar #table-group .table-container:hover .table-option-button {
   margin-top: 10px;
   padding: 10px;
   min-width: 130px;
   display: flex;
   flex-direction: column;
   gap: 5px;
-
 }
 
-#toolbar #symbol:hover .symbol-option-button {
-  margin-top: 10px;
+#toolbar #symbol-group .symbol-container:hover .symbol-option-button {
   padding: 10px;
   min-width: 130px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 5px;
+  gap: 6px;
 
 }
 
@@ -173,12 +362,13 @@
   background-color: #d0e8ff;
 }
 
-#oolbar .table-selector-label {
+#toolbar .table-selector-label {
   margin-top: 5px;
   text-align: center;
   font-size: 14px;
   color: #333;
 }
+
 
 /* Styles for image container and remove button */
 #editor-container #content-area .image-container {
@@ -192,23 +382,31 @@
   height: auto;
 }
 
-#editor-container #content-area .remove-image-button {
-  background-color: red;
-  border: none;
-  border-radius: 50%;
-  color: #fff;
-  cursor: pointer;
-  font-size: 16px;
-  line-height: 20px;
+#editor-container.editor-canvas-editable .image-container::after {
+  content: "remove";
   position: absolute;
-  right: 6px;
-  text-align: center;
   top: 6px;
-  padding: 5px 11px;
-  outline: none;
+  right: 6px;
+  width: 62px;
+  padding: 3px 0;
+
+  background-color: rgb(210, 15, 15);
+  color: #fff;
+  font-size: 14px;
+  border-radius: 2px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
-#editor-container #content-area .remove-image-button:hover {
-  background-color: darkred;
+#editor-container.editor-canvas-editable .image-container:hover::after {
+  display: flex;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+#editor-container #content-area a {
+  color: #2977ff;
+  text-decoration: underline;
+  cursor: pointer;
 }
