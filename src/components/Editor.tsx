@@ -286,7 +286,8 @@ const Editor: FC<EditorProps> = ({
         id="content-area"
         data-testid="editor"
         ref={editorRef}
-        contentEditable
+        contentEditable={isEditable}
+        suppressContentEditableWarning={true}
         onDrop={(e) => handleDrop(e, isServer)}
         onDragOver={(e) => handleDragOver(e)}
         onDragLeave={(e) => handleDragLeave(e)}
