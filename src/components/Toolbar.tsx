@@ -73,6 +73,7 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, toolbarClassName, onInsertImageF
 
   const isSelectAlign = activeFormats.justifyLeft || activeFormats.justifyCenter || activeFormats.justifyRight || activeFormats.justifyFull;
 
+  console.log({activeFormats})
   
   const saveSelection = () => {
     const selection = window.getSelection();
@@ -161,7 +162,6 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, toolbarClassName, onInsertImageF
     }
   };
 
-
   const createTableHTML = (rows: number, cols: number) => {
     
     let tableHTML = `<div style="overflow-x: auto; max-width: 100%;"><table id="editor-custom-table" style="${customTable}"><thead><tr>`;
@@ -189,13 +189,16 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, toolbarClassName, onInsertImageF
     onCommand('insertHTML', createTableHTML(rows, cols));
   };
 
-  const debounce = <F extends (...args: any[]) => void>(func: F, delay: number) => {
+  const debounce = <F extends (...args: any[]) => void>(
+    func: F,
+    delay: number
+  ) => {
     let debounceTimer: number;
     return function (this: any, ...args: Parameters<F>) {
       clearTimeout(debounceTimer);
       debounceTimer = window.setTimeout(() => func.apply(this, args), delay);
-    }
-  }
+    };
+  };
 
   const detectFormatting = () => {
     const selection = window.getSelection();
@@ -243,6 +246,7 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, toolbarClassName, onInsertImageF
   
     // Check for text alignment
     const textAlign = window.getComputedStyle(node).textAlign;
+    console.log({textAlign})
     newActiveFormat.justifyLeft =  textAlign === 'left';
     newActiveFormat.justifyCenter = textAlign === 'center';
     newActiveFormat.justifyRight = textAlign === 'right';
@@ -266,11 +270,22 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, toolbarClassName, onInsertImageF
 
 
   return (
-    <div id="toolbar" className={`toolbar ${toolbarClassName ? toolbarClassName : 'default-toolbar-class'}`} onClick={(e) => e.stopPropagation()}>
-      
+    <div
+      id="toolbar"
+      className={`toolbar ${
+        toolbarClassName ? toolbarClassName : "default-toolbar-class"
+      }`}
+      onClick={(e) => e.stopPropagation()}
+    >
       {/* Font Family and Size */}
       <div id="font-group" className="toolbar-group">
-        <select onChange={(e) => { e.preventDefault(); onCommand('fontName', e.target.value); }} role='combobox'>
+        <select
+          onChange={(e) => {
+            e.preventDefault();
+            onCommand("fontName", e.target.value);
+          }}
+          role="combobox"
+        >
           <option value="">Font Family</option>
           <option value="Arial">Arial</option>
           <option value="Courier New">Courier New</option>
@@ -279,7 +294,12 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, toolbarClassName, onInsertImageF
           <option value="Times New Roman">T New Roman</option>
           <option value="Verdana">Verdana</option>
         </select>
-        <select onChange={(e) => { e.preventDefault(); onCommand('fontSize', e.target.value); }}>
+        <select
+          onChange={(e) => {
+            e.preventDefault();
+            onCommand("fontSize", e.target.value);
+          }}
+        >
           <option value="">Font Size</option>
           <option value="1">Tiny</option>
           <option value="2">Small</option>
@@ -293,65 +313,194 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, toolbarClassName, onInsertImageF
 
       {/* Text Formatting */}
       <div id="text-formatting-group" className="toolbar-group">
-        <button type="button" onClick={() => onCommand('bold')} style={{ fontWeight: '700' }} className={activeFormats.bold ? 'active' : ''} aria-label='Bold'>B</button>
-        <button type="button" onClick={() => onCommand('italic')} className={activeFormats.italic ? 'active' : ''} style={{ fontStyle: 'italic' }} aria-label='Italic'>I</button>
-        <button type="button" onClick={() => onCommand('underline')} className={activeFormats.underline ? 'active' : ''} style={{ textDecoration: 'underline' }} aria-label='Underline'>U</button>
-        <button type="button" onClick={() => onCommand('strikeThrough')} className={activeFormats.strikeThrough ? 'active' : ''} style={{ textDecoration: 'line-through' }} aria-label='strikeThrough'>abc</button>
-        <button type="button" onClick={() => onCommand('removeFormat')} title='Clear Formatting'><ClearFormatIcon className='button-icon' /></button>
+        <button
+          type="button"
+          onClick={() => onCommand("bold")}
+          style={{ fontWeight: "700" }}
+          className={activeFormats.bold ? "active" : ""}
+          aria-label="Bold"
+        >
+          B
+        </button>
+        <button
+          type="button"
+          onClick={() => onCommand("italic")}
+          className={activeFormats.italic ? "active" : ""}
+          style={{ fontStyle: "italic" }}
+          aria-label="Italic"
+        >
+          I
+        </button>
+        <button
+          type="button"
+          onClick={() => onCommand("underline")}
+          className={activeFormats.underline ? "active" : ""}
+          style={{ textDecoration: "underline" }}
+          aria-label="Underline"
+        >
+          U
+        </button>
+        <button
+          type="button"
+          onClick={() => onCommand("strikeThrough")}
+          className={activeFormats.strikeThrough ? "active" : ""}
+          style={{ textDecoration: "line-through" }}
+          aria-label="strikeThrough"
+        >
+          abc
+        </button>
+        <button
+          type="button"
+          onClick={() => onCommand("removeFormat")}
+          title="Clear Formatting"
+        >
+          <ClearFormatIcon className="button-icon" />
+        </button>
       </div>
 
       {/* Text Color and Background Color */}
       <div id="color-group" className="toolbar-group">
-         <label className='color-picker'>A
-           <input type="color" onChange={(e) =>{ e.preventDefault();  e.stopPropagation(); onCommand('foreColor', e.target.value);  }} onMouseDown={(e) => e.preventDefault()} title="Text Color" />
-         </label>
-        <label className='color-picker'>H
-          <input type="color" onChange={(e) => { e.preventDefault(); e.stopPropagation(); onCommand('hiliteColor', e.target.value); }} onMouseDown={(e) => e.preventDefault()} title="Highlight Color" />
-        </label> 
+        <label className="color-picker">
+          A
+          <input
+            type="color"
+            onChange={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onCommand("foreColor", e.target.value);
+            }}
+            onMouseDown={(e) => e.preventDefault()}
+            title="Text Color"
+          />
+        </label>
+        <label className="color-picker">
+          H
+          <input
+            type="color"
+            onChange={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onCommand("hiliteColor", e.target.value);
+            }}
+            onMouseDown={(e) => e.preventDefault()}
+            title="Highlight Color"
+          />
+        </label>
       </div>
- 
+
       {/* Text Alignment */}
       <div id="alignment-group" className="toolbar-group">
-        <div className='alignment-container'>
-          <button type='button' className={isSelectAlign ? "active" : ''}> { 
-            activeFormats?.justifyLeft ? 
-            <AlignLeftIcon className="button-icon" /> : activeFormats?.justifyCenter ? 
-            <AlignCenterIcon className="button-icon" /> : activeFormats?.justifyRight ?
-            <AlignRightIcon className="button-icon" /> : activeFormats?.justifyFull ?
-            <AlignJustifyIcon className="button-icon" /> : <AlignLeftIcon className="button-icon" />
-          }</button>
+        <div className="alignment-container">
+          <button type="button" className={isSelectAlign ? "active" : ""}>
+            {" "}
+            {activeFormats?.justifyLeft ? (
+              <AlignLeftIcon className="button-icon" />
+            ) : activeFormats?.justifyCenter ? (
+              <AlignCenterIcon className="button-icon" />
+            ) : activeFormats?.justifyRight ? (
+              <AlignRightIcon className="button-icon" />
+            ) : activeFormats?.justifyFull ? (
+              <AlignJustifyIcon className="button-icon" />
+            ) : (
+              <AlignLeftIcon className="button-icon" />
+            )}
+          </button>
           <div className="alignment-selector-container">
-            <div className='alignment-selector-show'>
-              <div className='alignment-option-button'>
-                <button type="button" onClick={() => onCommand('justifyLeft')} className={activeFormats.justifyLeft ? 'active' : ''}><AlignLeftIcon className="button-icon" /></button>
-                <button type="button" onClick={() => onCommand('justifyCenter')} className={activeFormats.justifyCenter ? 'active' : ''}><AlignCenterIcon className="button-icon" /></button>
-                <button type="button" onClick={() => onCommand('justifyRight')} className={activeFormats.justifyRight ? 'active' : ''}><AlignRightIcon className="button-icon" /></button>
-                <button type="button" onClick={() => onCommand('justifyFull')} className={activeFormats.justifyFull ? 'active' : ''}><AlignJustifyIcon className="button-icon" /></button>
+            <div className="alignment-selector-show">
+              <div className="alignment-option-button">
+                <button
+                  type="button"
+                  onClick={() => onCommand("justifyLeft")}
+                  className={activeFormats.justifyLeft ? "active" : ""}
+                >
+                  <AlignLeftIcon className="button-icon" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onCommand("justifyCenter")}
+                  className={activeFormats.justifyCenter ? "active" : ""}
+                >
+                  <AlignCenterIcon className="button-icon" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onCommand("justifyRight")}
+                  className={activeFormats.justifyRight ? "active" : ""}
+                >
+                  <AlignRightIcon className="button-icon" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onCommand("justifyFull")}
+                  className={activeFormats.justifyFull ? "active" : ""}
+                >
+                  <AlignJustifyIcon className="button-icon" />
+                </button>
               </div>
             </div>
-          </div >
+          </div>
         </div>
       </div>
 
       {/* List Options */}
       <div id="list-group" className="toolbar-group">
-        <button type="button" onClick={() => onCommand('insertUnorderedList')} className={activeFormats.insertUnorderedList ? 'active' : ''}><ListBulletIcon className="button-icon" /></button>
-        <button type="button" onClick={() => onCommand('insertOrderedList')} className={activeFormats.insertOrderedList ? 'active' : ''}><ListNumberIcon className="button-icon" /></button>
+        <button
+          type="button"
+          onClick={() => onCommand("insertUnorderedList")}
+          className={activeFormats.insertUnorderedList ? "active" : ""}
+        >
+          <ListBulletIcon className="button-icon" />
+        </button>
+        <button
+          type="button"
+          onClick={() => onCommand("insertOrderedList")}
+          className={activeFormats.insertOrderedList ? "active" : ""}
+        >
+          <ListNumberIcon className="button-icon" />
+        </button>
       </div>
 
-       {/* Table Option */}
+      {/* Table Option */}
       <div id="table-group" className="toolbar-group">
         <div className="table-container">
-          <button type="button"><TableIcon className="button-icon" /></button>
+          <button type="button">
+            <TableIcon className="button-icon" />
+          </button>
           <div className="table-selector-container">
-            <div className='table-selector-show'>
+            <div className="table-selector-show">
               <TableSelector onTableCreate={handleTableCreate} />
-              <div className='table-option-button'>
-                <button type="button" onClick={() => addRow()} value="addRow">Add Row</button>
-                <button type="button" onClick={() => removeRow()} value="removeRow">Remove Row</button>
-                <button type="button" onClick={() => addColumn()} value="addColumn">Add Column</button>
-                <button type="button" onClick={() => removeColumn()} value="removeColumn">Remove Column</button>
-                <button type="button" onClick={() => onCommand('insertHorizontalRule')} value="horizontalLine">Horizontal Line</button>
+              <div className="table-option-button">
+                <button type="button" onClick={() => addRow()} value="addRow">
+                  Add Row
+                </button>
+                <button
+                  type="button"
+                  onClick={() => removeRow()}
+                  value="removeRow"
+                >
+                  Remove Row
+                </button>
+                <button
+                  type="button"
+                  onClick={() => addColumn()}
+                  value="addColumn"
+                >
+                  Add Column
+                </button>
+                <button
+                  type="button"
+                  onClick={() => removeColumn()}
+                  value="removeColumn"
+                >
+                  Remove Column
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onCommand("insertHorizontalRule")}
+                  value="horizontalLine"
+                >
+                  Horizontal Line
+                </button>
               </div>
             </div>
           </div>
@@ -359,78 +508,112 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, toolbarClassName, onInsertImageF
       </div>
 
       {/* Link and Image Insertion */}
-       <div id="link-image-group" className="toolbar-group">
+      <div id="link-image-group" className="toolbar-group">
         <div id="link">
-          <button 
-            type="button" 
-            className="link-selector-button"
-          >
+          <button type="button" className="link-selector-button">
             <LinkAddIcon className="button-icon" />
           </button>
           <div className="link-selector-container">
-            <div className='link-selector-show'>
-              <div className='link-insert-option'>
+            <div className="link-selector-show">
+              <div className="link-insert-option">
                 {selectedText && (
-                  <div className='link-selected-text'>
-                    <span> Linking: {selectedText.length > 20 ? `${selectedText.substring(0, 20)}...` : selectedText}</span>
-                    <button type="button" className='link-unselect-button' onClick={clearSelection}>✕</button>
+                  <div className="link-selected-text">
+                    <span>
+                      {" "}
+                      Linking:{" "}
+                      {selectedText.length > 20
+                        ? `${selectedText.substring(0, 20)}...`
+                        : selectedText}
+                    </span>
+                    <button
+                      type="button"
+                      className="link-unselect-button"
+                      onClick={clearSelection}
+                    >
+                      ✕
+                    </button>
                   </div>
                 )}
-                <div className='link-insert-url'>
-                  <input 
-                    type="url" 
-                    placeholder="URL" 
+                <div className="link-insert-url">
+                  <input
+                    type="url"
+                    placeholder="URL"
                     onChange={(e) => setInsertURL(e.target.value)}
-                    onClick={(e) => e.stopPropagation()} 
+                    onClick={(e) => e.stopPropagation()}
                     onFocus={saveSelection}
                   />
-                  <button 
-                    type="button" 
-                    className='link-insert-url-button' 
+                  <button
+                    type="button"
+                    className="link-insert-url-button"
                     onClick={() => {
                       if (insertURL && onCommand && restoreSelection()) {
-                        onCommand('createLink', insertURL);
-                        document.querySelector<HTMLInputElement>('.link-insert-url input')!.value = '';
-                        setInsertURL('');
+                        onCommand("createLink", insertURL);
+                        document.querySelector<HTMLInputElement>(
+                          ".link-insert-url input"
+                        )!.value = "";
+                        setInsertURL("");
                         clearSelection(); // Clear the selection after applying
                       }
                     }}
                   >
-                    <AttachIcon className='button-icon'/>
+                    <AttachIcon className="button-icon" />
                   </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <button type="button" onClick={() => onCommand('unlink')}><LinkRemoveIcon className="button-icon" /></button>
+        <button type="button" onClick={() => onCommand("unlink")}>
+          <LinkRemoveIcon className="button-icon" />
+        </button>
         <div id="image">
-          <button type="button" className="image-selector-button"><InsertImageIcon className="button-icon" /></button>
+          <button type="button" className="image-selector-button">
+            <InsertImageIcon className="button-icon" />
+          </button>
           <div className="image-selector-container">
-            <div className='image-selector-show'>
-              <div className='image-option-button'>
-                 <label htmlFor="file-upload" className="custom-file-upload">
-                  <div className='image-insert-button' title='Browse Folder'><FolderIcon className='button-icon'/></div>
-                  <input accept="image/*" type="file" id="file-upload" 
-                    onChange={ (e) => {
-                    const file = e.target.files?.[0];
-                    if(file && onInsertImageFromDevice){
-                      onInsertImageFromDevice(file);
-                      e.target.value = '';
-                    }
-                  }} 
-                   />
+            <div className="image-selector-show">
+              <div className="image-option-button">
+                <label htmlFor="file-upload" className="custom-file-upload">
+                  <div className="image-insert-button" title="Browse Folder">
+                    <FolderIcon className="button-icon" />
+                  </div>
+                  <input
+                    accept="image/*"
+                    type="file"
+                    id="file-upload"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file && onInsertImageFromDevice) {
+                        onInsertImageFromDevice(file);
+                        e.target.value = "";
+                      }
+                    }}
+                  />
                 </label>
-                
-                <div className='image-insert-url'>
-                  <input type="url" placeholder="Image URL" onBlur={(e) => { setImageURL(e.target.value); }} />
-                  <button type="button" className='image-insert-url-button' onClick={()=>{
-                    if (imageURL && onInsertImageFromURL) {
-                      onInsertImageFromURL(imageURL);
-                      document.querySelector<HTMLInputElement>('.image-insert-url input')!.value = '';
-                      setImageURL('');
-                    }
-                  }}><AttachIcon className='button-icon'/></button>
+
+                <div className="image-insert-url">
+                  <input
+                    type="url"
+                    placeholder="Image URL"
+                    onBlur={(e) => {
+                      setImageURL(e.target.value);
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="image-insert-url-button"
+                    onClick={() => {
+                      if (imageURL && onInsertImageFromURL) {
+                        onInsertImageFromURL(imageURL);
+                        document.querySelector<HTMLInputElement>(
+                          ".image-insert-url input"
+                        )!.value = "";
+                        setImageURL("");
+                      }
+                    }}
+                  >
+                    <AttachIcon className="button-icon" />
+                  </button>
                 </div>
               </div>
             </div>
@@ -440,7 +623,12 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, toolbarClassName, onInsertImageF
 
       {/* Headings and Block Styles */}
       <div id="block-style-group" className="toolbar-group">
-        <select onChange={(e) => { e.preventDefault(); onCommand('formatBlock', e.target.value); }}>
+        <select
+          onChange={(e) => {
+            e.preventDefault();
+            onCommand("formatBlock", e.target.value);
+          }}
+        >
           <option value="p">Normal Text</option>
           <option value="h1">Heading 1</option>
           <option value="h2">Heading 2</option>
@@ -454,30 +642,77 @@ const Toolbar: FC<ToolbarProps> = ({ onCommand, toolbarClassName, onInsertImageF
         <div className="symbol-container">
           <button type="button">Symbols</button>
           <div className="symbol-selector-container">
-            <div className='symbol-selector-show'>
-              <div className='symbol-option-button'>
-                <button type="button" onClick={() => onCommand('insertHTML', '&copy;')}>©</button>
-                <button type="button" onClick={() => onCommand('insertHTML', '&euro;')}>€</button>
-                <button type="button" onClick={() => onCommand('insertHTML', '&trade;')}>™</button>
-                <button type="button" onClick={() => onCommand('insertHTML', '&#10077;')}>❝</button>
-                <button type="button" onClick={() => onCommand('insertHTML', '&#10078;')}>❞</button>
-                <button type="button" onClick={() => onCommand('insertHTML', '&#10003;')}>✓</button>
-                <button type="button" onClick={() => onCommand('insertHTML', '😊')}>😊</button>
-                <button type="button" onClick={() => onCommand('insertHTML', '👍')}>👍</button>
-                <button type="button" onClick={() => onCommand('insertHTML', '🎉')}>🎉</button>
+            <div className="symbol-selector-show">
+              <div className="symbol-option-button">
+                <button
+                  type="button"
+                  onClick={() => onCommand("insertHTML", "&copy;")}
+                >
+                  ©
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onCommand("insertHTML", "&euro;")}
+                >
+                  €
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onCommand("insertHTML", "&trade;")}
+                >
+                  ™
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onCommand("insertHTML", "&#10077;")}
+                >
+                  ❝
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onCommand("insertHTML", "&#10078;")}
+                >
+                  ❞
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onCommand("insertHTML", "&#10003;")}
+                >
+                  ✓
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onCommand("insertHTML", "😊")}
+                >
+                  😊
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onCommand("insertHTML", "👍")}
+                >
+                  👍
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onCommand("insertHTML", "🎉")}
+                >
+                  🎉
+                </button>
               </div>
             </div>
-
           </div>
         </div>
       </div>
 
       {/* Undo and Redo */}
       <div id="undo-redo-group" className="toolbar-group">
-        <button type="button" onClick={() => onCommand('undo')}><UndoIcon className="button-icon" /></button>
-        <button type="button" onClick={() => onCommand('redo')}><RedoIcon className="button-icon" /></button>
+        <button type="button" onClick={() => onCommand("undo")}>
+          <UndoIcon className="button-icon" />
+        </button>
+        <button type="button" onClick={() => onCommand("redo")}>
+          <RedoIcon className="button-icon" />
+        </button>
       </div>
-
     </div>
   );
 };
