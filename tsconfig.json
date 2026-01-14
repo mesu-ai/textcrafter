@@ -10,7 +10,7 @@
     "strict": true,
     "esModuleInterop": true,
     "declaration": true,
-    "moduleResolution": "node",
+    // "moduleResolution": "node",
     "outDir": "./dist",
     "importHelpers": true,
     "allowSyntheticDefaultImports": true // Ensure default import compatibility

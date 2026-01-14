@@ -16,8 +16,6 @@
   --textcrafter-button-secondary-bg: #f2f2f2;
   --textcrafter-toolbar-dropdown-bg: #ffffff;
   --textcrafter-border: #ddd;
-  --textcrafter-primary: #2977ff;
-  --textcrafter-text: #000000;
   --textcrafter-button-bg-hover: #e0e0e0;
 }
 
@@ -29,9 +27,6 @@
     --textcrafter-button-secondary-bg: #323232;
     --textcrafter-toolbar-dropdown-bg: #383838;
     --textcrafter-border: #6f6e6f;
-    --textcrafter-button-border: #555;
-    --textcrafter-primary: #5a9fff;
-    --textcrafter-text: #ffffff;
     --textcrafter-button-bg-hover: #383838;
   }
 }

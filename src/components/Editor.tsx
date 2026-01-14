@@ -1,5 +1,5 @@
 //scr/components/Editor.tsx
-import React, { DragEvent, FC, FormEvent, useEffect, useRef } from "react";
+import React, { DragEvent, FC, FormEvent, useCallback, useEffect, useRef } from "react";
 import Toolbar from "./Toolbar";
 import "../styles/editor.css";
 import { wrapSelection } from "../utils/warpSelection";
@@ -27,7 +27,7 @@ const Editor: FC<EditorProps> = ({
 }) => {
   const editorRef = useRef<HTMLDivElement>(null);
 
-  const applyCommand = (command: string, value?: string) => {
+  const applyCommand = useCallback((command: string, value?: string) => {
     const editor = editorRef.current;
     if (!editor) return;
 
@@ -61,7 +61,7 @@ const Editor: FC<EditorProps> = ({
     } catch (error) {
       console.error("Error applying command:", error);
     }
-  };
+  }, [onChange]);
 
   const handleCreateLink = (href: string) => {
     wrapSelection("a", { href, target: "_blank", title: href });
