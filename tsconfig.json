@@ -4,13 +4,13 @@
       "jest",
       "@testing-library/jest-dom"
     ],
-    "target": "ES6",
+    "target": "es2017",
     "module": "ESNext",
     "jsx": "react",
     "strict": true,
     "esModuleInterop": true,
     "declaration": true,
-    "moduleResolution": "node",
+    // "moduleResolution": "node",
     "outDir": "./dist",
     "importHelpers": true,
     "allowSyntheticDefaultImports": true // Ensure default import compatibility

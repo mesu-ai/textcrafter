@@ -13,6 +13,8 @@
 - **Links & Images**: Insert links and images (via URLs).
 - **Undo & Redo**: Restore previous actions quickly.
 - **Customizable Toolbar & Editor**: Extend and style the toolbar to match your design.
+- **Dark & Light Mode Support**: Automatic theme detection with CSS variable customization.
+- **Image Resize**: Drag-to-resize functionality with aspect ratio support.
 - **Cross-Compatible**: Compatible with React, Next.js, TypeScript, and JavaScript.
 - **Drag-and-Drop Image Upload**: Drag images directly into the editor for easy insertion.
 - **External Media Management**: Upload images to a server when dropped or selected. No security risk.
@@ -210,7 +212,7 @@ export default App;
 
 ## Configuration
 
-TextCrafter offers extensive configuration options to customize the editor to fit your project’s requirements:
+TextCrafter offers extensive configuration options to customize the editor to fit your project's requirements:
 
 - **Font Family**: Choose from fonts like Arial, Courier New, Times New Roman, etc.
 - **Font Size**: Select font sizes ranging from Tiny to Huge.
@@ -218,35 +220,336 @@ TextCrafter offers extensive configuration options to customize the editor to fi
 - **Text Alignment**: Align text to the left, center, right, or fully justify it.
 - **Lists**: Add ordered and unordered lists for organized content.
 - **Tables**: Insert and configure tables with customizable rows and columns.
+- **Image Handling**: Upload, delete, and resize images with server-side integration.
 
 ---
 
-## Styling
+## Styling & Customization
 
-You can easily modify TextCrafter’s appearance by updating the provided CSS or adding custom styles. The toolbar and editor areas are designed for straightforward customization, allowing you to style them to fit your application’s theme.
+TextCrafter provides extensive customization options through CSS variables and className props. You can easily modify the appearance to match your application's design system.
 
-To customize the editor and toolbar, pass your className through props:
+### Available CSS Variables
 
-```ts
-toolbarClassName = "custom-toolbar";
-editorClassName = "custom-editor";
-```
+TextCrafter exposes the following CSS variables for customization:
 
 ```css
-/* You can customize as your requirement*/
+/* Button Styling */
+--textcrafter-button-bg: Background color for primary buttons
+--textcrafter-button-bg-hover: Hover state for primary buttons
+--textcrafter-button-secondary-bg: Background color for secondary buttons
+--textcrafter-button-secondary-bg-hover: Hover state for secondary buttons
+
+/* Dropdown & Toolbar */
+--textcrafter-dropdown-bg: Dropdown menu background color
+--textcrafter-border: Border color for UI elements
+```
+
+### Customization in React
+
+#### Step 1: Create Custom Styles
+
+Create a custom CSS file to override the CSS variables and customize toolbar/editor appearance:
+
+```css
+/* custom-styles.css */
+:root {
+  /* Light mode (default) */
+  --textcrafter-button-bg: #ffffff;
+  --textcrafter-button-bg-hover: #e0e0e0;
+  --textcrafter-button-secondary-bg: #f2f2f2;
+  --textcrafter-button-secondary-bg-hover: #f0f7ff;
+  --textcrafter-dropdown-bg: #ffffff;
+  --textcrafter-border: #ddd;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Dark mode */
+    --textcrafter-button-bg: #2d2d2d;
+    --textcrafter-button-bg-hover: #383838;
+    --textcrafter-button-secondary-bg: #323232;
+    --textcrafter-button-secondary-bg-hover: #213547;
+    --textcrafter-dropdown-bg: #383838;
+    --textcrafter-border: #6f6e6f;
+  }
+}
+
+/* Customize toolbar appearance */
 .custom-toolbar {
   background-color: #f3f3f3;
-  border: 1px solid #ddd;
+  border: 1px solid #ebebeb;
   border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Custom shadow */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Customize editor appearance */
+.custom-editor {
+  padding: 10px;
+  background-color: white;
+  border: 1px solid #ababab;
+  border-radius: 5px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .custom-toolbar {
+    background-color: #282628;
+    border: 1px solid #6f6e6f;
+  }
+
+  .custom-editor {
+    background-color: #383838;
+    border: 1px solid #6f6e6f;
+  }
+}
+```
+
+#### Step 2: Use Custom Styles in Your Component
+
+```tsx
+import React, { useState } from "react";
+import { Editor } from "textcrafter";
+import "textcrafter/dist/styles.min.css";
+import "./custom-styles.css";
+
+function App() {
+  const [editorContent, setEditorContent] = useState("<p>Start editing...</p>");
+
+  const handleEditorChange = (content: string) => {
+    setEditorContent(content);
+  };
+
+  return (
+    <div>
+      <h1>TextCrafter Editor</h1>
+      <Editor
+        value={editorContent}
+        onChange={handleEditorChange}
+        toolbarClassName="custom-toolbar"
+        editorClassName="custom-editor"
+      />
+    </div>
+  );
+}
+
+export default App;
+```
+
+### Customization in Next.js
+
+#### For App Router (Next.js 13+)
+
+1. **Create your custom styles file:**
+
+```css
+/* app/styles/textcrafter-custom.css */
+:root {
+  --textcrafter-button-bg: #ffffff;
+  --textcrafter-button-bg-hover: #e0e0e0;
+  --textcrafter-button-secondary-bg: #f2f2f2;
+  --textcrafter-button-secondary-bg-hover: #f0f7ff;
+  --textcrafter-dropdown-bg: #ffffff;
+  --textcrafter-border: #ddd;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --textcrafter-button-bg: #2d2d2d;
+    --textcrafter-button-bg-hover: #383838;
+    --textcrafter-button-secondary-bg: #323232;
+    --textcrafter-button-secondary-bg-hover: #213547;
+    --textcrafter-dropdown-bg: #383838;
+    --textcrafter-border: #6f6e6f;
+  }
+}
+
+.custom-toolbar {
+  background-color: #f3f3f3;
+  border: 1px solid #ebebeb;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .custom-editor {
   padding: 10px;
   background-color: white;
-  border: 1px solid #ddd;
+  border: 1px solid #ababab;
   border-radius: 5px;
 }
+
+@media (prefers-color-scheme: dark) {
+  .custom-toolbar {
+    background-color: #282628;
+    border: 1px solid #6f6e6f;
+  }
+
+  .custom-editor {
+    background-color: #383838;
+    border: 1px solid #6f6e6f;
+  }
+}
+```
+
+2. **Import styles in your layout.tsx:**
+
+```tsx
+import "textcrafter/dist/styles.min.css";
+import "./styles/textcrafter-custom.css";
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+3. **Use the Editor in your page:**
+
+```tsx
+"use client";
+
+import { useState } from "react";
+import { Editor } from "textcrafter";
+
+export default function EditorPage() {
+  const [content, setContent] = useState("<p>Edit here...</p>");
+
+  return (
+    <div>
+      <h1>TextCrafter Editor</h1>
+      <Editor
+        value={content}
+        onChange={setContent}
+        toolbarClassName="custom-toolbar"
+        editorClassName="custom-editor"
+      />
+    </div>
+  );
+}
+```
+
+#### For Page Router (Traditional Next.js)
+
+1. **Add styles to your _app.tsx:**
+
+```tsx
+import "textcrafter/dist/styles.min.css";
+import "../styles/textcrafter-custom.css";
+
+function MyApp({ Component, pageProps }) {
+  return <Component {...pageProps} />;
+}
+
+export default MyApp;
+```
+
+2. **Use the Editor in your pages:**
+
+```tsx
+import { useState } from "react";
+import { Editor } from "textcrafter";
+
+export default function HomePage() {
+  const [content, setContent] = useState("<p>Edit here...</p>");
+
+  return (
+    <div>
+      <h1>TextCrafter Editor</h1>
+      <Editor
+        value={content}
+        onChange={setContent}
+        toolbarClassName="custom-toolbar"
+        editorClassName="custom-editor"
+      />
+    </div>
+  );
+}
+```
+
+### Advanced Customization with Image Handling
+
+```tsx
+import { useState } from "react";
+import { Editor } from "textcrafter";
+import "textcrafter/dist/styles.min.css";
+import "./custom-styles.css";
+
+function App() {
+  const [editorContent, setEditorContent] = useState("");
+
+  const handleImageUpload = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    const response = await fetch("/api/upload-image", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer token",
+      },
+      body: formData,
+    });
+    const data = await response.json();
+    return data.imageUrl;
+  };
+
+  const handleImageDelete = async (imgSrc: string) => {
+    await fetch(`/image-delete?src=${encodeURIComponent(imgSrc)}`, {
+      method: "DELETE",
+    });
+  };
+
+  return (
+    <div>
+      <h1>Advanced TextCrafter Editor</h1>
+      <Editor
+        isServer
+        value={editorContent}
+        onChange={setEditorContent}
+        toolbarClassName="custom-toolbar"
+        editorClassName="custom-editor"
+        handleImageUpload={handleImageUpload}
+        handleImageDelete={handleImageDelete}
+      />
+    </div>
+  );
+}
+
+export default App;
+```
+
+### Theme Toggle Example
+
+```tsx
+import { useState } from "react";
+import { Editor } from "textcrafter";
+import "textcrafter/dist/styles.min.css";
+
+function App() {
+  const [editorContent, setEditorContent] = useState("");
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  return (
+    <div style={{ colorScheme: isDarkMode ? "dark" : "light" }}>
+      <button onClick={() => setIsDarkMode(!isDarkMode)}>
+        Toggle {isDarkMode ? "Light" : "Dark"} Mode
+      </button>
+
+      <Editor
+        value={editorContent}
+        onChange={setEditorContent}
+        toolbarClassName="custom-toolbar"
+        editorClassName="custom-editor"
+      />
+    </div>
+  );
+}
+
+export default App;
 ```
 
 ---

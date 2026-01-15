@@ -1,8 +1,62 @@
-Here's the updated changelog with the latest changes:
+# Changelog
+
+## [2.0.0] - 2026-01-15
+
+### Added
+- **Dark Mode & Light Mode Support**:
+  - Added automatic theme detection based on system preferences (`prefers-color-scheme`).
+  - Full CSS variable support for seamless theme switching between light and dark modes.
+  - Improved color consistency across all editor components in both themes.
+
+- **Image Resize Option**:
+  - Added drag-to-resize functionality for images within the editor.
+  - Images can now be resized while maintaining aspect ratio.
+  - Enhanced visual feedback with selection indicators when image is active.
+
+- **Customize Toolbar with Variable Colors**:
+  - Introduced CSS custom properties for toolbar styling: `--textcrafter-button-bg`, `--textcrafter-button-bg-hover`, `--textcrafter-button-secondary-bg`, `--textcrafter-dropdown-bg`, `--textcrafter-border`.
+  - Users can now customize toolbar appearance by overriding CSS variables in their own stylesheets.
+  - Full theming support for buttons, dropdowns, and interactive elements.
+
+### Changed
+- **Link Anchoring**:
+  - Improved anchor tag creation and link management for better reliability.
+  - Enhanced selection behavior when inserting or editing links.
+
+- **Image Upload Optimized**:
+  - Streamlined image upload process with improved performance.
+  - Better error handling for failed uploads.
+  - Support for both base64 and URL-based image storage.
+
+- **TypeScript Configuration**:
+  - Updated `tsconfig.json` target from ES6 to ES2017 to support modern JavaScript features.
+
+- **CSS Variable Structure**:
+  - Refactored `index.css` to consolidate CSS variables and reduce redundancy.
+  - Improved media query organization for better maintainability.
+
+- **Utility File Naming**:
+  - Renamed `caretPlace.ts` to `caret.ts` for consistency.
+  - Fixed typo: `warpSelection.ts` → `wrapSelection.ts`.
+
+- **Performance Improvements**: Overall optimization of editor and toolbar interactions.
+
+### Fixed
+- **Image Upload Option**:
+  - Fixed image upload dialog not properly handling file selection.
+  - Resolved issues with image deletion callback integration.
+
+- **Active Format Issues**:
+  - Fixed toolbar buttons not correctly reflecting active formatting state.
+  - Improved button state detection for bold, italic, underline, and other formatting options.
+
+- **Design Issues**:
+  - Fixed image remaining selected after clicking outside the editor area.
+  - Improved click handler for proper image deselection behavior.
+  - Resolved CSS alignment issues in toolbar and editor components.
+  - Enhanced visual consistency between light and dark modes.
 
 ---
-
-# Changelog
 
 ## [1.0.0-stable-2] - 2025-05-19
 
