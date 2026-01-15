@@ -38,9 +38,6 @@ const Editor: FC<EditorProps> = ({
           break;
 
         case "formatBlock":
-          // if (value)
-          // handleFormatBlock(value as keyof HTMLElementTagNameMap, editor);
-          // if (value) handleBlockFormat(value as keyof HTMLElementTagNameMap, editor);
           if (value) document.execCommand("formatBlock", false, value);
           break;
         case "insertHTML":
