@@ -9,37 +9,52 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  color: #213547;
-  background-color: #ffffff;
+  --foreground: #213547;
+  --background: #ffffff;
 
+  /* textcrafter variable: light mode*/
   --textcrafter-button-bg: #ffffff;
-  --textcrafter-button-secondary-bg: #f2f2f2;
-  --textcrafter-toolbar-dropdown-bg: #ffffff;
-  --textcrafter-border: #ddd;
   --textcrafter-button-bg-hover: #e0e0e0;
+  --textcrafter-button-secondary-bg: #f2f2f2;
+  --textcrafter-button-secondary-bg-hover: #f0f7ff;
+  --textcrafter-dropdown-bg: #ffffff;
+  --textcrafter-border: #ddd;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    color: white;
-    background-color: #282628;
+    --foreground: white;
+    --background: #282628;
+
+    /* textcrafter variable: dark mode */
     --textcrafter-button-bg: #2d2d2d;
-    --textcrafter-button-secondary-bg: #323232;
-    --textcrafter-toolbar-dropdown-bg: #383838;
-    --textcrafter-border: #6f6e6f;
     --textcrafter-button-bg-hover: #383838;
+    --textcrafter-button-secondary-bg: #323232;
+    --textcrafter-button-secondary-bg-hover: #213547;
+    --textcrafter-dropdown-bg: #383838;
+    --textcrafter-border: #6f6e6f;
+
+
   }
 }
 
-body {
-  margin: 0;
-  /* display: flex;
-  place-items: center; */
-  min-width: 320px;
-  min-height: 100vh;
+/* for cusomize editor and toolbar */
+/*textcrafter style: light mode */
+.custom-toolbar {
+  background-color: #f3f3f3;
+  border: 1px solid #ebebeb;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* editor styles */
+.custom-editor {
+  padding: 10px;
+  background-color: white;
+  border: 1px solid #ababab;
+  border-radius: 5px;
+}
+
+/*textcrafter style: dark mode */
 @media (prefers-color-scheme: dark) {
   .custom-toolbar {
     background-color: #282628;
@@ -56,18 +71,11 @@ body {
   }
 }
 
-@media (prefers-color-scheme: light) {
-  .custom-toolbar {
-    background-color: #f3f3f3;
-    border: 1px solid #ebebeb;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
 
-  .custom-editor {
-    padding: 10px;
-    background-color: white;
-    border: 1px solid #ababab;
-    border-radius: 5px;
-  }
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  color: var(--foreground);
+  background-color: var(--background);
 }

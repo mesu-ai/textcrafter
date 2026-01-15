@@ -96,7 +96,7 @@
 }
 
 #toolbar select>option {
-  background-color: var(--textcrafter-toolbar-dropdown-bg);
+  background-color: var(--textcrafter-dropdown-bg);
 }
 
 #toolbar #image .image-insert-button {
@@ -240,7 +240,7 @@
     border-bottom-right-radius: 5px; */
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   border: 1px solid var(--textcrafter-border);
-  background-color: var(--textcrafter-toolbar-dropdown-bg);
+  background-color: var(--textcrafter-dropdown-bg);
 }
 
 #toolbar #image:hover .image-option-button,
@@ -318,7 +318,7 @@
 #toolbar #image .image-option-button .image-insert-url .image-insert-url-button:hover,
 #toolbar #link .link-insert-url .link-insert-url-button:hover {
   color: #2977ff;
-  background: #f0f7ff;
+  background: var(--textcrafter-button-secondary-bg-hover);
 }
 
 
@@ -348,7 +348,7 @@
 #toolbar .table-selector {
   display: inline-block;
   padding: 10px;
-  background-color: var(--textcrafter-toolbar-dropdown-bg);
+  background-color: var(--textcrafter-dropdown-bg);
   position: relative;
 }
 

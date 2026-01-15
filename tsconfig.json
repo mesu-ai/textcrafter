@@ -4,7 +4,7 @@
       "jest",
       "@testing-library/jest-dom"
     ],
-    "target": "ES6",
+    "target": "es2017",
     "module": "ESNext",
     "jsx": "react",
     "strict": true,

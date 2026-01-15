@@ -1,5 +1,5 @@
 import { getActiveRange } from "./getActiveRange";
-import { placeCaretAfter } from "./caretPlace";
+import { placeCaretAfter } from "./caret";
 
 export const wrapSelection = (
   tag: keyof HTMLElementTagNameMap,
@@ -13,5 +13,4 @@ export const wrapSelection = (
   el.appendChild(frag);
   range.insertNode(el);
   placeCaretAfter(el);
-
 };

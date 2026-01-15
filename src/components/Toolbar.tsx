@@ -20,6 +20,7 @@ import { customTable, tableCell, tableHeaderCell } from '../utils/constant';
 import FolderIcon from '../assets/icons/FolderIcon';
 import AttachIcon from '../assets/icons/AttachIcon';
 import { getActiveRange } from '../utils/getActiveRange';
+import { debounce } from '../utils/debounce';
 
 export interface ToolbarProps {
   toolbarClassName?: string;
@@ -210,17 +211,6 @@ const Toolbar: FC<ToolbarProps> = ({
 
   const handleTableCreate = (rows: number, cols: number) => {
     onCommand('insertHTML', createTableHTML(rows, cols));
-  };
-
-  const debounce = <F extends (...args: any[]) => void>(
-    func: F,
-    delay: number
-  ) => {
-    let debounceTimer: number;
-    return function (this: any, ...args: Parameters<F>) {
-      clearTimeout(debounceTimer);
-      debounceTimer = window.setTimeout(() => func.apply(this, args), delay);
-    };
   };
 
   const detectFormatting = useCallback(() => {

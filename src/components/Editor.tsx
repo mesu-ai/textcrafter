@@ -2,7 +2,7 @@
 import React, { DragEvent, FC, FormEvent, useCallback, useEffect, useRef } from "react";
 import Toolbar from "./Toolbar";
 import "../styles/editor.css";
-import { wrapSelection } from "../utils/warpSelection";
+import { wrapSelection } from "../utils/wrapSelection";
 
 export interface EditorProps {
   value: string;
@@ -236,7 +236,12 @@ const Editor: FC<EditorProps> = ({
     }
 
     const container = target.closest(".image-container");
-    if (!container) return;
+    if (!container) {
+      document.querySelectorAll(".image-container.selected").forEach((img) => {
+        img.classList.remove("selected");
+      });
+      return;
+    }
 
     // Remove selection from all other images
     document.querySelectorAll(".image-container.selected").forEach((img) => {
