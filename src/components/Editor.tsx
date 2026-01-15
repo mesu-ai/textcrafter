@@ -56,7 +56,7 @@ const Editor: FC<EditorProps> = ({
       editor.focus();
       onChange(editor.innerHTML);
     } catch (error) {
-      console.error("Error applying command:", error);
+      console.log("Error applying command:", error);
     }
   }, [onChange]);
 
